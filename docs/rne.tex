@@ -1,0 +1,244 @@
+% $Id: rne.tex,v 1.6 2007/10/18 16:20:52 gourdeau Exp $
+
+\chapter{Recursive Newton-Euler algorithms, DH notation}
+\label{sec:rnea}
+
+In order to apply the RNE as presented in \cite{Murray86}, 
+let us define the following variables 
+(referenced in the $i^{th}$ coordinate frame if applicable):
+\begin{itemize}
+\item $\sigma_i$ is the joint type; $\sigma_i = 1$ for a revolute
+  joint and $\sigma_i = 0$ for a prismatic joint;
+\item $\mbold{p}_i = \matr{ccc}{ a_i & d_i \sin \alpha_i & d_i \cos \alpha_i}^T$ is the
+position of the $i^{th}$ with respect to the $i-1^{th}$ frame;
+\item $\mbold{z}_0 = \matr{ccc}{0 & 0 & 1}^T $
+\end{itemize}
+
+
+\section{Recursive Newton-Euler formulation}
+\label{sec:rne}
+
+\begin{itemize}
+\item Forward Iterations for $i=1, 2, \ldots, n$. 
+
+Initialize: $\omega_0 = \dot{\omega}_0 = 0$ and $\dot{\mbold{v}}_0 = - \mbold{g}$.
+\begin{eqnarray}
+\omega_i & = & \mbold{R}_i^T [\omega_{i-1} + \sigma_i \mbold{z}_0 \dot{\theta}_i ] \\
+\dot{\omega}_i & = & \mbold{R}_i^T  \{ \dot{\omega}_{i-1} + 
+\sigma_i [\mbold{z}_0 \ddot{\theta}_i + \omega_{i-1} \times (\mbold{z}_0 \dot{\theta}_i )] \} \\
+\dot{\mbold{v}}_i & = & \mbold{R}_i^T  \{ \dot{\mbold{v}}_{i-1} + 
+(1 -\sigma_i) [\mbold{z}_0 \ddot{d}_i + 2 \omega_{i-1} \times (\mbold{z}_0 \dot{d}_i )] \} 
+\nonumber \\ 
+& & + \dot{\omega}_i \times \mbold{p}_i + \omega_i \times ( \omega_i \times \mbold{p}_i)
+\end{eqnarray}
+
+\item Backward Iterations for $i=n, n-1, \ldots, 1$. 
+
+Initialize: $\mbold{f}_{n+1} = \mbold{n}_{n+1} = 0$.
+\begin{eqnarray}
+\dot{\mbold{v}}_{ci} & = & \dot{\mbold{v}}_i + \dot{\omega}_i \times \mbold{r}_i 
++ \omega_i \times (\omega_i \times \mbold{r}_i) \\
+\mbold{F}_i & = & m_i \dot{\mbold{v}}_{ci} \\
+\mbold{N}_i & = & \mbold{I}_{ci} \dot{\omega}_i + \omega_i \times (\mbold{I}_{ci} \omega_i) \\
+\mbold{f}_i & = & \mbold{R}_{i+1} [ \mbold{f}_{i+1} ]  + \mbold{F}_{i}  \\
+\mbold{n}_i & = & \mbold{R}_{i+1} [ \mbold{n}_{i+1} ]  + \mbold{p}_{i} \times \mbold{f}_{i} 
++ \mbold{N}_{i} + \mbold{r}_{i} \times \mbold{F}_{i} \\
+\tau_i & = & \sigma_i \mbold{n}_i^T (\mbold{R}_i^T \mbold{z}_0) 
++ (1 -\sigma_i) \mbold{f}_i^T (\mbold{R}_i^T \mbold{z}_0)
+\end{eqnarray}
+\end{itemize}
+
+
+\section{Recursive linearized Newton-Euler formulation}
+\label{sec:rlne}
+
+With
+\begin{eqnarray}
+\mbold{p}_{di} & = & \dfdx{\mbold{p}_i}{d_i} = \matr{ccc}{ 0 & \sin \alpha_i & \cos \alpha_i}^T \\
+\mbold{Q} & = & \matr{ccc}{
+0 & -1 & 0  \\
+1 & 0 & 0  \\
+0 & 0 & 0 }
+\end{eqnarray}
+one can use the following
+\begin{itemize}
+\item Forward Iterations for $i=1, 2, \ldots, n$. 
+
+Initialize: $\delta \omega_0 = \delta \dot{\omega}_0 = \delta \dot{\mbold{v}}_0 = 0$.
+\begin{eqnarray}
+\delta \omega_i & = & 
+\mbold{R}_i^T \{\delta \omega_{i-1} + \sigma_i [ \mbold{z}_0 \delta \dot{\theta}_i 
+- \mbold{Q}(\omega_{i-1} + \dot{\theta}_i ) \delta \theta_i ] \} \\
+\delta \dot{\omega}_i & = & 
+\mbold{R}_i^T  \{ \delta \dot{\omega}_{i-1} + 
+\sigma_i [\mbold{z}_0 \delta \ddot{\theta}_i + \delta \omega_{i-1} \times (\mbold{z}_0 \dot{\theta}_i )
++ \omega_{i-1} \times (\mbold{z}_0 \delta \dot{\theta}_i )]  \nonumber \\
+& & - \sigma_i \mbold{Q} [ \omega_{i-1} + \mbold{z}_0 \ddot{\theta}_i 
++ \omega_{i-1} \times (\mbold{z}_0 \dot{\theta}_i )] \delta \theta_i \} \\
+\delta \dot{\mbold{v}}_i & = & 
+\mbold{R}_i^T  \{ \delta \dot{\mbold{v}}_{i-1} 
+- \sigma_i \mbold{Q} \dot{\mbold{v}}_{i-1} \delta \theta_i \nonumber \\
+& & + (1 -\sigma_i) [\mbold{z}_0 \delta \ddot{d}_i 
++ 2 \delta \omega_{i-1} \times (\mbold{z}_0 \dot{d}_i ) 
++ 2 \omega_{i-1} \times (\mbold{z}_0 \delta \dot{d}_i )] \} 
+\nonumber \\ 
+& & + \delta \dot{\omega}_i \times \mbold{p}_i 
++ \delta \omega_i \times ( \omega_i \times \mbold{p}_i) 
++ \omega_i \times ( \delta \omega_i \times \mbold{p}_i) \nonumber \\
+& & + (1 - \sigma_i) (\dot{\omega}_i \times \mbold{p}_{di} 
++ \omega_i \times ( \omega_i \times \mbold{p}_{di}) ) \delta d_i
+\end{eqnarray}
+
+\item Backward Iterations for $i=n, n-1, \ldots, 1$. 
+
+Initialize: $\delta \mbold{f}_{n+1} = \delta \mbold{n}_{n+1} = 0$.
+\begin{eqnarray}
+\delta \dot{\mbold{v}}_{ci} & = & 
+\delta \dot{\mbold{v}}_i + \delta \dot{\omega}_i \times \mbold{r}_i 
++ \delta \omega_i \times (\omega_i \times \mbold{r}_i) 
++ \omega_i \times (\delta \omega_i \times \mbold{r}_i) \\
+\delta \mbold{F}_i & = & m_i \delta \dot{\mbold{v}}_{ci} \\
+\delta \mbold{N}_i & = & \mbold{I}_{ci} \delta \dot{\omega}_i 
++ \delta \omega_i \times (\mbold{I}_{ci} \omega_i) 
++ \omega_i \times (\mbold{I}_{ci} \delta \omega_i) \\
+\delta \mbold{f}_i & = & \mbold{R}_{i+1} [ \delta \mbold{f}_{i+1} ]  
++ \delta \mbold{F}_{i} + \sigma_{i+1} \mbold{Q} \mbold{R}_{i+1} [ \mbold{f}_{i+1} ] \delta \theta_{i+1} \\
+\delta \mbold{n}_i & = & \mbold{R}_{i+1} [ \delta \mbold{n}_{i+1} ]  
++ \delta \mbold{N}_{i} + \mbold{p}_{i} \times \delta \mbold{f}_{i} 
++ \mbold{r}_{i} \times \delta \mbold{F}_{i} \nonumber \\
+& & + (1 - \sigma_i) (\mbold{p}_{di} \times \mbold{f}_{i}) \delta d_i 
++ \sigma_{i+1} \mbold{Q} \mbold{R}_{i+1} [ \mbold{n}_{i+1} ] \delta \theta_{i+1} \\
+\delta \tau_i & = & \sigma_i [ \delta \mbold{n}_i^T (\mbold{R}_i^T \mbold{z}_0) 
+- \mbold{n}_i^T (\mbold{R}_i^T \mbold{Q} \mbold{z}_0) \delta \theta_i] \nonumber \\
+& & + (1 -\sigma_i) [ \delta \mbold{f}_i^T (\mbold{R}_i^T \mbold{z}_0) ]
+\end{eqnarray}
+\end{itemize}
+
+%---------------------------------------------------------
+
+\chapter{Recursive Newton-Euler algorithms, modified DH notation}
+
+In order to apply the RNE, let us define the following variables 
+(referenced in the $i^{th}$ coordinate frame if applicable):
+\begin{itemize}
+\item $\sigma_i$ is the joint type; $\sigma_i = 1$ for a revolute
+  joint and $\sigma_i = 0$ for a prismatic joint;
+\item $\mbold{p}_i = \matr{ccc}{a_{i-1} & -d_i sin \alpha_{i-1} &
+d_i cos \alpha_{i-1}}^T$ is the
+position of the $i^{th}$ with respect to the $i-1^{th}$ frame;
+\item $\mbold{z}_0 = \matr{ccc}{0 & 0 & 1}^T $
+\end{itemize}
+
+
+\section{Recursive Newton-Euler formulation}
+
+\begin{itemize}
+\item Forward Iterations for $i=1, 2, \ldots, n$. 
+
+Initialize: $\omega_0 = \dot{\omega}_0 = 0$ and $\dot{\mbold{v}}_0 = - \mbold{g}$.
+\begin{eqnarray}
+\omega_i & = & \mbold{R}_i^T\omega_{i-1} + \sigma_i \mbold{z}_0\dot{\theta_i} \\
+\dot{\omega}_i & = & \mbold{R}_i^T\dot{\omega}_{i-1} + \sigma_i
+ \mbold{R}_i^T\omega_{i-1}\times \mbold{z}_0 \dot{\theta}_i + \sigma_i\mbold{z}_0\ddot{\theta}_i \\
+\dot{\mbold{v}}_i & = &\ \mbold{R}_i^T(\dot{\omega}_{i-1}\times \mbold{p}_i\ +\
+\omega_{i-1}\times(\omega_{i-1}\times \mbold{p}_i) + \dot{\mbold{v}}_{i-1})\  \\ \nonumber
+            & & + (1\ -\ \sigma_i)(2\omega_i\times \mbold{z}_0\dot{d}_i\ + \mbold{z}_0\ddot{d}_i)
+\end{eqnarray}
+
+\item Backward Iterations for $i=n, n-1, \ldots, 1$. 
+
+Initialize: $\mbold{f}_{n+1} = \mbold{n}_{n+1} = 0$.
+\begin{eqnarray}
+\dot{\mbold{v}}_{ci} & = & \dot{\omega}_i\times \mbold{r}_i + 
+\omega_i\times(\omega_i\times \mbold{r}_i) + \dot{\mbold{v}}_i \\
+\mbold{F}_i & = & m_i \dot{\mbold{v}}_{ci} \\
+\mbold{N}_i & = & \mbold{I}_{ci}\ddot{\omega}_i\ + \omega_i \times \mbold{I}_{ci}\omega_i \\
+\mbold{f}_i & = & \mbold{R}_{i+1}\mbold{f}_{i+1} + \mbold{F}_i \\
+\mbold{n}_i & = & \mbold{N}_i + \mbold{R}_{i+1} \mbold{n}_{i+1} +
+\mbold{r}_i \times \mbold{F}_i + \mbold{p}_{i+1}\times \mbold{R}_{i+1}\mbold{f}_{i+1} \\
+\tau_i & = & \sigma_i \mbold{n}_i \mbold{z}_) + (1 - \sigma_i)
+\mbold{f}_i^T \mbold{z}_0
+\end{eqnarray}
+\end{itemize}
+
+
+\section{Recursive linearized Newton-Euler formulation}
+
+
+With
+\begin{eqnarray}
+\mbold{p}_{di} & = & \dfdx{\mbold{p}_i}{d_i} = \matr{ccc}{ 0 & -\sin\alpha_{i-1} & \cos\alpha_{i-1}}^T \\
+\mbold{Q} & = & \matr{ccc}{
+0 & -1 & 0  \\
+1 & 0 & 0  \\
+0 & 0 & 0 }
+\end{eqnarray}
+one can use the following
+\begin{itemize}
+\item Forward Iterations for $i=1, 2, \ldots, n$. 
+
+Initialize: $\delta \omega_0 = \delta \dot{\omega}_0 = \delta \dot{\mbold{v}}_0 = 0$.
+\begin{eqnarray}
+\delta \omega_i & = & \mbold{R}_i^T \delta \omega_{i-1} + \sigma_i
+(\mbold{z}_0 \delta \dot{\theta}_i\ -\ \mbold{QR}_i^T \omega_i \delta \theta_i) \\
+\delta \dot{\omega}_i  & = & \mbold{R}_i^T \delta \dot{\mbold{w}}_{i-1} +
+\sigma_i [\mbold{R}_i^T \delta \omega_{i-1} \times \mbold{z}_0
+\dot{\theta}_i \\ \nonumber
+& & + \mbold{R}_i^T \omega_{i-1} \times \mbold{z}_0 \delta \dot{\theta}_i  
++ \mbold{z}_0 \ddot{\theta}_i \\ \nonumber
+& & - (\mbold{QR}_i^T \dot{\omega}_{i-1} + \mbold{QR}_i^T \omega_{i-1}
+\times \omega{z}_0 \dot{\theta}_i) \delta \theta_i ] \\
+\delta \dot{\mbold{v}}_i & = & \mbold{R}_i^T\Big(\delta
+\dot{\omega}_{i-1} \times \mbold{p}_i + \delta \omega_{i-1}
+\times(\omega_{i-1} \times \mbold{p}_i) \\ \nonumber
+& & + \omega_{i-1} \times( \delta \omega_{i-1} \times \mbold{p}_i) +
+\delta \dot{\mbold{v}}_i\Big) \\ \nonumber
+& & + (1-\sigma_i)\Big(2\delta \omega_i \times \mbold{z}_0\dot{\mbold{d}}_i
++ 2\omega_i \times \mbold{z}_0 \delta \dot{\mbold{d}}_i + \mbold{z}_0
+\delta \ddot{\mbold{d}}_i\Big) \\ \nonumber
+& & - \sigma_i\mbold{QR}_i^T \Big(\dot{\omega}_{i-1} \times
+\mbold{p}_i + \omega_{i-1} \times(w_{i-1}\times p_i)
++ \dot{\mbold{v}}_i\Big) \delta \theta_i \\ \nonumber
+& & + (1-\sigma_i) \mbold{R}_i^T \Big(\dot{\omega}_{i-1} \times
+\mbold{p}_{di} + \omega_{i-1} \times(\omega_{i-1}\times
+\mbold{p}_{di})\Big) \delta \mbold{d}_i
+\end{eqnarray}
+
+\item Backward Iterations for $i=n, n-1, \ldots, 1$. 
+
+Initialize: $\delta \mbold{f}_{n+1} = \delta \mbold{n}_{n+1} = 0$.
+\begin{eqnarray}
+\delta \dot{\mbold{v}}_{ci} & = & \delta \dot{\mbold{v}}_i + \delta \dot{\omega}_i\times
+\mbold{r}_i + \delta \omega_i \times(\omega_i \times \mbold{r}_i) \\ \nonumber
+& & + \omega_i \times ( \delta \omega_i \times \mbold{r}_i) \\
+\delta \mbold{F}_i & = & m_i \delta \dot{\mbold{v}}_{ci} \\
+\delta \mbold{N}_i & = & \mbold{I}_{ci} \delta \dot{\omega}_i + \delta
+\omega_i \times (\mbold{I}_{ci}\omega_i) + \omega_i \times
+(\mbold{I}_{ci} \delta \omega_i) \\
+\delta \mbold{f}_i & = & \mbold{R}_{i+1} \delta \mbold{f}_{i+1} +
+\delta \mbold{F}_i + \sigma_{i+1} \mbold{R}_{i+1} \mbold{Qf}_{i+1} \delta \theta_{i+1} \\
+\delta \mbold{n}_i & = & \delta \mbold{N}_i + \mbold{R}_{i+1} \delta
+\mbold{n}_{i+1} + \mbold{r}_i\times \delta \mbold{F}_i \\ \nonumber
+& & + \mbold{p}_{i+1} \times \mbold{R}_{i+1} \delta \mbold{f}_{i+1} \\ \nonumber  
+& & + \sigma_{i+1} \Big( \mbold{R}_{i+1} \mbold{Qn}_{i+1}
++ \mbold{p}_{i+1} \times \mbold{R}_{i+1} \mbold{Qf}_{i+1} \Big) \delta
+\theta_{i+1} \\ \nonumber
+& & + (1-\sigma_{i+1} ) \mbold{p}_{di+1} \mbold{p}_{di+1} \times \mbold{R}_{i+1}
+\mbold{f}_{i+1} \delta d_{i+1}  \\
+\delta \mbold{\tau}_i & = & \sigma \delta\mbold{n}_i^T \mbold{z}_0 +
+(1 - \sigma_i) \delta\mbold{f}_i^T \mbold{z}_0
+\end{eqnarray}
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+

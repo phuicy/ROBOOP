@@ -1,0 +1,3904 @@
+% $Id: robot.tex,v 1.81 2007/10/02 14:43:56 gourdeau Exp $
+
+\documentclass[dvips,11pt,fleqn]{report}
+\usepackage{html}
+\usepackage{hyperref}
+\usepackage{verbatim}
+
+\newcommand{\mbold}[1]{\mbox{\boldmath $ #1 $}}
+\newcommand{\matr}[2]{\left[\begin{array}{#1} #2 \end{array}\right]}
+\newcommand{\dfdx}[2]{\frac{\partial #1}{\partial #2}}
+
+\begin{document}
+\title{\textsf{ROBOOP} \\ A Robotics Object Oriented Package in C++ \\ version \input{version} \\
+\ \\ Documentation}
+
+\begin{latexonly}
+\author{\htmladdnormallink{Richard Gourdeau}{http://www.professeurs.polymtl.ca/richard.gourdeau/} \\ 
+D\'epartement de g\'enie \'electrique \\
+\'Ecole Polytechnique de Montr\'eal \\ C.P. 6079, Succ. Centre-Ville, \\
+Montr\'eal, Qu\'ebec, Canada, H3C 3A7 \\ 
+email: \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}
+}
+\end{latexonly}
+\begin{htmlonly}
+\author{\htmladdnormallink{Richard Gourdeau}{http://www.professeurs.polymtl.ca/richard.gourdeau/} \and
+D\'epartement de g\'enie \'electrique \and
+\'Ecole Polytechnique de Montr\'eal \and C.P. 6079, Succ. Centre-Ville, \and
+Montr\'eal, Qu\'ebec, Canada, H3C 3A7 \and
+email: \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}
+}
+\end{htmlonly}
+
+\maketitle 
+
+\tableofcontents
+
+\chapter{Introduction}
+
+\section{Description}
+
+This package (\textsf{ROBOOP}\footnote{Program source and
+  documentation are available from the URL: {\tt
+    \htmladdnormallink{http://www.cours.polymtl.ca/roboop/}{http://www.cours.polymtl.ca/roboop/}}})
+is a C++ robotics object oriented programming toolbox suitable for
+synthesis, and simulation of robotic manipulator models in an
+environment that provides ``\textsf{MATLAB} like'' features for the
+treatment of matrices. Its is a portable tool that does not require
+the use of commercial software. A class named {\tt Robot} provides the
+implementation of the kinematics, the dynamics and the linearized
+dynamics of serial robotic manipulators. A class named {\tt Stewart}
+provides the implementation of the kinematics, the dynamics for
+Stewart type parallel manipulators.
+
+\section{Requirements}
+
+This work uses the matrix library \textsf{NEWMAT11}
+\footnote{available from the site {\tt
+    \htmladdnormallink{http://www.robertnz.net/}{{http://www.robertnz.net/}}}}
+developed by Robert Davies. Hence, the requirement for the
+\textsf{ROBOOP} are the same as for the \textsf{NEWMAT11}. Although
+make files are only provided for the\textsf{ Borland C++} 4.5 and 5.x,
+\textsf{Visual C++} 6.0, \textsf{Visual C++} 7.0 (.NET),
+and \textsf{GNU G++} compilers (\textsf{OpenWatcom C++} support has been
+suspended until the compiler provides ``full'' STL implementation), other
+compilers supporting the \textsf{STL} could be used.  See the file
+{\tt nm11.htm} in the {\tt newmat} directory for more details.
+
+The library \htmladdnormallink{\textsf{Boost}}{http://www.boost.org/}
+is used by \textsf{ROBOOP}. Under most \textsf{Linux} distributions
+and \textsf{Cygwin}, \textsf{Boost} is a standard package (just
+install it). For Borland C++, \textsf{Visual C++} and \textsf{QNX},
+you can extract the following file
+(\htmladdnormallink{\textsf{boost\_inc.zip}}{http://www.cours.polymtl.ca/roboop/download/boost_inc.zip})
+in the \texttt{roboop/source} directory \footnote{simpler but will not
+  provide you with all the \textsf{Boost} features}
+% or install \textsf{Boost} using the instructions provided in the
+% \textsf{Boost} web site (the preferred approach if you intend to use
+% it in other projects)}.
+
+In order to use the graphic features of this package, the software
+\textsf{gnuplot}\footnote{ \textsf{gnuplot} is freely available from
+  the following location: {\tt
+    \htmladdnormallink{http://www.gnuplot.info/}{http://www.gnuplot.info/}}
+  } (version 3.5 on later) must be installed in the {\tt PATH} of your
+computer. The binary name is {\tt wgnuplot.exe} under \textsf{Windows
+  95/98/NT/2000} (Win32) and \texttt{gnuplot} under most of other
+platforms, you should edit the file \texttt{gnugraph.h} if the
+binary name is different.
+
+
+\section{Compiling}
+
+\subsection{Linux}
+
+Under \textsf{Linux}, you can compile using one of the three following
+ways (in the \texttt{roboop} directory):
+\begin{enumerate}
+\item Using the command 
+\begin{verbatim}
+make -f makefile.gcc
+\end{verbatim}
+\item If you have
+  \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/} installed
+  then use
+\begin{verbatim}
+cmake .
+make
+\end{verbatim}
+\item If you have
+  \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
+  installed then use
+\begin{verbatim}
+bakefile -f gnu roboop.bkl
+make
+\end{verbatim}
+\end{enumerate}
+
+\subsection{MS Windows}
+
+\begin{description}
+\item[Borland Compiler] : you can compile using one of the three
+  following ways:
+  \begin{enumerate}
+  \item Using the command 
+\begin{verbatim}
+make -f makefile.bc5
+\end{verbatim}
+  \item If you have
+    \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/}
+    installed then use the \texttt{CMake} program from the
+    \textsf{Start} menu to generate a \textsf{Borland makefile}, then
+    from the prompt (in the \texttt{roboop} directory) execute the
+    command
+\begin{verbatim}
+make
+\end{verbatim}
+  \item If you have
+    \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
+    installed then use (in the \texttt{roboop} directory)
+\begin{verbatim}
+bakefile -f borland roboop.bkl
+make
+\end{verbatim}
+  \end{enumerate}
+\item[Cygwin]: you can compile using one of the three following
+ways (in the \texttt{roboop} directory):
+\begin{enumerate}
+\item Using the command 
+\begin{verbatim}
+make -f makefile.gw32
+\end{verbatim}
+\item If you have
+  \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/} installed
+  then use
+\begin{verbatim}
+cmake .
+make
+\end{verbatim}
+\item If you have
+  \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
+  installed then use
+\begin{verbatim}
+ln -s /usr/include/boost-1_33_1/boost/ /usr/include/boost
+bakefile -f gnu roboop.bkl
+make
+\end{verbatim}
+\end{enumerate}
+\item[Visual C++]: you can compile using one of the following ways:
+  \begin{enumerate}
+  \item Using the command 
+\begin{verbatim}
+nmake -f makefile.vcpp
+\end{verbatim}
+  \item Opening the \textsf{Visual C++ 6.0 Workspace}
+    \texttt{roboop.dsw} or the \textsf{Visual C++ 7.0 Solution}
+    \texttt{roboop.sln} and building the targets.
+  \item If you have
+    \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/}
+    installed then use the \texttt{CMake} program from the
+    \textsf{Start} menu to generate \textsf{NMake makefiles}, then
+    from the prompt (in the \texttt{roboop} directory) execute the
+    command
+\begin{verbatim}
+nmake
+\end{verbatim}
+  \item If you have
+    \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/}
+    installed then use the \texttt{CMake} program from the
+    \textsf{Start} menu to generate one of the different
+    \textsf{Visual Studio project} formats available, then by opening
+    the \textsf{Visual C++ Workspace or Solution} generated and
+    building the targets.
+  \item If you have
+    \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
+    installed then use (in the \texttt{roboop} directory)
+\begin{verbatim}
+bakefile -f msvc roboop.bkl
+nmake
+\end{verbatim}
+or
+\begin{verbatim}
+bakefile -f msvc6proj roboop.bkl
+\end{verbatim}
+and by opening the \textsf{Visual C++ Workspace} generated and
+building the targets.
+  \end{enumerate}
+\end{description}
+
+\subsection{Mac OSX}
+
+You can compile using one of the following ways (in the
+\texttt{roboop} directory):
+\begin{enumerate}
+\item Using the command 
+\begin{verbatim}
+make -f makefile.gccOSX
+\end{verbatim}
+\item \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/} and
+  \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
+  have not been tested yet but might work with the \textsf{Linux}
+  directives!
+\end{enumerate}
+
+\subsection{QNX}
+
+Under \textsf{QNX}, you can compile using the command (in the
+\texttt{roboop} directory):
+\begin{verbatim}
+make -f makefile.qnx
+\end{verbatim}
+
+\input{copyrigh}
+
+\section{Version history}
+
+\begin{description}
+
+\item[version 1.31] (2006/12/14)
+  
+  The project can now use
+  \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/} or
+  \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
+  for automated \texttt{makefile} generation. In future releases,
+  \emph{hand made} makefiles and project files will be replaced by the
+  output of \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/}
+  or
+  \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}.
+
+  Corrected bug in irotk (reported by Chris Lightcap).
+  
+  The program files in this version are the following revisions:
+{\small
+\verbatiminput{ident}
+}
+
+\item[version 1.30] (2006/08/17)
+  
+  Upgraded the matrix library to \textsf{NEWMAT11 (beta) April 2006}
+  enabling compilation under \textsf{GNU g++ 4.1.x}.
+  
+  The program files in this version are the following revisions:
+
+\item[version 1.29] (2006/05/19)
+  
+  \textsf{OpenWatcom} support is (temporally) suspended. Fixed gear
+  ratio bug for viscous friction (reported by Carmine Lia). Fix
+  \texttt{set\_q}, \texttt{set\_qp} bug in \texttt{xdot} (reported by
+  Philip Gruebele)
+
+  The following changes have been contributed by Etienne Lachance
+  \begin{itemize}
+  \item ``Clean up'' of some header files.
+  \item Member functions add and select are now in template form.
+  \item Using \textsf{Boost} shared pointers in \texttt{gnugraph}.
+  \item The inverse kinematics function (\texttt{inv\_kin}) should
+    return the solution without changing the robot position (reported
+    by J.D. Yamokoski).
+  \item Functions \texttt{Rhino\_DH}, \texttt{Puma\_DH},
+    \texttt{Schilling\_DH}, \texttt{Rhino\_mDH}, \texttt{Puma\_mDH}
+    and \texttt{Schilling\_mDH} use \texttt{const Robot\_basic}
+    reference instead of\texttt{ const Robot\_basic} pointer.
+  \item Prevent exceptions from leaving \texttt{Robot\_basic} destructor.
+  \item Catch exception by reference instead of by value.
+  \end{itemize}
+  
+\item[version 1.28] (2005/12/07)
+
+  The following changes have been contributed by Etienne Lachance
+  \begin{itemize}
+  \item Removing unnecessary copy constructor and the assignment
+    operator (operator=) in many classes.
+  \item In the \texttt{Quaternion} class, the operator* and operator/
+    are now non-member functions when one of the operand is a real, it
+    now supports q2 = c * q1 and > q2 = q1 * c
+  \end{itemize}
+
+\item[version 1.27] (2005/10/11)
+
+  It is now possible to turn off warning messages in the
+  \texttt{Config} class.
+  
+\item[version 1.26] (2005/07/05)
+  \begin{itemize}
+  \item New Class \texttt{Stewart} contributed by Samuel Belanger
+    (intergated by Etienne Lachance and Richard Gourdeau): new files
+    \texttt{stewart.h} and \texttt{stewart.cpp} and modified
+    \texttt{bench.cpp}.
+  \item Fixed max() bug for VC++ 6.0 (\texttt{utils.cpp}).
+  \item Typos in Doxygen documentation.
+  \end{itemize}
+  
+\item[version 1.25] (2005/06/13)
+  Fixed \texttt{catch(bad\_alloc)} in constructors.
+  
+  The following changes have been contributed by Etienne Lachance
+  \begin{itemize}
+  \item The desired joint acceleration was missing in the computed
+    torque method (bug reported by Carmine Lia).
+  \item Added missing file message in \texttt{trajectory.cpp}
+  \end{itemize}
+  The following changes have been contributed by Carmine Lia
+  \begin{itemize}
+  \item Added \texttt{defined(\_\_MINGW32\_\_)} for temp files in
+    \texttt{gnugraph.cpp}.
+  \item Added \texttt{pinv} in \texttt{utils.cpp}.
+  \end{itemize}
+
+\item[version 1.24] (2005/03/18) 
+  
+  The following changes have been contributed by Brian Galardo,
+  Jean-Pascal Joary, Etienne Lachance:
+  \begin{itemize}
+  \item Added member functions \texttt{Robot::inv\_schilling}, \par
+    \texttt{mRobot::inv\_schilling} and
+    \texttt{mRobot\_min\_para::inv\_schilling} for the
+    \textsf{Schilling Titan II} robot arm,
+  \item Fixed previous bug on Rhino and Puma inverse kinematics.
+  \end{itemize}
+  by Etienne Lachance: 
+  \begin{itemize}
+  \item Some ``clean-up'' in the \texttt{config.h} and
+    \texttt{config.cpp} files,
+  \end{itemize}
+  and by Stephen Webb :
+  \begin{itemize}
+  \item minor bug in constructor \texttt{Robot\_basic(const
+      Robot\_basic \& x)}.
+  \end{itemize}
+
+\item[version 1.23] (2004/09/18) 
+
+  The following change has been contributed by Etienne Lachance: 
+  \begin{itemize}
+  \item Configuration files can use degrees for the angles with the
+    option \texttt{angle\_in\_degree} set to 1.
+  \end{itemize}
+
+\item[version 1.22] (2004/09/10) 
+
+  The following change has been contributed by Etienne Lachance:
+  \begin{itemize}
+  \item In \texttt{config.cpp}: parameter value can now contain space
+    and fixed print member function.
+  \end{itemize}
+  Carl Glen Henshaw provided a makefile for MAC OS X.
+
+\item[version 1.21] (2004/08/16) 
+
+  The following changes have been contributed by Etienne Lachance
+  \begin{itemize}
+  \item Fixed some missing \texttt{use\_namespace \#define}.
+  \item Merge all \texttt{select\_*} and \texttt{add\_*} functions
+    into overloaded \texttt{select()} and \texttt{add()} functions.
+  \item made \texttt{gnuplot.cpp} and \texttt{config.cpp} independent
+    of \texttt{robot.h} and \texttt{utils.h}.
+  \item New constructors for \texttt{Robot} and \texttt{mRobot} based
+    on input matrices (this change is NOT backward compatible)
+  \end{itemize}
+  The following changes have been contributed by Ethan Tira-Thompson
+  \begin{itemize}
+  \item Supports for \texttt{Link::immobile} flag so jacobians and
+    deltas are 0 for immobile joints.
+  \item Jacobians will only contain entries for mobile joints -
+    otherwise NaNs result in later processing.
+  \item Added parameters to jacobian functions to generate for frames
+    other than the end effector.
+  \item Can now do inverse kinematics for frames other than end
+    effector.
+  \item Tolerance in \texttt{inv\_kin} based on \texttt{USING\_FLOAT}
+    from newmat's \texttt{include.h}
+  \end{itemize}
+  The program files in this version are the following revisions:
+
+\item[version 1.20] (2004/07/02) 
+
+  The following changes have been contributed by Ethan Tira-Thompson
+
+  \begin{itemize}
+  \item Added support for newmat's \texttt{use\_namespace}
+    \texttt{\#define}, using \texttt{ROBOOP} namespace.
+  \item Fixed some problem using \texttt{float} as \texttt{Real} type.
+  \end{itemize}
+
+  The following changes have been contributed by Etienne Lachance
+
+  \begin{itemize}
+  \item Added the following class: \texttt{Dynamics},
+    \texttt{Trajectory\_Select}, \par \texttt{Proportional\_Derivative}
+    and\texttt{ Control\_Select}.
+  \item Added a new demo program, call \texttt{demo\_2dof\_pd}. This
+    new demo program shows how to use the class mentioned above.
+  \item Protection added on input vector of the \texttt{trans}
+    function.
+  \item Added a \texttt{joint\_offset} logic. This idea has been
+    proposed by Ethan Tira-Thompson.
+  \item Added \textsf{Doxygen} documentation.
+  \item Replace files \texttt{impedance.*} by \texttt{controller.*}.
+  \end{itemize}
+
+
+\item[version 1.19] (2004/05/12) Upgraded the matrix library from
+  \textsf{NEWMAT10} to \textsf{NEWMAT11 (beta)}. \textsf{Visual C++
+    .NET} and \textsf{Borland C++ Builder 6} compilers are now
+  supported. Updated documentation.
+
+\item[version 1.18] (2004/05/05) \textsf{ROBOOP} is relicensed to the
+  GNU Lesser General Public License. Updated documentation.
+
+  The following changes have been contributed by Vincent Drolet and
+  Etienne Lachance:
+  \begin{itemize}
+  \item Added the following members function in class Robot:
+    \texttt{inv\_kin\_rhino}, \texttt{inv\_kin\_puma} and
+    \texttt{robotType\_inv\_kin}.
+  \end{itemize}
+
+\item[version 1.17] (2004/04/02) Numerous warning messages were
+  corrected under \textsf{VC++}. Updated documentation.
+
+  The following changes have been contributed by Etienne Lachance:
+  \begin{itemize}
+  \item Added class \texttt{Impedance} which implements the impedance
+    controller.
+  \item Added function \texttt{perturb\_robot}.
+  \item Added class \texttt{Resolve\_acc} which implements the resolve
+    rate acceleration position controller.
+  \item Added class \texttt{Computed\_torque\_method} which implements
+    the computed torque method position controller.
+  \item Class \emph{Config} can now write data into a configuration
+    file.
+  \item Fixed bugs in \texttt{Quaternion} class member functions:
+    \texttt{exponential} and \texttt{logarithm}.
+  \item Added \texttt{Quaternion} class member function
+    \texttt{power}.
+  \item Added the following \texttt{Quaternion} class non member
+    functions: \texttt{Omega}, \texttt{Slerp}, \texttt{Slerp\_prime},
+    \texttt{Squad} and \texttt{Squad\_prime}.
+  \item Provided \texttt{Spl\_Quaternion} class to generate
+    quaternions cubic splines.
+  \item Added class \texttt{Spl\_Cubic} to generate cubic splines.
+  \item Added class \texttt{Spl\_path} to generate 3D cubic splines.
+  \item Provided \texttt{CLIK} class for closed loop inverse
+    kinematics.
+  \item Added member functions \texttt{G} and \texttt{C} in all robot
+    classes.
+  \end{itemize}
+
+\item[version 1.16] (2003/09/24) The
+  \htmladdnormallink{\textsf{OpenWatcom
+      C++}}{http://www.openwatcom.org} compiler is now supported.
+  Updated documentation.
+\item[version 1.15] (2003/06/18) 
+  The following changes have been contributed by Etienne Lachance:
+  \begin{itemize}
+  \item Updated documentation.
+  \item Definitions in file \texttt{gnugraph.cpp} are now in
+    \texttt{gnugraph.h}.
+  \item Class \texttt{Plot2d}, \texttt{GNUcurve} are now using
+    \textsf{STL} \texttt{string} instead of \texttt{char*}.
+  \item Added member functions \texttt{jacobian\_dot()} and
+    \texttt{jacobian\_DLS\_inv()} in all robot classes.
+  \item Added class \texttt{Config} to read configuration file.
+  \item Replaced \texttt{Robot\_basic(const char *filename)} by
+    \texttt{Robot\_basic(const string \& filename)}. The new
+    constructor uses the class \texttt{Config}.
+  \item Provided \texttt{Plot\_file} class to generate graphics from a
+    data file.
+  \item Added the following \texttt{Quaternion} class member
+    functions: \texttt{exponential}, \texttt{logarithm},
+    \texttt{dot\_product}, \texttt{dot}, \texttt{E}.
+  \item Fixed bugs in \texttt{IO\_matrix\_file} class.
+  \item Developed linearized equations for modified DH notations. The
+    equations are implemented in \texttt{dq\_torque},
+    \texttt{dqp\_torque}, \texttt{dtau\_dq} and \texttt{dtau\_dqp}.
+  \item Added examples in \texttt{demo.cpp} related to
+    \texttt{IO\_matrix\_file}, \texttt{Plot\_file} and
+    \texttt{Config}.
+  \end{itemize}
+\item[version 1.14] (2003/04/17) Updated documentation. The
+  \textsf{Watcom} compiler is no longer supported (problems with
+  \textsf{STL} and streams). The following changes have been
+  contributed by Etienne Lachance:
+  \begin{itemize}
+  \item The classes \texttt{RobotMotor} and \texttt{mRobotMotor} no
+    longer exist and are now integrated in the \texttt{Robot} and
+    \texttt{mRobot} classes. 
+  \item The \texttt{Robot} and \texttt{mRobot} classes are now derived
+    from the \texttt{Robot\_basic} virtual class.
+  \item Removed class \texttt{mlink}. DH and modified DH parameters
+    are now included in \texttt{link}.
+  \item Added \texttt{kine\_pd()}.
+  \item Created a new \texttt{torque} member function that allowed to
+    have load on last link.
+  \item Fixed bug in modified DH dynamics.
+  \item Added a class \texttt{Quaternion}.
+  \item Added the program \texttt{rtest} to compare results with Peter
+    Corke \htmladdnormallink{\textsf{MATLAB}
+      toolbox}{http://www.cat.csiro.au/cmst/staff/pic/robot/}.
+  \item Added member function \texttt{set\_plot2d} to generate plots
+    using the \texttt{Plot2d} class.
+  \item Added utility class \texttt{IO\_matrix\_file} dealing with
+    data files (not documented yet).
+  \end{itemize}
+
+\item[version 1.13] (2002/08/09) Moved the arrays of
+  \texttt{ColumnVector} to the constructors for the dynamics and
+  linearized dynamics for a $\approx 10 \%$ gain in speed (thanks to
+  Etienne Lachance for the suggestion). Added the \texttt{mRobot} and
+  \texttt{mRobotMotor} classes using the modified Denavit-Hartenberg
+  notation. Updated documentation.
+
+\item[version 1.12] (2002/02/04) Upgraded the matrix library from
+  \textsf{NEWMAT09} to \textsf{NEWMAT10}.
+
+\item[version 1.11] (2001/06/06) Fixed bugs for prismatic joints in
+  the dynamics routines (reported by Hassan Abedi).  Updated
+  documentation.
+  
+\item[version 1.10] (2001/04/30) Changed the license to GNU General
+  Public License. Workspace for MS \textsf{Visual C++} 6.0. New makefiles using
+  implicit rules. New class \texttt{RobotMotor} that includes motors
+  parameters (rotor inertia, gear ratio and friction coefficients).
+  Updated documentation.
+
+\item[version 1.09] (98/09/27) Makefile for \textsf{MS Visual C++} 6.0.  
+
+\item[version 1.08] (98/06/1) Changes to  {\tt robot.cpp} and {\tt robot.h} to avoid the
+warning messages: \par
+{\small \verb$initialization of non-const reference `*' from rvalue `*'$} \par
+Fixed function {\tt ieulzxz} in {\tt homogen.cpp} thanks to Kilian Pohl. 
+
+\item[version 1.07] (98/05/12) The {\tt bench.cpp} program is more
+  portable.  Simpler makefile for\textsf{ Borland C++}. New targets in
+  makefiles ({\tt clean} and {\tt veryclean}).  Removed the CVS {\tt
+    Log} tags from the sources. Compiler option {\tt -O} now works
+  under \textsf{gcc} 2.7.2 thanks to the new {\tt newmat.h} provided
+  by Robert Davies.
+
+\item[version 1.06] (97/11/21) The function {\tt inv\_kin} modified to
+use the Jacobian by default in the iterative procedure ($\approx 1.8\times$ faster). 
+Updated documentation.
+
+\item[version 1.05] (97/11/17) Added make file for\textsf{ GNU G++}
+  under \textsf{ Windows 95/NT} using
+  \htmladdnormallink{\textsf{Cygnus GNU-Win32}
+    compiler}{http://sources.redhat.com/cygwin/}.  Added optimization
+  flags under \textsf{GNU G++}. Updated documentation.
+  
+\item[version 1.04] (97/11/14) Added make file for \textsf{GNU G++}
+  and graphic support through \textsf{gnuplot} (2d plots). Updated
+  documentation.
+
+\item[version 1.03] (97/11/01) Added adaptive step size integration.
+Changes to the documentation.
+
+\item[version 1.02] (97/10/21) Upgraded the matrix library from
+  \textsf{NEWMAT08A} to NEWMAT09. New directory structure : {\tt
+    newmat08} is replaced by {\tt newmat}. Conditional compilation of
+  {\tt delete []} for pre 2.1 C++ compilers has been removed since
+  \textsf{NEWMAT09} no longer supports these compilers.  Minor changes
+  to the documentation.
+
+\item[version 1.01] (97/01/17) Conditional compilation of {\tt delete []} for pre 2.1 C++ compilers.
+Changes to the documentation.
+
+
+\item[version 1.0] (96/12/15) First public release of the package.
+\end{description}
+\newpage
+
+\section{Files in the distribution}
+
+{\small
+\begin{tabular}{lll}
+{\tt readme} & {\tt txt} & readme file \\
+{\tt makefile} & {\tt gcc} & make file for GNU G++ Linux \\
+{\tt makefile} & {\tt gccOSX} & make file for GNU G++ MAC OS X \\
+{\tt makefile} & {\tt gw32} & make file for Cygwin (Win32)  \\
+{\tt makefile} & {\tt bc5} & make file for Borland C++ 4.5, 5.x (Win32) \\
+{\tt makefile} & {\tt vcpp} & make file for Visual C++ 5.0 and 6.0(Win32) \\
+{\tt makefile} & {\tt qnx} & make file for QNX \\
+{\tt CMakeLists} & {\tt txt} & Confguration file for CMake \\
+{\tt roboop} & {\tt bkl} & Configuration file for Bakefile \\
+{\tt roboop} & {\tt dsw} & workspace for Visual C++ 6.0 (Win32) \\
+{\tt bench} & {\tt dsp} & project file used by \texttt{roboop.dsw} \\
+{\tt demo} & {\tt dsp} & project file used by \texttt{roboop.dsw} \\
+{\tt demo\_2dof\_pd} & {\tt dsp} & project file used by \texttt{roboop.dsw} \\
+{\tt newmat} & {\tt dsp} & project file used by \texttt{roboop.dsw} \\
+{\tt roboop} & {\tt dsp} & project file used by \texttt{roboop.dsw} \\
+{\tt rtest} & {\tt dsp} & project file used by \texttt{roboop.dsw} \\
+{\tt roboop} & {\tt sln} & solution for Visual C++ 7.0 (Win32) \\
+{\tt bench} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
+{\tt demo} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
+{\tt demo\_2dof\_pd} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
+{\tt newmat} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
+{\tt roboop} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
+{\tt rtest} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
+{\tt roboop} & {\tt wpj} & project file for OpenWatcom C++ 1.2 IDE (Win32) \\
+{\tt bench} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
+{\tt demo} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
+{\tt demo\_2dof\_pd} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
+{\tt newmat} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
+{\tt roboop} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
+{\tt rtest} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
+{\tt demo} & {\tt txt} & output of the demo program \\ \\
+{\bf newmat} & & directory of the matrix library \textsf{NEWMAT11} \\
+& & see the file {\tt nm11.htm} \\ \\
+{\bf docs} & & documentation directory \\
+{\tt gnugpl} & {\tt txt} & GNU General Public License \\
+{\tt gnulgpl} & {\tt txt} & GNU Lesser General Public License \\
+{\tt robot} & {\tt ps} & documentation in {\tt postscript} format \\
+{\tt robot} & {\tt pdf} & documentation in {\tt PDF} format \\ \\
+{\bf doxy} & & \textsf{Doxygen} documentation directory \\
+\texttt{roboop\_doxygen} & & \textsf{Doxygen} configuration file
+\end{tabular}
+
+\begin{tabular}{lll}
+{\bf source} & & the \textsf{ROBOOP} program source directory \\
+{\tt CMakeLists} & {\tt txt} & Confguration file for CMake \\
+{\tt robot} & {\tt h} & header file \\
+{\tt clik} & {\tt h} & header file for {\tt CLIK} \\
+{\tt config} & {\tt h} & header file for configuration class\\
+{\tt controller} & {\tt h} & header file for controllers\\
+{\tt control\_select} & {\tt h} & header file for Control\_Select class\\
+{\tt dynamics\_sim} & {\tt h} & header file for Dynamics class\\
+{\tt gnugraph} & {\tt h} & header file for the graphics \\
+{\tt quaternion} & {\tt h} & header file for the quaternions \\
+{\tt stewart} & {\tt h} & header file for the Stewart classs \\
+{\tt trajectory} & {\tt h} & header file for the splines \\
+{\tt utils} & {\tt h} & header file utility functions \\
+{\tt bench   } & {\tt cpp} & benchmark program file \\
+{\tt clik   } & {\tt cpp} & closed loop inverse kinematics {\tt CLIK} \\
+{\tt comp\_dq } & {\tt cpp} & simplified version of {\tt delta\_t } with no {\tt dqp} and {\tt dqpp} \\
+{\tt comp\_dqp} & {\tt cpp} & simplified version of {\tt delta\_t } with no {\tt dq} and {\tt dqpp} \\
+{\tt config    } & {\tt cpp} & configuration class members functions \\
+{\tt controller} & {\tt cpp} & some controllers functions\\
+{\tt control\_select} & {\tt cpp} & controller selection functions\\
+{\tt delta\_t } & {\tt cpp} & compute torque variation w/r to {\tt dq}, {\tt dqp} and {\tt dqpp} \\
+{\tt demo    } & {\tt cpp} & demo program file \\
+{\tt demo\_2dof\_pd} & {\tt cpp} & demo program file \\
+{\tt dynamics} & {\tt cpp} & dynamics functions  \\
+{\tt dynamics\_sim} & {\tt cpp} & simulation dynamics functions\\
+{\tt gnugraph } & {\tt cpp} & graphics functions \\
+{\tt homogen } & {\tt cpp} & homogeneous transform functions \\
+{\tt impedance} & {\tt cpp} & impedance controller \\
+{\tt invkine } & {\tt cpp} & inverse kinematics functions  \\
+{\tt kinemat } & {\tt cpp} & kinematics functions  \\
+{\tt quaternion } & {\tt cpp} & quaternions functions  \\
+{\tt robot   } & {\tt cpp} & constructors and other stuff \\
+{\tt rtest   } & {\tt cpp} & testing program file \\
+{\tt test   } & {\tt txt} & testing data file \\
+{\tt sensitiv} & {\tt cpp} & partial derivatives of robot dynamics \\
+{\tt stewart} & {\tt cpp} & implemantation of the Stewart classs \\
+{\tt trajectory} & {\tt cpp} & translation and rotation splines \\
+{\tt utils} & {\tt cpp} & miscellaneous \\ \\
+\end{tabular}
+
+\begin{tabular}{lll}
+{\bf conf} & & configuration files directory \\
+\texttt{pd\_2dof} & \texttt{conf} & PD controller parameters for the 2 dof robot \\
+\texttt{puma560\_dh} & \texttt{conf} & PUMA robot parameters standard D-H \\
+\texttt{puma560\_mdh} & \texttt{conf} & PUMA robot parameters modified D-H \\
+\texttt{q\_2dod} & \texttt{dat} & desired trajectory for the 2 dof robot \\
+\texttt{rhino560\_dh} & \texttt{conf} & RHINO robot parameters standard D-H \\
+\texttt{rhino560\_mdh} & \texttt{conf} & RHINO robot parameters modified D-H \\
+\texttt{rr\_dh} & \texttt{conf} & 2 dof robot parameters standard D-H \\
+\texttt{stewart} & \texttt{conf} & a Stewart platform parameters file 
+\end{tabular}
+}
+
+\section{Doxygen documentation}
+
+Source code now has \textsf{Doxygen} compatible documentation. To
+obtain the documentation (under \textsf{Linux}) simply run
+\textsf{doxygen roboop\_doxygen} in the doxy directory. It will
+creates \texttt{html} and \texttt{latex} directories.
+
+The main html page can be accessed using the \texttt{index.html} file.
+To obtain the latex documentation simply run the \texttt{Makefile} in
+the \texttt{latex} directory.
+
+\chapter{Reference manual}
+
+This package uses data types defined by the \textsf{NEWMAT11} matrix
+library:
+\begin{itemize}
+\item {\tt Real} : the type for floating point values. It can be 
+either a {\tt float} or a {\tt double}  as defined in the header file 
+{\tt include.h} in the {\tt newmat} directory.
+
+\item {\tt Matrix} : the type for matrices as defined in the
+    \textsf{NEWMAT11} documentation.
+
+\item {\tt ColumnVector} : a type for column vectors derived from {\tt Matrix}.
+
+\item {\tt ReturnMatrix} : the type used by functions for returning any type of 
+matrix ({\tt Matrix, ColumnVector, RowVector,} etc). 
+\end{itemize}
+
+The file {\tt demo.cpp} presents examples for the use of some functions in the 
+package. The time required to compute some functions for a 6 dof robot can be obtained
+with the file {\tt bench.cpp}.
+\section{3D homogeneous transforms}
+
+In this section, functions dealing with $4 \times 4$ homogeneous transform
+matrices are described.
+
+\newpage
+
+\subsection*{eulzxz}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix eulzxz(const ColumnVector & a);
+\end{verbatim}
+\subsubsection*{Description}
+Given a column vector {\tt a} 
+\begin{eqnarray}
+\matr{c}{\gamma_1 \\ \beta \\ \gamma_2}
+\end{eqnarray}
+this function returns the homogeneous transform matrix given by 
+\begin{eqnarray}
+\mbold{Rot}(z,\gamma_1) \mbold{Rot}(x,\beta) \mbold{Rot}(z,\gamma_2)
+\end{eqnarray}
+
+\noindent {\bf Note: } the column vector {\tt a} must have a length of at least 3. 
+Only the first 3 elements are used.
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{ieulzxz}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix ieulzxz(const Matrix & R);
+\end{verbatim}
+\subsubsection*{Description}
+Given a homogeneous transform matrix {\tt R}, this function returns a column vector
+\begin{eqnarray}
+\matr{c}{\gamma_1 \\ \beta \\ \gamma_2}
+\end{eqnarray}
+such that the $3 \times 3$ rotation bloc of the matrix
+\begin{eqnarray}
+\mbold{Rot}(z,\gamma_1) \mbold{Rot}(x,\beta) \mbold{Rot}(z,\gamma_2)
+\end{eqnarray}
+is equal to the $3 \times 3$ rotation bloc of the matrix {\tt R}.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}.
+
+\newpage
+
+\subsection*{irotk}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix irotk(const Matrix & R);
+\end{verbatim}
+\subsubsection*{Description}
+Given a homogeneous transform matrix {\tt R}, this function returns a column vector
+\begin{eqnarray}
+\matr{c}{\mbold{k} \\ \theta}
+\end{eqnarray}
+with $\mbold{k}$ a unit vector such that the $3 \times 3$ rotation bloc of the matrix
+\begin{eqnarray}
+\mbold{Rot}(\mbold{k}, \theta)
+\end{eqnarray}
+is equal to the $3 \times 3$ rotation bloc of the matrix {\tt R}.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}.
+
+\newpage
+
+\subsection*{irpy}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix irpy(const Matrix & R);
+\end{verbatim}
+\subsubsection*{Description}
+Given a homogeneous transform matrix {\tt R}, this function returns a column vector
+\begin{eqnarray}
+\matr{c}{\alpha \\ \beta \\ \gamma}
+\end{eqnarray}
+such that the $3 \times 3$ rotation bloc of the matrix
+\begin{eqnarray}
+\mbold{Rot}(z,\gamma) \mbold{Rot}(y,\beta) \mbold{Rot}(x,\alpha)
+\end{eqnarray}
+is equal to the $3 \times 3$ rotation bloc of the matrix {\tt R}.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}.
+
+\newpage
+
+\subsection*{rotd}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix rotd(const Real theta, 
+                  const ColumnVector & k1, 
+                  const ColumnVector & k2);
+\end{verbatim}
+\subsubsection*{Description}
+This function returns the matrix of a rotation of an angle {\tt theta} around 
+the oriented line segment defined by the points {\tt k1} and {\tt k2}.
+
+\noindent {\bf Note: } the column vectors {\tt k1} and {\tt k2} must have a length of at least 3. 
+Only the first 3 elements are used.
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{rotk}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix rotk(const Real theta, 
+                  const ColumnVector & k);
+\end{verbatim}
+\subsubsection*{Description}
+This function returns the matrix of a rotation of an angle {\tt theta} around 
+the vector {\tt k}.
+\begin{eqnarray}
+\mbold{Rot}(\mbold{k}, \theta)
+\end{eqnarray}
+
+\noindent {\bf Note: } the column vector {\tt k} must have a length of at least 3. 
+Only the first 3 elements are used.
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{rpy}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix rpy(const ColumnVector & a);
+\end{verbatim}
+\subsubsection*{Description}
+Given a column vector {\tt a} 
+\begin{eqnarray}
+\matr{c}{\alpha \\ \beta \\ \gamma}
+\end{eqnarray}
+this function returns the homogeneous transform matrix given by 
+\begin{eqnarray}
+\mbold{Rot}(z,\gamma) \mbold{Rot}(y,\beta) \mbold{Rot}(x,\alpha)
+\end{eqnarray}
+
+\noindent {\bf Note: } the column vector {\tt a} must have a length of at least 3. 
+Only the first 3 elements are used.
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{rotx, roty, rotz}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix rotx(const Real alpha);
+ReturnMatrix roty(const Real beta);
+ReturnMatrix rotz(const Real gamma);
+\end{verbatim}
+\subsubsection*{Description}
+These functions return the elementary rotation matrices:
+\begin{eqnarray}
+\mbold{Rot}(x,\alpha) & = & 
+\matr{cccc}{
+1 & 0 & 0 & 0 \\
+0 & \cos \alpha & - \sin \alpha & 0 \\
+0 & \sin \alpha & \cos \alpha & 0 \\
+0 & 0 & 0 & 1
+} \\
+\mbold{Rot}(y,\beta) & = & 
+\matr{cccc}{
+\cos \beta & 0 & \sin \beta & 0\\
+0 & 1 & 0 & 0 \\
+- \sin \beta & 0 & \cos \beta & 0 \\
+0 & 0 & 0 & 1
+} \\
+\mbold{Rot}(z,\gamma) & = & 
+\matr{cccc}{
+\cos \gamma & - \sin \gamma & 0 & 0 \\
+\sin \gamma & \cos \gamma & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+}
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{trans}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix trans(const ColumnVector & a);
+\end{verbatim}
+\subsubsection{Description}
+Given a column vector {\tt a}, this function returns the following matrix:
+\begin{eqnarray}
+\mbold{Trans}(a) & = & 
+\matr{cccc}{
+1 & 0 & 0 & a_1 \\
+0 & 1 & 0 & a_2 \\
+0 & 0 & 1 & a_3 \\
+0 & 0 & 0 & 1
+}
+\end{eqnarray}
+
+\noindent {\bf Note: } the column vector {\tt a} must have a length of at least 3. 
+Only the first 3 elements are used.
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\section{The \texttt{Quaternion} class}
+
+The \texttt{Quaternion} class deals with quaternions. Unit quaternions
+are used to represent rotations. It is composed of two elements: a
+scalar $s$ (\texttt{Real s\_}) and a vector $\mbold{v}$
+(\texttt{ColumnVector v\_}) representing a quaternion
+(see\cite{Chou92}).
+\begin{eqnarray}
+ q & = & w + xi + yj + zk \\
+   & = & (s, v) 
+\end{eqnarray}
+
+An object of this class can be initialize with no parameter ($s=1$ and
+$\mbold{v=0}$), from an other unit quaternion, from an angle of
+rotation around a unit vector, from a rotation matrix, from a
+quaternion object or from the four components of a quaternion. The
+constructors does not guarantee that quaternions will be unit.
+
+\subsection*{constructors}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion();
+Quaternion(const Quaternion & q);
+Quaternion(const Real angle_in_rad, const ColumnVector & axis);
+Quaternion(const Real s, const Real v1, const Real v2, const Real v3);
+Quaternion(const Matrix & R);
+Quaternion & operator=(const Quaternion & q);
+\end{verbatim}
+\subsubsection{Description}
+\texttt{Quaternion} object constructors, copy constructor and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{operators}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion   operator+(const Quaternion & q)const;
+Quaternion   operator-(const Quaternion & q)const;
+Quaternion   operator*(const Quaternion & q)const;
+Quaternion   operator*(const ColumnVector & vec)const;
+Quaternion   operator*(constReal c)const;
+Quaternion   operator/(const Quaternion & q)const;
+Quaternion   operator/(constReal c)const;
+\end{verbatim}
+\subsubsection{Description}
+The operators $+$, $-$, $*$ and $/$ for quaternion are
+implemented.
+The operators $*$ and $/$ will generate unit quaternions 
+only if the quaternions involve are unity.
+
+\subsubsection*{Return Value}
+
+{\tt Quaternion}
+
+\newpage
+
+\subsection*{conjugate and inverse}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion   conjugate()const;
+Quaternion   i()const;
+\end{verbatim}
+\subsubsection{Description}
+Compute the conjugate of the quaternion (or the inverse if it's a
+unit quaternion). The conjugate is defined as
+\begin{eqnarray}
+ q^{*} & = & w - xi - yj - zk \\
+       & = & (s,-v)
+\end{eqnarray}
+
+\subsubsection*{Return Value}
+
+{\tt Quaternion}
+
+\newpage
+
+\subsection*{exponential and logarithm}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion   exp()const;
+Quaternion   Log()const;
+Quaternion   power(const Real t)const;
+\end{verbatim}
+\subsubsection{Description}
+A unit quaternion can be represented by $q = cos(\theta) + u
+sin(\theta)$. Euler's identity for complex numbers generalizes to
+quaternions $exp(u\theta) = cos(\theta) + u sin(\theta)$, where
+$exp(x)$ is replace by $exp(u\theta)$ and $uu$ is replace by $-1$.
+With this identity we obtain the exponential of the quaternion $q =
+(0,\theta v)$, where $q$ is not necessary a unit quaternion. It is
+then possible to define the logarithm and the power of a unit
+quaternion \cite{Dam98}.
+\begin{eqnarray}
+ Log(q) &=& Log\big(\cos(\theta) + u \sin(\theta)\big) =
+ Log\big(exp(u\theta)\big) = u\theta \\
+ q^t &=& \cos(t\theta) + u \sin(t\theta) 
+\end{eqnarray}
+$Log(q)$ is not necessary a unit quaternion even if $q$ is a unit
+quaternion.
+
+\subsubsection*{Return Value}
+
+{\tt Quaternion} for \texttt{exp, Log}
+
+\newpage
+
+\subsection*{dot\_product}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Real dot_prod(const Quaternion & q)const;
+\end{verbatim}
+\subsubsection{Description}
+Compute the dot product of quaternions.
+
+\subsubsection*{Return Value}
+
+{\tt Real}
+
+\newpage
+
+\subsection*{quaternion time derivative}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion   dot(const ColumnVector & w, const short sign)const;
+ReturnMatrix E(const short sign)const; 
+\end{verbatim}
+\subsubsection{Description}
+The quaternion time derivative is obtain from the quaternion
+propagation law \cite{Dam98}.
+\begin{eqnarray}
+ \dot{s} &=& -\frac{1}{2}v^Tw \\
+ \dot{v} &=& \frac{1}{2}E(s,v)w 
+\end{eqnarray}
+where
+\begin{eqnarray}
+ \begin{array}{cc}
+   E = \eta I - S(\epsilon) & \textrm{in base frame} \\
+   E = \eta I + S(\epsilon) & \textrm{in body frame}
+  \end{array}
+\end{eqnarray}
+
+\noindent
+The choice of reference system (base or body) for \mbold{w} is assign
+by \mbold{sign}. A value of $1$ is for base frame while $-1$ is for
+body frame.
+
+\subsubsection*{Return Value}
+
+{\tt Quaternion} for \texttt{dot}
+
+\noindent \texttt{Matrix} for \texttt{E}
+
+\newpage
+
+\subsection*{unit and norm}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion & unit();
+Real norm()const;
+\end{verbatim}
+\subsubsection{Description}
+\texttt{unit()} makes the quaternion a unit quaternion,
+\texttt{norm()} computes and returns the norm of the quaternion.
+\texttt{norm\_sqr()} computes and returns the square norm of the quaternion.
+
+\subsubsection*{Return Value}
+
+{\tt Quaternion} for \texttt{unit()}
+
+\noindent \texttt{Real} for \texttt{norm()} and \texttt{norm\_sqr()}
+
+\newpage
+
+\subsection*{s and v}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Real s()const;
+void set_s(const Real s);
+ReturnMatrix v()const;
+void set_v(const ColumnVector & v);
+\end{verbatim}
+\subsubsection{Description}
+The functions \texttt{s()} and \texttt{v()} returns one of the
+components of a quaternion ($s$ or $\mbold{v}$), while
+\texttt{set\_s()} and \texttt{set\_v()} can assign a value to one of
+the components.
+
+\subsubsection*{Return Value}
+
+None for \texttt{set\_s()} and \texttt{set\_v()}
+
+\noindent {\tt Real} for \texttt{s()}
+
+\noindent \texttt{Matrix} for \texttt{v()}
+
+\newpage
+
+\subsection*{Rotation matrices}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix R() const;
+ReturnMatrix T() const;
+\end{verbatim}
+\subsubsection{Description}
+Returns a rotation matrix from the quaternion (\texttt{R()} returns a
+$3 \times 3$ matrix and \texttt{T()} returns a $4 \times 4$ matrix).
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{Omega, $\omega$}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix Omega(const Quaternion & q, const Quaternion & q_dot);
+\end{verbatim}
+\subsubsection{Description}
+Omega is not a member function of the class \texttt{Quaternion}. The
+function returned the angular velocity obtain from a quaternion and
+it's time derivative. Like the member function \texttt{dot}, it use
+the quaternions propagation law \cite{Dam98}.
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{Slerp}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion Slerp(const Quaternion & q0, const Quaternion & q1, 
+                 const Real t);
+\end{verbatim}
+\subsubsection{Description}
+Slerp stands for Spherical Linear Interpolation.  Slerp is not a
+member function of the class Quaternion.  The quaternions $q_0$ and
+$q_1$ needs to be unit quaternions.  It returns a unit quaternion. As
+the parameter $t$ uniformly varies between 0 and 1, the values $q(t)$
+are required to uniformly vary along the circular arc from $q_0$ to
+$q_1$.
+
+It is customary to choose the sign $G$ on $q_1$ so that $q_0 \cdot
+Gq_1 \geq 0$ (the angle between $q_0$ and $Gq_1$ is acute). This
+choice avoids extra spinning caused by the interpolated rotations
+\cite{Dam98}. For unit quaternions Slerp is defined as
+\begin{eqnarray}
+ q = \Bigg\{
+  \begin{array}{cc}
+    q_0(q_0^{-1}q_1)^t & \textrm{if $q_0 \cdot q_1 \geq 0$} \\
+    q_0(q_0^{-1}(-q_1))^t & \textrm{otherwise} 
+  \end{array}
+\end{eqnarray}
+
+
+\subsubsection*{Return Value}
+
+Quaternion
+
+\newpage
+
+\subsection*{Slerp\_prime}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion Slerp_prime(const Quaternion & q0, const Quaternion & q1, 
+                       const Real t);
+\end{verbatim}
+\subsubsection{Description}
+Slerp\_prime represent the Slerp derivative.  Slerp\_prime is not a
+member function of the class Quaternion.  The quaternions $q_0$ and
+$q_1$ needs to be unit quaternions.  It does not necessary returns a
+unit quaternion.
+
+It is customary to choose the sign $G$ on $q_1$ so that $q_0 \cdot
+Gq_1 \geq 0$ (the angle between $q_0$ and $Gq_1$ is acute). This
+choice avoids extra spinning caused by the interpolated rotations
+\cite{Dam98}. For unit quaternions Slerp is defined as
+\begin{eqnarray}
+ q = \Bigg\{
+  \begin{array}{cc}
+    Slerp(q_0, q_1, t)Log(q_0^{-1}q_1) & \textrm{if $q_0 \cdot q_1 \geq 0$} \\
+    Slerp(q_0, q_1, t)Log(q_0^{-1}(-q_1)) & \textrm{otherwise} \\
+  \end{array}
+\end{eqnarray}
+
+\subsubsection*{Return Value}
+
+Quaternion
+
+\newpage
+
+\subsection*{Squad}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion Squad(const Quaternion & p, const Quaternion & a, 
+                 const Quaternion & b, const Quaternion & r, 
+                 const Real t);
+\end{verbatim}
+\subsubsection{Description}
+Squad stands for Spherical Cubic Interpolation. Squad is not a member
+function of the class Quaternion. The quaternions $p$, $a$, $b$ and
+$r$ needs to be unit quaternions. It returns a unit quaternion.
+
+Squad uses an iterative of three slerps. Suppose four quaternions,
+$p$, $a$, $b$ and $r$ as the ordered vertices of quadrilateral.
+Interpolate $c$ along $p$ to $q$ using slerp and $d$ along $a$ to $b$
+also using slerp. Now interpolate $q$ along $c$ to $d$ \cite{Dam98}.
+Squad is defined as
+\begin{eqnarray}
+  q = Slerp(Slerp(p,r,t),Slerp(a,b,t),2t(1-t));
+\end{eqnarray}
+ 
+\subsubsection*{Return Value}
+
+Quaternion
+
+\newpage
+
+\subsection*{Squad\_prime}
+
+\subsubsection*{Syntax}
+\begin{verbatim}
+Quaternion Squad_prime(const Quaternion & p, const Quaternion & a, 
+                       const Quaternion & b, const Quaternion & q, 
+                       const Real t);
+\end{verbatim}
+\subsubsection{Description}
+Squad\_prime represent the Squad derivative.  Squad\_prime is not a
+member function of the class Quaternion.
+
+\subsubsection*{Return Value}
+
+Quaternion
+
+\newpage
+
+\section{The \texttt{Robot} and \texttt{mRobot} classes}
+
+The \texttt{Robot} and \texttt{mRobot} classes are composed of the
+following data elements:
+\begin{itemize}
+\item the number of degree of freedom $n$ ({\tt int dof});
+\item the gravity acceleration vector ($-\mbold{g}$) expressed in the
+  base frame \\({\tt ColumnVector gravity});
+\item one array of dimension $n$ of \texttt{Link} object elements
+  ({\tt Link *links});
+\end{itemize}
+and the member functions providing the different algorithms implementation 
+(see tables~\ref{tab:commandsum1}--\ref{tab:commandsum3}).
+
+The \texttt{Link} class (see table~\ref{tab:link}) encapsulates all
+the data and functionality required to characterize a single ``link''
+as it is defined by Denavit and Hartenberg (standard notation
+\cite{denahart}, or modified notation \cite{craig}). It is initialized
+by providing the joint type ({\tt int joint\_type}: revolute=0,
+prismatic=1) and the parameters $\theta$, $d$, $a$, $\alpha$ ({\tt
+  Real theta, d, a, alpha}) and a boolean value \texttt{Bool DH}
+(\texttt{true}=standard \texttt{false}=modified) It also contains the
+inertial parameters data: mass $m$ ({\tt Real m}), center of mass
+position vector $\mbold{r}$ ({\tt ColumnVector r}) and inertia tensor
+matrix $\mbold{I}_c$ ({\tt Matrix I}). In this case, $\mbold{r}$ is
+given with respect to the link coordinate frame and $\mbold{I}_{c}$ is
+with respect to a coordinate frame parallel to the link coordinate
+frame and located at the center of mass of $m$.  The dynamic model
+takes into account the motors inertia, gear ratio and frictions. The
+values \texttt{Im} and \texttt{Gr} representing respectively the
+motors rotor inertia $I_m$ and gear ratio $G_r$; \texttt{B} and
+\texttt{Cf} representing respectively the motors viscous $B$ and
+Coulomb friction $C_f$ coefficients:
+  \begin{eqnarray*}
+    \tau_{f}& = &  B \dot{q} + C_f \mbox{sign}(\dot{q})
+  \end{eqnarray*}
+
+\begin{table}[htbp]
+  \caption{The \texttt{Link} class data parameters}
+  \label{tab:link}
+  \begin{center}
+    \begin{tabular}{||ll|ll||ll||}
+      \hline
+      \hline
+      \multicolumn{2}{||l|}{Kinematic} & \multicolumn{2}{l||}{Inertial} 
+      & \multicolumn{2}{l||}{Motor} \\
+      \hline
+      \hline
+      {\tt int} & {\tt joint\_type} & {\tt Real} & {\tt m} 
+      & \texttt{Real} & \texttt{Im} \\
+      {\tt Real} & {\tt theta, d, a, alpha} & {\tt ColumnVector} & {\tt r}
+      & \texttt{Real} & \texttt{Gr} \\
+      {\tt Real} & {\tt joint\_offset} & {\tt Matrix} & {\tt I}
+      & \texttt{Real} & \texttt{B} \\
+      {\tt ColumnVector} & {\tt p} & & & \texttt{Real} & \texttt{Cf} \\
+      {\tt Matrix} & {\tt R,} & & & & \\
+      \texttt{Bool} & \texttt{DH} & & & & \\
+      \texttt{Real} & \texttt{theta\_min}, \texttt{theta\_max} & & & & \\
+      \texttt{Real} & \texttt{joint\_offset} & & & & \\
+      \hline
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+On initialization, the constructor sets up the matrices $\mbold{R}$ and $\mbold{p}$ such that
+\begin{eqnarray}
+\mbold{R} & = & \matr{ccc}{ 
+\cos \theta & -\cos \alpha \sin \theta & \sin \alpha \sin \theta \\
+\sin \theta & \cos \alpha \cos \theta & -\sin \alpha \cos \theta \\
+0 & \sin \alpha & \cos \alpha } \\
+\mbold{p} & = & \matr{c}{a \cos \theta \\ a \sin \theta \\ d}
+\end{eqnarray}
+for the standard D-H notation and
+\begin{eqnarray}
+  \mbold{R} & = & \matr{ccc}{ 
+    \cos \theta & -\sin \theta & 0 \\
+    \cos \alpha \sin \theta & \cos \alpha \cos \theta & -\sin \alpha \\
+    \sin \alpha \sin \theta & \sin \alpha \cos \theta & \cos \alpha } \\
+  \mbold{p} & = & \matr{c}{a \\ - d \sin \alpha \\ d \cos \alpha }
+\end{eqnarray}
+for the modified D-H notation.
+
+If the link corresponds to a revolute (prismatic) joint, then
+only $\theta$ ($d$) can be changed after the link definition. This is done through 
+the member function {\tt transform} which sets the new value of $q$ ($\theta$ or $d$) and
+updates the matrices $\mbold{R}$ and $\mbold{p}$ which compose the link homogeneous transform:
+\begin{eqnarray}
+\mbold{T} & = & \matr{cc}{
+\mbold{R} & \mbold{p} \\
+0 & 1 }
+\end{eqnarray}
+Only the changing elements are computed since the data of an instance
+of a class is persistent throughout the scope of definition of the
+instance (see \cite{eckel}). In standard notation, the elements (3,2)
+and (3,3) of $\mbold{R}$ provide storage for $\cos \alpha$ and $\sin
+\alpha$ which are computed only once. In modified notation, the
+elements (3,3) and (2,3) of $\mbold{R}$ provide storage for $\cos
+\alpha$ and $\sin \alpha$. So as to make the implementation faster,
+only the elements of $\mbold{R}$ and $\mbold{p}$ involving $\theta$
+($d$) are updated with a revolute (prismatic) joint.
+
+
+\subsection{\texttt{Robot} and \texttt{mRobot} object initialization}
+
+The \texttt{Robot} and \texttt{mRobot} classes provide a default
+constructor that creates a 1 dof robot.  A $n_{dof} \times 19$ matrix
+containing the kinematic and inertial parameters (as for the
+\texttt{Robot} class) can be supplied upon initialization. A $n_{dof}
+\times 19$ matrix containing the kinematic and inertial parameters (as
+for the \texttt{Robot} class) can be supplied along with a $n_{dof}
+\times 4$ matrix providing the motors inertia, gear ratio and friction
+coefficients. A $n_{dof} \times 23$ matrix (kinematic, inertial and
+motor parameters) can also be used.  The structure of the
+initialization matrix is:
+
+\vspace{0.2in}
+
+\begin{tabular}{lll}
+Column & Variable & Description \\
+\\
+1 & $\sigma$ & joint type (revolute=0, prismatic=1) \\
+2 & $\theta$ & Denavit-Hartenberg parameter \\
+3 & $d$ & Denavit-Hartenberg parameter \\
+4 & $a$ & Denavit-Hartenberg parameter \\
+5 & $\alpha$ & Denavit-Hartenberg parameter \\
+6 & $\theta_{min}$ & minimum value of joint variable \\
+7 & $\theta_{max}$ & maximum value of joint variable \\
+8 & $\theta_{off}$ & joint offset \\
+9 & $m$ & mass of the link \\
+10 & $c_x$ & center of mass along axis $x$ \\
+11 & $c_y$ & center of mass along axis $y$ \\
+12 & $c_z$ & center of mass along axis $z$ \\
+13 & $I_{xx}$ & element $xx$ of the inertia tensor matrix \\
+14 & $I_{xy}$ & element $xy$ of the inertia tensor matrix \\
+15 & $I_{xz}$ & element $xz$ of the inertia tensor matrix \\
+16 & $I_{yy}$ & element $yy$ of the inertia tensor matrix \\
+17 & $I_{yz}$ & element $yz$ of the inertia tensor matrix \\
+18 & $I_{zz}$ & element $zz$ of the inertia tensor matrix \\
+19 & $I_m$ & motor rotor inertia \\
+20 & $Gr$ & motor gear ratio \\
+21 & $B$ & motor viscous friction coefficient \\
+22 & $C_f$ & motor Coulomb friction coefficient \\
+23 & \texttt{immobile} & flag for the kinematics and inverse kinematics \\
+& & (if true joint is locked, if false joint is free)
+\end{tabular}
+
+\newpage
+
+\subsection*{constructors}
+\subsubsection*{Syntax}
+
+Standard notation:
+\begin{verbatim}
+Robot(const int ndof=1);
+Robot(const Matrix & initrobot);
+Robot(const Matrix & initrobot, const Matrix & initmotor);
+Robot(const Robot & x);
+Robot(const string & filename, const string & robotName);
+\end{verbatim}
+Modified notation:
+\begin{verbatim}
+mRobot(const int ndof=1);
+mRobot(const Matrix & initrobot_motor);
+mRobot(const Matrix & initrobot, const Matrix & initmotor);
+mRobot(const mRobot & x);
+mRobot(const string & filename, const string & robotName);
+\end{verbatim}
+\subsubsection*{Description}
+
+\texttt{Robot} and \texttt{mRobot} object constructors, copy
+constructor and equal operator.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{get\_q, get\_qp, get\_qpp}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix get_q(void);
+Real get_q(const int i);
+ReturnMatrix get_qp(void);
+Real get_qp(const int i);
+ReturnMatrix get_qp(void);
+Real get_qp(const int i);
+\end{verbatim}
+\subsubsection*{Description}
+These functions return a column vector containing the joint variables
+(\texttt{get\_q}), velocities (\texttt{get\_qp}) or accelerations
+(\texttt{get\_qpp}) when called with no argument. It returns the
+scalar value for the $i^{th}$ joint variable when called with an
+integer argument.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector} or {\tt Real}
+
+\newpage
+
+\subsection*{set\_q, set\_qp, set\_qpp}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void set_q(const ColumnVector & q);
+void set_q(const Matrix & q);
+void set_q(const Real q, const int i);
+void set_qp(const ColumnVector & qp);
+void set_qp(const Matrix & qp);
+void set_qp(const Real qp, const int i);
+void set_qpp(const ColumnVector & qpp);
+void set_qpp(const Matrix & qpp);
+void set_qpp(const Real qpp, const int i);
+\end{verbatim}
+\subsubsection*{Description}
+These functions set the joint variables (velocities or accelerations)
+or the $i^{th}$ joint variable (velocity or acceleration) to {\tt q}
+(\texttt{qp} or \texttt{qpp}).
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection{Kinematics}
+
+The forward kinematic model defines the relation:
+\begin{eqnarray}
+{}^0 \mbold{T}_n & = & \mbold{G(q)}
+\end{eqnarray}
+where ${}^0 \mbold{T}_n$ is the homogeneous transform representing the position
+and orientation of the manipulator tool (frame $n$) in the base frame $0$.
+The inverse kinematic model is defined by
+\begin{eqnarray}
+\mbold{q} & = & \mbold{G}^{-1}({}^0 \mbold{T}_n)
+\end{eqnarray}
+In general, this equation allows multiple solutions.
+
+\newpage
+
+\subsection*{inv\_kin}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix inv_kin(const Matrix & Tobj, const int mj = 0);
+ReturnMatrix inv_kin(const Matrix & Tobj, const int mj, 
+                     const int endlink, bool & converge);
+\end{verbatim}
+\subsubsection*{Description}
+The inverse kinematic model is computed using a Newton-Raphson technique. 
+If {\tt mj == 0}, it is based on the following \cite{Gorla84}:
+\begin{eqnarray}
+{}^0 \mbold{T}_n (\mbold{q}^*) & = & {}^0 \mbold{T}_n (\mbold{q} + \delta \mbold{q})
+\approx {}^0 \mbold{T}_n (\mbold{q}) \delta \mbold{T} ( \delta \mbold{q}) =  \mbold{T}_{obj} \\
+\delta \mbold{T} ( \delta \mbold{q}) & = & ({}^0 \mbold{T}_n (\mbold{q}))^{-1} \mbold{T}_{obj} = 
+\mbold{I + \Delta} \\
+\mbold{\Delta} & = & \matr{cccc}{
+0 & -\delta_z & \delta_y & d_x \\
+\delta_z & 0 & -\delta_x & d_y \\
+-\delta_y & \delta_x & 0 & d_z \\
+0 & 0 & 0 & 0} \\
+{}^n \delta \mbold{\chi} & = & \matr{cccccc}{
+d_x & d_y & d_z & \delta_x & \delta_y & \delta_z 
+}^T \\
+{}^n \delta \mbold{\chi} & \approx & {}^n \mbold{J}(\mbold{q}) \delta \mbold{q}
+\end{eqnarray}
+If {\tt mj == 1}, it is based on 
+the following Taylor expansion \cite{Gorla84,Uicker67}:
+\begin{eqnarray}
+{}^0 \mbold{T}_n (\mbold{q}^*) & = {}^0 \mbold{T}_n (\mbold{q} + \delta \mbold{q}) \approx & 
+{}^0 \mbold{T}_n (\mbold{q}) + \sum_{i=1}^{n} \dfdx{{}^0 \mbold{T}_n}{q_i} \delta q_i
+\end{eqnarray}
+The function {\tt dTdqi} computes these partial derivatives.
+
+Given the desired position represented by the homogeneous transform
+{\tt Tobj}, this function return the column vector of joint variables
+that is corresponding to this position. On return, the value
+\texttt{converge} is true if the procedure has converge to values that
+give the correct position and false otherwise.
+
+\noindent {\bf Note: } {\tt mj == 0} is faster ($\approx 1.8\times$) than {\tt mj == 1}. 
+Also, {\tt mj == 1} might converge when {\tt mj == 0} does not.
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{inv\_kin\_rhino}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix inv_kin_rhino(const Matrix & Tobj, 
+                           bool & converge)
+\end{verbatim}
+\subsubsection*{Description}
+This function performs the Rhino robot inverse kinematics.
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{inv\_kin\_puma}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix inv_kin_puma(const Matrix & Tobj, 
+                          bool & converge)
+\end{verbatim}
+\subsubsection*{Description}
+This function performs the Puma robot inverse kinematics.
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{jacobian}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix jacobian(const int ref=0);
+ReturnMatrix jacobian(const int endlink, const int ref)const;
+\end{verbatim}
+\subsubsection*{Description}
+The manipulator Jacobian defines the relation between the velocities in joint space 
+$\dot{\mbold{q}}$ and in the Cartesian space $\dot{\mbold{\chi}}$ expressed in frame $i$:
+\begin{eqnarray}
+{}^i \dot{\mbold{\chi}} & = & {}^i \mbold{J}(\mbold{q}) \dot{\mbold{q}}
+\end{eqnarray}
+or the relation between small variations in joint space 
+$\delta \mbold{q}$ and small displacements in the Cartesian space $\delta \mbold{\chi}$:
+\begin{eqnarray}
+{}^i \delta \mbold{\chi} & \approx & {}^i \mbold{J}(\mbold{q}) \delta \mbold{q}
+\end{eqnarray}
+The manipulation Jacobian expressed in the base frame is given by 
+(see \cite{Fu87})
+\begin{eqnarray}
+{}^0 \mbold{J}(\mbold{q}) & = & \matr{cccc}{
+{}^0 \mbold{J}_1(\mbold{q}) & {}^0 \mbold{J}_2(\mbold{q}) & \cdots & {}^0 \mbold{J}_n(\mbold{q})}
+\end{eqnarray}
+with
+\begin{eqnarray}
+  {}^0 \mbold{J}_i(\mbold{q}) & = & 
+  \matr{c}{ \mbold{z}_{i-1} \times {}^{i-1} \mbold{p}_n \\ \mbold{z}_{i-1}} 
+  \mbox{ for a revolute joint} \\
+  {}^0 \mbold{J}_i(\mbold{q}) & = & 
+  \matr{c}{ \mbold{z}_{i-1} \\ 0} \mbox{ for a prismatic joint} 
+\end{eqnarray}
+where $\mbold{z}_{i-1}$ and ${}^{i-1} \mbold{p}_n$ are expressed in
+the base frame and $\times$ is the vector cross product.  Expressed in
+the $i^{th}$ frame, the Jacobian is given by
+\begin{eqnarray}
+{}^i \mbold{J}(\mbold{q}) & = &
+\matr{cc}{
+({}^0 \mbold{R}_i)^T & 0 \\ 0 & ({}^0 \mbold{R}_i)^T 
+} {}^0 \mbold{J}(\mbold{q})
+\end{eqnarray}
+
+This function returns ${}^i \mbold{J}(\mbold{q})$ ($i=0$ when not
+specified) for the \texttt{endlink} (last link when not specified).
+
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+
+\subsection*{jacobian\_dot}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix jacobian_dot(const int ref=0);
+\end{verbatim}
+\subsubsection*{Description}   
+The manipulator Jacobian time derivative can be used to compute the end effector acceleration due to joints velocities \cite{Angeles97}:
+\begin{eqnarray}
+  ^i\ddot{\mbold{x}}\ =\  ^i\dot{\mbold{J}}(\mbold{q},\dot{\mbold{q}})\dot{\mbold{q}}
+\end{eqnarray}
+The Jacobian time derivative expressed in the base frame is given by \cite{Angeles97}
+\begin{eqnarray}
+  ^0\dot{\mbold{J}}(\mbold{q},\dot{\mbold{q}})\ =\ 
+  \left[
+    \begin{array}{cccc}
+      ^0\dot{\mbold{J}}_1(\mbold{q},\dot{\mbold{q}}) & ^0\dot{\mbold{J}}_2(q,\dot{\mbold{q}}) 
+      & \cdots & ^0\dot{\mbold{J}}_n(\mbold{q},\dot{\mbold{q}})
+    \end{array}
+  \right]
+\end{eqnarray}
+with
+\begin{eqnarray}
+  ^0\dot{\mbold{J}}_i(\mbold{q},\dot{\mbold{q}}) &=&
+  \begin{array}{cc}
+    \left[
+      \begin{array}{c}
+        \mbold{\omega}_{i-1}\times \mbold{z}_i \\
+        \mbold{\omega}_{i-1}\times ^{i-1}\mbold{p}_n + \mbold{z}_i\times ^{i-1}\dot{\mbold{p}}_n
+      \end{array}
+    \right]  & \textrm{for a revolute joint}
+  \end{array} \\
+  ^0\dot{\mbold{J}}_i(\mbold{q},\dot{\mbold{q}}) &=&
+  \begin{array}{cc}
+    \left[
+      \begin{array}{c}
+        0 \\
+        0
+      \end{array}
+    \right]  & \textrm{for a prismatic joint}
+  \end{array}
+\end{eqnarray}
+
+where $\mbold{z}_i$ and $^{i-1}\mbold{p}_n$ are expressed in the base
+frame and $\times$ is the vector cross product. Expressed in the
+$i^{th}$ frame, the Jacobian time derivative is given by
+
+\begin{eqnarray}
+  ^i\dot{\mbold{J}}(\mbold{q},\dot{\mbold{q}}) =
+  \left[
+    \begin{array}{cc}
+      (^0\mbold{R}_i)^T & 0 \\
+      0 & (^0\mbold{R}_i)^T
+    \end{array}
+  \right] {^0}\dot{\mbold{J}}(\mbold{q},\dot{\mbold{q}})
+\end{eqnarray}
+
+This function returns $^i\dot{\mbold{J}}(\mbold{q},\dot{\mbold{q}})$(i=0 when not specified).
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+ \newpage 
+
+
+\subsection*{jacobian\_DLS\_inv}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix jacobian_DLS_inv(const Real eps, const Real lambda_max, 
+                              const int ref=0);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function returns the inverse Jacobian Matrix for 6 dof manipulator based on the Damped Least-Squares 
+scheme \cite{Chiaverini94}. Using the singular value decomposition, the Jacobian matrix is
+
+\begin{eqnarray}
+  J = \sum_{i=1}^6\sigma_i u_i v_i^T
+\end{eqnarray}
+where $v_i$ and $u_i$ are the input and output vectors, and $\sigma_i$ are the singular values ordered so that
+$\sigma_i \geq \sigma_2 \geq \cdots \sigma_r \geq 0$, with $r$ being the rank of $J$. Based on the Damped Least-Squares
+the inverse Jacobian can be written as
+\begin{eqnarray}
+  J^{-1} = \sum_{i=1}^6\frac{\sigma_i}{\sigma_i^2 + \lambda^2}v_iu_i^T
+\end{eqnarray}
+where $\lambda$ is the damping factor. A singular region can be selected on the basis of the smallest singular value of J.
+Outside the region the exact solution is returned, while inside the region a configuration-varying damping factor is 
+introduced to obtain the desired approximate solution. This region is defined as
+\begin{eqnarray}
+  \lambda^2\ =\ \Bigg\{
+  \begin{array}{cc}
+    0 &     \textrm{if $\sigma_6 \geq \epsilon$} \\
+    \Big(1\ -\ (\frac{\sigma_6}{\epsilon})^2 \Big)\lambda^2_{max} & \textrm{otherwise}
+  \end{array}
+\end{eqnarray}
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+ \newpage 
+
+
+\subsection*{kine}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void kine(Matrix & Rot, ColumnVector & pos);
+void kine(Matrix & Rot, ColumnVector & pos, const int j);
+ReturnMatrix kine(void);
+ReturnMatrix kine(const int j);
+\end{verbatim}
+\subsubsection*{Description}
+The forward kinematic model is provided by implementing 
+the following recursion:
+\begin{eqnarray}
+{}^0 \mbold{R}_i & = & {}^0 \mbold{R}_{i-1} {}^{i-1}\mbold{R}_i \\
+{}^0 \mbold{p}_i & = & {}^0 \mbold{p}_{i-1} + {}^0 \mbold{R}_{i-1} \mbold{p}_i 
+\end{eqnarray}
+where
+\begin{eqnarray}
+{}^0 \mbold{T}_i & = & \matr{cc}{
+{}^0 \mbold{R}_{i} & {}^0 \mbold{p}_i \\
+0 & 1 }
+\end{eqnarray}
+
+The overloaded function {\tt kine} can return the orientation and position or 
+the equivalent homogeneous transform for the last (if not supplied) or the $i^{th}$
+link. For example: 
+\begin{verbatim}
+Robot myrobot(init_matrix);
+Matrix Thomo, R;
+ColumnVector p;
+/* forward kinematics up to the last link */
+Thomo = myrobot.kine();  
+/* forward kinematics up to the 2nd link  */
+Thomo = myrobot.kine(2); 
+/* forward kinematics up to the last link, outputs R and p */
+myrobot.kine(R,p);       
+/* forward kinematics up to the 2nd link, outputs R and p  */
+myrobot.kine(R,p,2);     
+\end{verbatim}
+\noindent are valid calls to the function {\tt kine}.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix} or None (in this case {\tt Rot} and {\tt pos} are modified on output)
+
+\newpage
+
+\subsection*{kine\_pd}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix kine_pd(const int ref=0);
+void kine_pd(Matrix & Rot, ColumnVector & pos, 
+             ColumnVector & pos_dot, const int ref=0);
+\end{verbatim}
+\subsubsection*{Description}   
+The forward kinematic model is provided by implementing 
+the following recursion (similar to \texttt{kine}):
+\begin{eqnarray}
+{}^0 \mbold{R}_i & = & {}^0 \mbold{R}_{i-1} {}^{i-1}\mbold{R}_i \\
+{}^0 \mbold{p}_i & = & {}^0 \mbold{p}_{i-1} + {}^0 \mbold{R}_{i-1}
+\mbold{p}_i 
+\end{eqnarray}
+\begin{eqnarray}
+ \begin{array}{cc}
+  {}^0 \mbold{\dot{p}}_i = {}^0 \mbold{\dot{p}}_{i-1} + {}^0
+  \mbold{R}_i \mbold{\omega}_i \times {}^0 \mbold{R}_{i-1} \mbold{p}_i & \textrm{DH notation} \\
+  {}^0 \mbold{\dot{p}}_i = {}^0 \mbold{\dot{p}}_{i-1} + {}^0
+  \mbold{R}_{i-1} (\mbold{\omega}_{i-1} \times \mbold{p}_i) & \textrm{modified DH notation}
+ \end{array}
+\end{eqnarray}
+where
+\begin{eqnarray}
+{}^0 \mbold{T}_i & = & \matr{cc}{
+{}^0 \mbold{R}_{i} & {}^0 \mbold{p}_i \\
+0 & 1 }
+\end{eqnarray}
+
+\subsubsection*{Return Value}
+{\tt Matrix} or None (in this case {\tt Rot}, {\tt pos} {\tt pos\_dot} are modified on output)
+\newpage 
+
+\subsection*{dTdqi}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void dTdqi(Matrix & dRot, ColumnVector & dp, const int i);
+ReturnMatrix dTdqi(const int i);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes the partial derivatives:
+\begin{eqnarray}
+\dfdx{{}^0 \mbold{T}_n}{q_i} & = & {}^0 \mbold{T}_{i-1} \mbold{Q}_i \; {}^{i-1} \mbold{T}_n
+\end{eqnarray}
+in standard notation and
+\begin{eqnarray}
+  \dfdx{{}^0 \mbold{T}_n}{q_i} 
+  & = & {}^0 \mbold{T}_{i} \mbold{Q}_i \; {}^{i} \mbold{T}_n
+\end{eqnarray}
+in modified notation, with
+\begin{eqnarray}
+\mbold{Q}_i & = & \matr{cccc}{
+0 & -1 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0} \mbox{ for a revolute joint} \\
+\mbold{Q}_i & = & \matr{cccc}{
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0} \mbox{ for a prismatic joint} 
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix} or None (in this case {\tt dRot} and {\tt dp} are modified on output)
+
+\newpage
+
+\subsection{Dynamics}
+
+The robotics manipulator dynamic model is given by (see
+appendix~\ref{sec:rnea} or \cite{craig})
+\begin{eqnarray}
+\mbold{\tau} & = & \mbold{D(q)} \ddot{\mbold{q}} + \mbold{C(q,}\dot{\mbold{q}}) 
++ \mbold{G(q)}
+\end{eqnarray}
+
+\subsection*{acceleration}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix acceleration(const ColumnVector & q, 
+                          const ColumnVector & qp,
+                          const ColumnVector & tau);
+
+ReturnMatrix acceleration(const ColumnVector & q, 
+                          const ColumnVector & qp,
+                          const ColumnVector & tau_cmd, 
+                          const ColumnVector & Fext,
+                          const ColumnVector & Next)
+\end{verbatim}
+\subsubsection*{Description}
+This function computes $\ddot{\mbold{q}}$ from $\mbold{q}$, $\dot{\mbold{q}}$ and $\mbold{\tau}$ 
+which is the forward dynamics problem.
+Walker and Orin \cite{Walker82} presented methods to compute the inverse dynamics. 
+A simplified RNE version computing 
+\begin{eqnarray}
+\mbold{\tau} & = & \mbold{D(q)} \ddot{\mbold{q}}
+\end{eqnarray}
+is implemented in the function {\tt torque\_novelocity}. By evaluating this equation $n$ times, 
+one can compute $\mbold{D(q)}$ (the {\tt inertia} function), use the full RNE to compute
+$\mbold{C(q,}\dot{\mbold{q}}) + \mbold{G(q)}$ and then solve the equation : 
+\begin{eqnarray}
+\ddot{\mbold{q}} & = & \mbold{D^{-1}(q)} \left [ \mbold{\tau} - \mbold{C(q,}\dot{\mbold{q}}) 
+- \mbold{G(q)} \right ]
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{inertia}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix inertia(const ColumnVector & q);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes the robot inertia matrix $\mbold{D(q)}$. A simplified RNE version computing 
+\begin{eqnarray}
+\mbold{\tau} & = & \mbold{D(q)} \ddot{\mbold{q}}
+\end{eqnarray}
+is implemented in the function {\tt torque\_novelocity}. By evaluating this equation $n$ times, 
+one can compute $\mbold{D(q)}$.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{torque}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix torque(const ColumnVector & q, 
+                    const ColumnVector & qp,
+                    const ColumnVector & qpp);
+
+ReturnMatrix torque(const ColumnVector & q,
+                    const ColumnVector & qp,
+                    const ColumnVector & qpp,
+                    const ColumnVector & Fext,
+                    const ColumnVector & Next);
+\end{verbatim}
+\subsubsection*{Description}
+
+This function computes $\mbold{\tau}$ from $\mbold{q}$,
+$\dot{\mbold{q}}$ and $\ddot{\mbold{q}}$ which is the inverse dynamics
+problem. The recursive Newton-Euler (RNE) formulation is one of the
+most computationally efficient algorithm \cite{Luh80,Murray86} used to
+solve this problem (see appendix~\ref{sec:rnea}). The second form
+allows the inclusion the contribution of a load applied at the last link.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{torque\_novelocity}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix torque_novelocity(const ColumnVector & q,
+                               const ColumnVector & qpp);
+
+ReturnMatrix torque_novelocity(const ColumnVector & q,
+                               const ColumnVector & qpp,
+                               const ColumnVector & Fext,
+                               const ColumnVector & Next);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes $\mbold{\tau}$ from $\mbold{q}$ 
+and $\ddot{\mbold{q}}$ when $\dot{\mbold{q}} = 0$ and gravity is set to zero.
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{G and C}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix G();
+ReturnMatrix C();
+\end{verbatim}
+\subsubsection*{Description}
+The function G() computes $\mbold{\tau}$ from the gravity effect,
+while C() computes $\mbold{\tau}$ from the Coriolis and centrifugal
+effects.
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector} for G and C
+
+\newpage
+
+\subsection{Linearized dynamics}
+Murray and Neuman \cite{Murray86} have developed an efficient recursive linearized Newton-Euler formulation 
+that can be used to compute (see appendix~\ref{sec:rnea})
+\begin{eqnarray}
+\delta \mbold{\tau} & = & \mbold{D(q)} \delta \ddot{\mbold{q}} 
++ \mbold{S_1(q,}\dot{\mbold{q}}) \delta \dot{\mbold{q}}
++ \mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}}) \delta \mbold{q}
+\end{eqnarray}
+
+\subsection*{delta\_torque}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void delta_torque(const ColumnVector & q, 
+                  const ColumnVector & qp,
+                  const ColumnVector & qpp, 
+                  const ColumnVector & dq,
+                  const ColumnVector & dqp, 
+                  const ColumnVector & dqpp,
+                  ColumnVector & torque, 
+                  ColumnVector & dtorque);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes 
+\begin{eqnarray}
+\delta \mbold{\tau} & = & \mbold{D(q)} \delta \ddot{\mbold{q}} 
++ \mbold{S_1(q,}\dot{\mbold{q}}) \delta \dot{\mbold{q}}
++ \mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}}) \delta \mbold{q}
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None ({\tt torque} and {\tt dtorque} are modified on output)
+
+\newpage
+
+\subsection*{dq\_torque}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void dq_torque(const ColumnVector & q, 
+               const ColumnVector & qp,
+               const ColumnVector & qpp, 
+               const ColumnVector & dq,
+               ColumnVector & torque, 
+               ColumnVector & dtorque);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes 
+\begin{eqnarray}
+\mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}}) \delta \mbold{q}
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None ({\tt torque} and {\tt dtorque} are modified on output)
+
+\newpage
+\subsection*{dqp\_torque}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void dqp_torque(const ColumnVector & q, 
+                const ColumnVector & qp,
+                const ColumnVector & dqp, 
+                ColumnVector & torque,
+                ColumnVector & dtorque);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes 
+\begin{eqnarray}
+\mbold{S_1(q,}\dot{\mbold{q}}) \delta \dot{\mbold{q}}
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None ({\tt torque} and {\tt dtorque} are modified on output)
+
+\newpage
+
+\subsection*{dtau\_dq}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix dtau_dq(const ColumnVector & q, 
+                     const ColumnVector & qp,
+                     const ColumnVector & qpp);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes 
+\begin{eqnarray}
+\dfdx{\mbold{\tau}}{\mbold{q}} & = & \mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}})
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{dtau\_dqp}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix dtau_dqp(const ColumnVector & q, 
+                      const ColumnVector & qp);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes 
+\begin{eqnarray}
+\dfdx{\mbold{\tau}}{\dot{\mbold{q}}} & = & \mbold{S_1(q,}\dot{\mbold{q}}) 
+\end{eqnarray}
+
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{perturb\_robot}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void perturb_robot(Robot_basic & robot, const double f = 0.1);
+\end{verbatim}
+\subsubsection*{Description}
+This function, which is not a member of any class, modifies randomly
+the robot parameters. The parameter variation in percentage is
+described by \texttt{f}.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\section{The \texttt{Spl\_Cubic} class}
+
+Spl\_Cubic deals with parametric cubic splines \cite{Angeles97}.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Spl_cubic(){};
+Spl_cubic(const Matrix & pts);
+Spl_cubic(const Spl_cubic & x);
+Spl_cubic & operator=(const Spl_cubic & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+Spl\_Cubic object constructor, copy constructor and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{s, ds and dds}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short interpolating(const Real t, ColumnVector & s);
+short first_derivative(const Real t, ColumnVector & ds);
+short second_derivative(const Real t, ColumnVector & dds);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions interpolate the spline at time $t$ to sets the
+quaternion $s$, $ds$ and $dds$.
+
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] NOT\_IN\_RANGE (regarding $t$)
+\item[] BAD\_DATA
+\end{enumerate}
+
+
+\newpage
+
+\section{The \texttt{Spl\_path} class}
+
+Spl\_path uses three instances of the class Spl\_Cubic for path $X$,
+$Y$, $Z$ interpolation.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Spl_path():Spl_cubic(){};
+Spl_path(const string & filename);
+Spl_path(const Matrix & x);
+Spl_path(const Spl_path & x);
+Spl_path & operator=(const Spl_path & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+Spl\_path object constructor, copy constructor and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{p, dp, ddp}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short p(const Real time, ColumnVector & p);
+short p_pdot(const Real time, ColumnVector & p, ColumnVector & pdot);
+short p_pdot_pddot(const Real time, ColumnVector & p, ColumnVector & dp, 
+                   ColumnVector & ddp);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions interpolate the spline at time $t$ to sets the
+quaternion $p$ (position), $dp$ (velocity) and $ddp$ (acceleration).
+
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] NOT\_IN\_RANGE (regarding $t$)
+\item[] BAD\_DATA
+\end{enumerate}
+
+\newpage
+
+\section{The \texttt{Spl\_Quaternion} class}
+
+Spl\_Quaternion deals with parametric quaternions cubic splines.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Spl_Quaternion(){}
+Spl_Quaternion(const string & filename);
+Spl_Quaternion(const quat_map & quat);
+Spl_Quaternion(const Spl_Quaternion & x);
+Spl_Quaternion & operator=(const Spl_Quaternion & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+Spl\_Quaternion object constructor, copy constructor and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{quat and quat\_w}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short quat(const Real t, Quaternion & q);
+short quat_w(const Real t, Quaternion & q, ColumnVector & w);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions interpolate the spline at time $t$ to sets the
+quaternion $q$ and the angular velocity $\omega$.
+
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] NOT\_IN\_RANGE (regarding $t$)
+\end{enumerate}
+
+\newpage
+
+\section{The \texttt{Trajectory\_Select} class}
+
+This class deals with trajectory selection logic.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Trajectory_Select();
+Trajectory_Select(const string & filename);
+Trajectory_Select(const Trajectory_Select & x);
+Trajectory_Select & operator=(const Trajectory_Select & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+Trajectory\_Select object constructor, copy constructor and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{set\_trajectory}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void set_trajectory(const string & filename);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function reads the trajectory file (filename) and 
+assign the spline data in class Spl\_path or in class
+Spl\_Quaternion.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\section{The \texttt{CLIK} class}
+
+The \emph{CLICK} class deals with closed-loop inverse kinematics
+algorithm based on the unit quaternion \cite{Chiaverini99}.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Clik(){}
+Clik(const Robot & robot_, const Matrix & Kp_, const Matrix & Ko_, 
+     const Real eps_=0.04, const Real lambda_max_=0.04, 
+     const Real dt=1.0);
+Clik(const mRobot & mrobot_, const Matrix & Kp_, const Matrix & Ko_, 
+     const Real eps_=0.04, const Real lambda_max_=0.04, 
+     const Real dt=1.0);
+Clik(const mRobot_min_para & mrobot_min_para_, const Matrix & Kp_, 
+     const Matrix & Ko_, const Real eps_=0.04, 
+     const Real lambda_max_=0.04, const Real dt=1.0);
+Clik(const Clik & x);
+Clik & operator=(const Clik & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+\emph{CLIK} object constructor, copy constructor and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{q\_qdot}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void q_qdot(const Quaternion & qd, const ColumnVector & pd, 
+            const ColumnVector & pddot, const ColumnVector & wd,
+            ColumnVector & q, ColumnVector & qp);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function sets the desired orientation joint position $q$ and the
+desired joint velocity $qp$.
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\section{The \texttt{Proportional\_Derivative} class}
+
+The \emph{Proportional\_Derivative} class deals with the well known
+proportional derivative position controller.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Proportional_Derivative(const short dof = 1);
+Proportional_Derivative(const Robot_basic & robot, const DiagonalMatrix & Kp, 
+                        const DiagonalMatrix & Kd);
+Proportional_Derivative(const Proportional_Derivative & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+\emph{Proportional\_Derivative} object constructor, copy constructor
+and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{torque\_cmd}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix torque_cmd(Robot_basic & robot, const ColumnVector & qd,
+                        const ColumnVector & qpd);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function sets the output torque for a desired joint position
+vector, $q_d$, and a desired joint velocity vector, $\dot{q}_d$.
+
+\subsubsection*{Return Value}
+
+\texttt{Matrix}
+
+\newpage
+
+\subsection*{$K_d$, $K_p$}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short set_Kd(const DiagonalMatrix & Kd);
+short set_Kp(const DiagonalMatrix & Kp);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions sets the joint position error gain matrix, $K_d$, and
+the joint velocity error gain matrix, $K_p$.
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] WRONG\_SIZE (regarding the input vector)
+\end{enumerate}
+
+\newpage
+
+\section{The \texttt{Computed\_torque\_method} class}
+
+The \emph{Computed\_torque\_method} class deals with the well known
+computed torque method position controller \cite{Fu87}.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Computed_torque_method();
+Computed_torque_method(const Robot_basic & robot, 
+                       const DiagonalMatrix & Kd, const DiagonalMatrix & Kp);
+Computed_torque_method(const Computed_torque_method & x);
+Computed_torque_method & operator=(const Computed_torque_method & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+\emph{Computed\_torque\_method} object constructor, copy constructor
+and equal operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{torque\_cmd}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix torque_cmd(Robot_basic & robot, const ColumnVector & qd,
+                        const ColumnVector & qpd);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function sets the output torque for a desired joint position
+vector, $q_d$, and a desired joint velocity vector, $\dot{q}_d$.
+
+\subsubsection*{Return Value}
+
+\texttt{Matrix}
+
+\newpage
+
+\subsection*{$K_d$, $K_p$}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short set_Kp(const DiagonalMatrix & Kp);
+short set_Kd(const DiagonalMatrix & Kd);
+
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions sets the joint position error gain matrix, $K_p$, and
+the joint velocity error gain matrix, $K_d$.
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] WRONG\_SIZE (regarding the input vector)
+\end{enumerate}
+
+\newpage
+
+\section{The \texttt{Resolve\_acc} class}
+
+The \emph{Resolve\_acc} class deals with the resolve rate acceleration
+controller \cite{Caccavale98}.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Resolved_acc();
+Resolved_acc(const Robot_basic & robot, 
+             const double Kvp, const double Kpp, 
+             const double Kvo, const double Kpo);
+Resolved_acc(const Resolved_acc & x);
+Resolved_acc & operator=(const Resolved_acc & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+\emph{Resolve\_acc} object constructor, copy constructor and equal
+operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{torque\_cmd}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix torque_cmd(Robot_basic & robot, const ColumnVector & pdpp, 
+                        const ColumnVector & pdp, const ColumnVector & pd, 
+                        const ColumnVector & wdp, const ColumnVector & wd, 
+                        const Quaternion & qd, const short link_pc, 
+                        const Real dt);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function sets the output torque for the following desired end
+effector vector: acceleration, velocity, position, angular
+acceleration, angular velocity and angular position.
+\subsubsection*{Return Value}
+
+\texttt{Matrix}
+
+\newpage
+
+\subsection*{$K_{pp}$, $K_{vp}$, $K_{po}$, $K_{vo}$}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void set_Kpp(const double Kpp);
+void set_Kvp(const double Kvp);
+void set_Kpo(const double Kpo);
+void set_Kvo(const double Kvo);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions sets the end effector position error gain, $K_{pp}$, the velocity
+error gain, $K_{vp}$, the orientation error gain $K_{po}$, and the
+orientation angular rate gain, $K_{vo}$.
+\subsubsection*{Return Value}
+
+None
+
+
+\newpage
+
+\section{The \texttt{Impedance} class}
+
+The \emph{Impedance} class deals with the impedance controller
+\cite{Caccavale99}. This class should be use with the class
+\emph{Resolve\_acc}.  \emph{Resolve\_acc} will make sure the end
+effector follow the compliant trajectory generated by
+\emph{Impedance}. The end effector impedance is defined in terms of
+its translational and rotational part \cite{Caccavale99}.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Impedance();
+Impedance(const Robot_basic & robot, const DiagonalMatrix & Mp, 
+          const DiagonalMatrix & Dp, const DiagonalMatrix & Kp, 
+          const Matrix & Km,         const DiagonalMatrix & Mo, 
+          const DiagonalMatrix & Do, const DiagonalMatrix & Ko);
+Impedance(const Impedance & x);
+Impedance & operator=(const Impedance & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+\emph{Impedance} object constructor, copy constructor and equal
+operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{control}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short control(const ColumnVector & pdpp, const ColumnVector & pdp,
+              const ColumnVector & pd, const ColumnVector & wdp,
+              const ColumnVector & wd, const Quaternion & qd, 
+              const ColumnVector & f, const ColumnVector & n,
+              const Real dt); 
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function generate the compliant trajectory for a desired
+trajectory.
+
+
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] WRONG\_SIZE (regarding the input vector)
+\end{enumerate}
+
+\newpage
+
+\subsection*{$M_p$, $D_p$, $K_p$, $M_o$, $D_o$, $K_o$}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short set_Mp(const DiagonalMatrix & Mp);
+short set_Mp(Real MP_i, const short i);
+short set_Dp(const DiagonalMatrix & Dp);
+short set_Dp(Real Dp_i, const short i);
+short set_Kp(const DiagonalMatrix & Kp);
+short set_Kp(Real Kp_i, const short i);
+short set_Mo(const DiagonalMatrix & Mo);
+short set_Mo(Real Mo_i, const short i);
+short set_Do(const DiagonalMatrix & Do);
+short set_Do(Real Do_i, const short i);
+short set_Ko(const DiagonalMatrix & Ko);
+short set_Ko(Real Ko_i, const short i);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These functions sets the translational and rotational impedance
+parameters.
+\subsubsection*{Return Value}
+
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] WRONG\_SIZE (regarding the input vector)
+\end{enumerate}
+
+
+\newpage
+
+\section{The \texttt{Control\_Select} class}
+
+The \emph{Control\_Select} class deals with the controllers
+selection logic. It can be use to select any controllers mentioned
+above by reading the input file.
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Control_Select();
+Control_Select(const string & filename);
+Control_Select(const Control_Select & x);
+Control_Select & operator=(const Control_Select & x);
+\end{verbatim}
+
+\subsubsection*{Description}   
+\emph{Control\_Select} object constructor, copy constructor and equal
+operator.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{get\_dof}
+\subsubsection*{Syntax}
+\begin{verbatim}
+int get_dof();
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function return the degree of freedom used in the selection.
+\subsubsection*{Return Value}
+
+\texttt{int}
+
+\newpage
+
+\subsection*{set\_control}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void set_control(const string & filename);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This function set the active controller.
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\section{The \texttt{Stewart} class}
+
+Coming soon ... (based on \cite{Harib03}).
+
+\newpage
+
+\section{The \texttt{IO\_matrix\_file} class}
+
+Read and write functions are provided by the class IO\_matrix\_file.
+It is possible to read or write data at every iteration of the
+simulation using an instance of this class.
+
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+IO_matrix_file(const string & filename);
+\end{verbatim}
+
+\subsubsection*{Description}   
+IO\_matrix\_file object constructor.
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{write}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short write(const vector<Matrix> & data);
+short write(const vector<Matrix> & data, const vector<string> & data_title);
+\end{verbatim}
+
+\subsubsection*{Description}   
+This member function appends \texttt{data} to a file (specified by the
+constructor, and opened by write() when first called). 
+\texttt{data\_title} is used to write a header description at the
+beginning of the file. If it is not specified, a default 
+description $datai, i=1,2,\cdots,n$ will be added. The header
+contains the number of iterations,
+the number of vectors and the data parameters, as follows:
+
+\indent
+\emph{nb$\_$iterations 1269}
+ 
+\emph{nb$\_$vector 2} 
+
+\emph{nb$\_$rows 1  nb$\_$cols 1  time (s)}
+
+\emph{nb$\_$rows 6  nb$\_$cols 1  q(i) (rad)}
+
+---------------------------------
+
+%\noindent
+\subsubsection*{Return Value}
+A short integer return the status:
+\begin{enumerate}
+\item[] 0 successful, 
+\item[] IO\_COULD\_NOT\_OPEN\_FILE
+\item[] IO\_DATA\_EMPTY
+\end{enumerate}
+\newpage 
+
+\subsection*{read}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short read(const vector<Matrix> & data);
+short read(const vector<Matrix> & data, const vector<string> & data_title);
+short read_all(vector<Matrix> & data, vector<string> & data_title);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These member functions read \texttt{data} from a file (specified by
+the constructor, and opened when first called). \texttt{read()} reads
+the values corresponding to only one iteration, while
+\texttt{read\_all()} reads the entire file at once.
+
+\noindent
+These member functions are meant to read a file that was written using
+\texttt{write()}.
+
+\subsubsection*{Return Value}
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] IO\_DATA\_EMPTY
+\item[] IO\_COULD\_NOT\_OPEN\_FILE
+\end{enumerate}
+
+\newpage 
+
+\section{Graphics}
+
+Graphics are provided through calls to the \textsf{gnuplot} \footnote{
+  \textsf{gnuplot} is freely available from the following location:
+  {\tt
+    \htmladdnormallink{http://www.gnuplot.info/}{http://www.gnuplot.info/}}
+  } software. Instances of the class {\tt Plot2d} and {\tt Plot\_file} are used 
+to generate the data and command files required by the call to \textsf{gnuplot}. 
+A plot can be generated using the \texttt{set\_plot2d} function.
+\newpage 
+
+\subsection*{\texttt{Plot2d} class}
+\subsection*{Constructor}
+ \subsubsection*{Syntax}
+ \begin{verbatim}
+  Plot2d(void);
+ \end{verbatim}
+
+ \subsubsection*{Description}   
+ Upon initialization, a {\tt Plot2d} object contain an empty graph.
+ Data, title, label and other goodies can be added using the following
+ member functions:
+\begin{itemize}
+\item {\tt addcommand};
+\item {\tt addcurve};
+\item {\tt dump};
+\item {\tt gnuplot};
+\item {\tt settitle};
+\item {\tt setxlabel};
+\item {\tt setylabel}.
+\end{itemize}
+
+ %{\bf Note: }
+
+\subsubsection*{Return Value}
+
+{\tt None}
+\newpage
+
+\subsection*{addcommand}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void addcommand(const char * gcom);
+\end{verbatim}
+\subsubsection*{Description}
+This function adds the command specified by the string {\tt gcom} to 
+the \textsf{gnuplot} command file. Ex: {\tt mygraph.addcommand("set grid")}.
+
+\noindent {\bf Note: } see the \textsf{gnuplot} documentation for the list
+of commands.
+
+\subsubsection*{Return Value}
+
+None 
+
+\newpage
+
+\subsection*{addcurve}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void addcurve(const Matrix & data, 
+              const char * label = "", 
+              int type = LINES);
+\end{verbatim}
+\subsubsection*{Description}
+This function add the curves specified by the $n \times 2$ matrix
+{\tt data} to the plot using the string {\tt label} for the legend
+and {\tt type} for the curve line type. Defined line types are:
+\begin{itemize}
+\item LINES;
+\item POINTS;
+\item LINESPOINTS;
+\item IMPULSES;
+\item DOTS;
+\item STEPS;
+\item BOXES.
+\end{itemize}
+See the \textsf{gnuplot} documentation for the description of these line
+types.
+
+%\noindent {\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{dump}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void dump(void);
+\end{verbatim}
+\subsubsection*{Description}
+This function dumps the current content of the object to {\tt stdout}.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{gnuplot}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void gnuplot(void);
+\end{verbatim}
+\subsubsection*{Description}
+This function calls \textsf{gnuplot} with the current content of the object.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{settitle}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void settitle(const char * t);
+\end{verbatim}
+\subsubsection*{Description}
+This function sets the title of the graph to the string {\tt t}.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{setxlabel}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void setxlabel(const char * t);
+\end{verbatim}
+\subsubsection*{Description}
+This function sets the axis X label of the graph to the string {\tt t}.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{setylabel}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void setylabel(const char * t);
+\end{verbatim}
+\subsubsection*{Description}
+This function sets the axis Y label of the graph to the string {\tt t}.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\subsection*{\texttt{Plot\_file} class}
+An instance of this class allows the creation of graphics from a data
+file. This file has to be created with an instance of the class IO\_matrix\_file. 
+\subsection*{Constructor}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Plot_file(const string & filename);
+\end{verbatim}
+
+\subsubsection*{Description}   
+Plot\_file object constructor.
+
+\subsubsection*{Return Value}
+
+{\tt None}
+ \newpage 
+
+\subsection*{graph}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short graph(const string & title_graph, const string & label, const short x,
+            const short y, const short x_start, const short y_start,
+            const short y_end);
+\end{verbatim}
+
+\subsubsection*{Description}   
+
+Create a graphic from a data file (specified by constructor).
+\texttt{title\_graph} and \texttt{label} are used to provide the
+graphic title and label names in the legend. \texttt{x} refers to the
+index in the ``\texttt{vector$<$Matrix$>$ \& data}'' (in class
+\texttt{IO\_Matrix\_file}) corresponding to the \texttt{x} axis (ex:
+time), while \texttt{y} refers to the index in the
+``\texttt{vector$<$Matrix$>$ \& data}'' corresponding to the
+\texttt{y} axis (ex: joints positions). \texttt{x\_start},
+\texttt{y\_start} and \texttt{y\_end} specify which rows of
+\texttt{data} to use.
+
+
+\subsubsection*{Return Value}
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] X\_Y\_DATA\_NO\_MATCH
+\item[] PROBLEM\_FILE\_READING
+\end{enumerate}
+
+ \newpage 
+
+\subsection*{set\_plot2d}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void set_plot2d(const char *title_graph, const char *x_axis_title, 
+                const char *y_axis_title, const char *label, int type, 
+                const Matrix &xdata, const Matrix &ydata,
+                int start_y, int end_y);
+
+void set_plot2d(const char *title_graph, const char *x_axis_title, 
+                const char *y_axis_title, const std::vector<char *> label,
+                int type, const Matrix &xdata, const Matrix &ydata,
+                const std::vector<int> & data_select);
+\end{verbatim}
+\subsubsection*{Description}
+This function generates a plot using a range (\texttt{start\_y,
+  end\_y}) or a selection of columns (\texttt{data\_select}) of the
+\texttt{ydtata} while setting the titles and labels.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None
+
+\newpage
+
+\section{Config class}
+\subsection*{Config}
+ \subsubsection*{Syntax}
+ \begin{verbatim}
+  Config(const string & filename, const bool bPrintErrorMessages = true);
+  Config(const Config & x);
+  Config & operator=(const Config & x);
+ \end{verbatim}
+
+\subsubsection*{Description}   
+This class provides a function to read a configuration. 
+
+\subsubsection*{Return Value}
+
+{\tt None}
+ \newpage 
+
+\subsection*{Reading and writing}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short read_conf();
+short write_conf(const string filename, const string file_title,
+                 const int space_between_column);
+\end{verbatim}
+
+\subsubsection*{Description}   
+The member function read\_conf reads a configuration file (specified
+by constructor). The member function \emph{write\_conf} writes the
+configuration data in a file. A configuration file is divided in
+sections, which contain different parameters with their values. A
+section starts by $[$\emph{section\_name}$]$ and contains one or more
+parameters an their values: \emph{parameter\_name: value} The ``:'' is
+mandatory between the name of the parameter and it's value. Lines
+beginning with a \# and white/empty lines are ignored .  The following
+example contains one section named \emph{PUMA560\_mDH}.
+
+\begin{verbatim}
+[PUMA560_mDH]
+DH:         0
+Fix:        1
+MinPara:    0
+dof:        6
+Motor:      0
+\end{verbatim}
+
+\subsubsection*{Return Value}
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] CAN\_NOT\_OPEN\_FILE
+\end{enumerate}
+\newpage 
+
+\subsection*{select}
+\subsubsection*{Syntax}
+\begin{verbatim}
+short select(const string section, const string parameter,
+                    string & value) const;
+short select(const string section, const string parameter,
+                  bool & value) const;
+short select(const string section, const string parameter,
+                   short & value) const;
+short select(const string section, const string parameter,
+                 int & value) const;
+short select(const string section, const string parameter,
+                    double & value) const;
+short select(const string section, const string parameter,
+                    float & value) const;
+\end{verbatim}
+
+\subsubsection*{Description}   
+These member functions are use to assign to the variable
+\texttt{value} the value of the parameter \texttt{parameter} from
+section section \texttt{section}.
+
+\subsubsection*{Return Value}
+Status, as a short int.
+\begin{enumerate}
+\item[] 0 successful
+\item[] SECTION\_OR\_PARAMETER\_DOES\_NOT\_EXIST
+\end{enumerate}
+ \newpage 
+
+\subsection*{add}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void add(const string section, const string parameter,
+                const string value);
+void add(const string section, const string parameter,
+              const bool value);
+void add(const string section, const string parameter,
+               const short value);
+void add(const string section, const string parameter,
+             const int value);
+void add(const string section, const string parameter,
+                const double value);
+void add(const string section, const string parameter,
+                const float value);
+\end{verbatim}
+
+\subsubsection*{Description}   
+These member functions are use to add data into the data file
+structure. They will create the section and the parameter if it does
+not already exist.
+
+\subsubsection*{Return Value}
+None
+\newpage 
+
+\section{Miscellaneous}
+
+\subsection*{odeint}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void odeint(ReturnMatrix (*xdot)(Real time, const Matrix & xin),
+            Matrix & xo, 
+            Real to, 
+            Real tf, 
+            Real eps, 
+            Real h1, 
+            Real hmin,
+            int & nok, 
+            int & nbad,
+            RowVector & tout, 
+            Matrix & xout, 
+            Real dtsav);
+\end{verbatim}
+\subsubsection*{Description}
+This function performs the numerical integration of 
+\begin{eqnarray}
+\dot{\mbold{x}} & = & \mbold{f}(\mbold{x}(t),t)
+\end{eqnarray}
+using an adaptive step size based on $4^{th}$ order Runge-Kutta scheme.
+It carries out the integration of {\tt xdot} with the initial conditions given by
+{\tt xo}, from time {\tt to} to {\tt tf} with accuracy {\tt eps} saving the results at
+{\tt dtsav} increments. After the function call, 
+{\tt tout} is set as 
+\begin{eqnarray}
+\matr{cccc}{ t_0 & t_1 & \cdots & t_{nsteps}}
+\end{eqnarray}
+{\tt xout} as
+\begin{eqnarray}
+\matr{cccc}{ \mbold{x}_0 & \mbold{x}_1 & \cdots & \mbold{x}_{nsteps}}
+\end{eqnarray}
+{\tt xo} as $\mbold{x}_{nsteps}$, {\tt nok} and {\tt nbad} to the number of
+good and bad steps taken. The function {\tt odeint} is adapted from \cite{press_flannery}.
+
+
+%\noindent {\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None ({\tt xo}, {\tt tout} and {\tt xout} are modified on output)
+
+\newpage
+
+\subsection*{Runge\_Kutta4}
+\subsubsection*{Syntax}
+\begin{verbatim}
+void Runge_Kutta4(ReturnMatrix (*xdot)(Real time, const Matrix & xin),
+                  const Matrix & xo, 
+                  Real to, 
+                  Real tf, 
+                  int nsteps,
+                  RowVector & tout, 
+                  Matrix & xout);
+\end{verbatim}
+\subsubsection*{Description}
+This function performs the numerical integration of 
+\begin{eqnarray}
+\dot{\mbold{x}} & = & \mbold{f}(\mbold{x}(t),t)
+\end{eqnarray}
+using a fixed step size $4^{th}$ order Runge-Kutta scheme.  It carries
+out the integration of {\tt xdot} with the initial conditions given by
+{\tt xo}, from time {\tt to} to {\tt tf} with {\tt nsteps}. After the
+function call, {\tt tout} is set as
+\begin{eqnarray}
+\matr{cccc}{ t_0 & t_1 & \cdots & t_{nsteps}}
+\end{eqnarray}
+and {\tt xout} as
+\begin{eqnarray}
+\matr{cccc}{ \mbold{x}_0 & \mbold{x}_1 & \cdots & \mbold{x}_{nsteps}}
+\end{eqnarray}
+
+
+%\noindent {\bf Note: } 
+
+\subsubsection*{Return Value}
+
+None ({\tt tout} and {\tt xout} are modified on output)
+
+\newpage
+
+\subsection*{Integ\_Trap}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix Integ_Trap(const ColumnVector & present, ColumnVector & past, 
+                        Real dt);
+\end{verbatim}
+\subsubsection*{Description}
+This function performs the trapezoidal integration of the vector
+$\mbold{past}$ to vector $\mbold{present}$ over $\mbold{dt}$.
+
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+
+\newpage
+
+\subsection*{pinv}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix pinv(const Matrix & M);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes the pseudo inverse of the matrix $M$ using SVD.
+If $ A = U^{*}QV $ is a singular value decomposition of $A$, then $
+A^{\dagger} = V^{*}Q^{\dagger}U$ where $ X^{*} $ is the conjugate
+transpose of $ X $ and
+\begin{eqnarray*}
+  Q^{\dagger} = \left [
+    \begin{array}{cccc}
+      1/\sigma_1 & & & \\
+      & 1/\sigma_2& & \\
+      &  & \ddots & \\
+      &  &  & 0
+    \end{array}
+  \right ]
+\end{eqnarray*}
+where the $1/\sigma_i $ are replaced by 0 when $1/\sigma_i < tol $.
+
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+\newpage
+
+\subsection*{vec\_dot\_prod}
+\subsubsection*{Syntax}
+\begin{verbatim}
+Real vec_dot_prod(const ColumnVector & x, const ColumnVector & y);
+\end{verbatim}
+\subsubsection*{Description}
+This function performs the vector dot product on {\tt x} and {\tt y}.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt ColumnVector}
+
+\newpage
+
+\subsection*{x\_prod\_matrix}
+\subsubsection*{Syntax}
+\begin{verbatim}
+ReturnMatrix x_prod_matrix(const ColumnVector & x);
+\end{verbatim}
+\subsubsection*{Description}
+This function computes the cross product matrix $S(x)$ of {\tt x} such
+that $S(x)y = x \times y$.
+%{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+{\tt Matrix}
+\newpage
+
+\section{Summary of functions}
+
+\begin{table}[htbp]
+\caption{Homogeneous transforms}
+\label{tab:commandsum1}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Homogeneous Transforms}} \\
+\hline
+\hline
+eulzxz & transform of Euler angles \\
+\hline
+ieulzxz & Euler angles of a transform \\
+\hline
+irotk & rotation around a unit vector of a transform \\
+\hline
+irpy & roll-pitch-yaw angles of a transform \\
+\hline
+rotd & transform of a rotation around a line segment \\
+\hline
+rotk & transform of a rotation around a unit vector \\
+\hline
+rpy & transform of roll-pitch-yaw angles \\
+\hline
+rotx & transform of a rotation around $X$ axis \\
+\hline
+roty & transform of a rotation around $Y$ axis \\
+\hline
+rotz & transform of a rotation around $Z$ axis \\
+\hline
+trans & transform of a translation \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Quaternion class member functions}
+\label{tab:commandsumQuat}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Quaternions}} \\
+\hline
+\hline
++, -, *, /, = & operators on quaternions \\
+\hline
+conjugate, i  & conjugate (or inverse) of a quaternion \\
+\hline
+exp, Log, power & exponential, logarithm and power of a quaternion \\
+\hline
+dot\_prod & dot product of a quaternion \\
+\hline
+dot, E & quaternion time derivative\\
+\hline
+unit & make a quaternion a unit quaternion \\
+\hline
+norm, norm\_sqr & compute the norm and the square norm of a quaternion \\
+\hline 
+s, v & returns the scalar and the vector of a quaternion \\
+\hline
+set\_s, set\_v & assign values to the scalar and vector part of a quaternion \\
+\hline
+R, T  & returns the equivalent rotation matrix ($3 \times 3$ or $4 \times 4$) \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Quaternion non member functions}
+\label{tab:commandsumQuatnm}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Functions}} \\
+\hline
+\hline
+Omega & returns angular velocity \\
+\hline
+Slerp  & Spherical Linear Interpolation \\
+\hline
+Slerp\_prime & Spherical Linear Interpolation derivative \\ 
+\hline
+Squad & Spherical Cubic Interpolation \\
+\hline
+Squad\_prime & Spherical Cubic Interpolation derivative \\
+\hline
+\hline 
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Spl\_Quaternion class member function}
+\label{tab:commandsum1b}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Spl\_Quaternion}} \\
+\hline
+\hline
+quat & interpolate the spline at time $t$ to sets the quaternion $q$. \\
+\hline
+quat\_w & interpolate the spline at time $t$ to sets the quaternion
+$q$ and angular velocity $\omega$. \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Spl\_Cubic class member function}
+\label{tab:commandsum1c}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Spl\_Cubic}} \\
+\hline
+\hline
+interpolating & interpolate the spline at time $t$. \\
+\hline
+first\_derivative & interpolate the spline first derivative at time $t$. \\
+\hline
+second\_derivative & interpolate the spline second derivative at time $t$. \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Spl\_path class member function}
+\label{tab:commandsum1d}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Spl\_path}} \\
+\hline
+\hline
+p & interpolate the spline at time $t$ to sets the position. \\
+\hline
+p\_pdot & interpolate the spline at time $t$ to sets position and velocity. \\
+\hline
+p\_pdot\_pddot & interpolate the spline at time $t$ to sets position,
+velocity and acceleration. \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{CLIK class member function}
+\label{tab:commandsum1e}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf CLIK}} \\
+\hline
+\hline
+q\_qdot & sets the desired joint position and joint velocity \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Computed\_torque\_method class member function}
+\label{tab:commandsum1f}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Computed\_torque\_method}} \\
+\hline
+\hline
+torque\_cmd & sets the output torque \\
+\hline
+set\_Kd & sets the derivative error gain \\
+\hline
+set\_Kp & sets the position error gain \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Resolve\_acc class member function}
+\label{tab:commandsum1g}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Resolve\_acc}} \\
+\hline
+\hline
+torque\_cmd & sets the output torque \\
+\hline
+set\_Kvp & sets the translational velocity error gain \\
+\hline
+set\_Kpp & sets the translational position error gain \\
+\hline
+set\_Kvo & sets the rotational velocity error gain \\
+\hline
+set\_Kpo & sets the rotational position error gain \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Impedance class member function}
+\label{tab:commandsum1h}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Impedance}} \\
+\hline
+\hline
+control & sets the compliant trajectory \\
+\hline
+set\_Mp & sets the translational impedance inertia matrix \\
+\hline
+set\_Dp & sets the translational impedance damping matrix \\
+\hline
+set\_Kp & sets the translational impedance stiffness matrix \\
+\hline
+set\_Mo & sets the rotational impedance inertia matrix \\
+\hline
+set\_Do & sets the rotational impedance damping matrix \\
+\hline
+set\_Ko & sets the rotational impedance stiffness matrix \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{IO\_matrix\_file class member functions}
+\label{tab:commandsum1i}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf IO\_matrix\_file}} \\
+\hline
+\hline
+write & create and write data to a file \\
+\hline
+read & read data from a file  \\
+\hline
+read\_all & read entire data file at once \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Plot2d class member functions}
+\label{tab:commandsum1j}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Plot2d}} \\
+\hline
+\hline
+addcommand & add a {\tt gnuplot} command the 2d graph \\
+\hline
+addcurve & add a curve to the 2d graph \\
+\hline
+dump & dump the content of the graph to {\tt stdout} \\
+\hline
+gnuplot & plot the graph through a call to \textsf{gnuplot} \\
+\hline
+settitle & sets graph title  \\
+\hline
+setxlabel & sets axis X label \\
+\hline
+setylabel & sets axis Y label \\
+\hline
+set\_plot2d & ``wrapper'' function for \texttt{Plot2d} \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Plot\_file class member functions}
+\label{tab:commandsum1k}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Plot\_file}} \\
+\hline
+\hline
+graph & create a graphics from a data file \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Config class member functions}
+\label{tab:commandsum1l}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Config}} \\
+\hline
+\hline
+read\_conf & read configuration file \\
+\hline
+select & assign the value of parameter from a section  \\
+\hline
+add & specify the value of parameter for a section  \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{\texttt{Robot} (and \texttt{mRobot}) class member functions}
+\label{tab:commandsum2}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Joint Variables}} \\
+\hline
+\hline
+get\_q & get the robot joint variables position \\
+\hline
+get\_qp & get the robot joint variables velocity \\
+\hline
+get\_qpp & get the robot joint variables acceleration \\
+\hline
+set\_q & set the robot joint variables position \\
+\hline
+set\_qp & set the robot joint variables velocity \\
+\hline
+set\_qpp & set the robot joint variables acceleration \\
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Robot Kinematics}} \\
+\hline
+\hline
+inv\_kin & inverse kinematics \\
+inv\_kin\_rhino & Rhino inverse kinematics \\
+inv\_kin\_puma & Puma inverse kinematics \\
+\hline
+jacobian & robot Jacobian \\
+jacobian\_dot & robot Jacobian derivative \\
+jacobian\_DLS\_inv & robot Jacobian DLS inverse\\
+\hline
+kine, kine\_pd & forward kinematics \\
+\hline
+dTdqi & partial derivative of forward kinematics \\
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Robot Dynamics}} \\
+\hline
+\hline
+acceleration & forward dynamics \\
+\hline
+inertia & robot inertia matrix \\
+\hline
+torque & inverse dynamics \\
+\hline
+torque\_novelocity & inverse dynamics without velocity and gravity \\
+\hline
+G & gravity effects \\
+\hline
+C & Coriolis and centrifugal effects \\
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Robot Linearized Dynamics}} \\
+\hline
+\hline
+delta\_torque & 
+$\delta \mbold{\tau} = \mbold{D(q)} \delta \ddot{\mbold{q}} 
++ \mbold{S_1(q,}\dot{\mbold{q}}) \delta \dot{\mbold{q}}
++ \mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}}) \delta \mbold{q}
+$ \\
+\hline
+dq\_torque & 
+$ \mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}}) \delta \mbold{q}
+$ \\
+\hline
+dqp\_torque & 
+$ \mbold{S_1(q,}\dot{\mbold{q}}) \delta \dot{\mbold{q}}
+$ \\
+\hline
+dtau\_dq & 
+$\dfdx{\mbold{\tau}}{\mbold{q}} = \mbold{S_2(q,}\dot{\mbold{q}},\ddot{\mbold{q}})
+$ \\
+\hline
+dtau\_dqp & 
+$\dfdx{\mbold{\tau}}{\dot{\mbold{q}}} = \mbold{S_1(q,}\dot{\mbold{q}}) 
+$ \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Miscellaneous}
+\label{tab:commandsum3}
+\begin{center}
+\begin{tabular}{||l|l||}
+\hline
+\hline
+\multicolumn{2}{||l||}{{\bf Miscellaneous}} \\
+\hline
+\hline
+odeint & adaptive step size Runge-Kutta integrator \\
+\hline
+Runge\_Kutta4 & fixed step size $4^{th}$ order Runge-Kutta integrator \\
+\hline
+Integ\_Trap & trapezoidal integration \\
+\hline
+pinv & matrix pseudo inverse \\
+\hline
+vec\_dot\_prod & vector dot product \\
+\hline
+vec\_x\_prod & vector cross product \\
+\hline
+x\_prod\_matrix & cross product matrix\\
+\hline
+perturb\_robot & perturb robot parameters \\
+\hline
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\chapter{Reporting bugs, contributions and comments}
+
+I intend to support this library. By this, I mean that bugs will be fixed as fast as
+time allows me and that new functionalities will be introduced in future releases.
+If you find a bug or think some part of the documentation could be improved, 
+let me know and I will try to include the corrections in the next release.
+Comments regarding the documentation will not be treated as fast as bug reports. 
+I will not, however, help users with problems related to assignments and homework.
+You can use your Web browser to send comments or bug report with the URL: 
+
+{\tt \htmladdnormallink{http://www.cours.polymtl.ca/roboop/}{http://www.cours.polymtl.ca/roboop/}}. \\
+If you don't have access to a Web browser, send email to 
+
+{\tt \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}}.
+
+\section{Reporting bugs}
+
+When reporting bugs, please send the following information (see the file {\tt bugs.txt}):
+\begin{verbatim}
+VERSION OF THE PACKAGE (see the readme.txt file):
+
+OS:
+
+COMPILER:
+
+DESCRIPTION OF THE BUG:
+
+SAMPLE CODE THAT MAKE THE BUG APPARENT:
+
+\end{verbatim}
+or use the URL: {\tt \htmladdnormallink{http://www.cours.polymtl.ca/roboop/}{http://www.cours.polymtl.ca/roboop/}}.
+
+
+\section{Making a contribution to the package}
+
+If you have written some code you think might be useful for other users of the package,
+I will be happy to integrate it in future releases. Makefiles for compilers not included
+in this distribution would be greatly appreciated. Contact me for more details: 
+{\tt \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}}.
+
+\section{Citing the package}
+
+If you are using the \textsf{ROBOOP} package, please let me know. If you want to cite this package
+in some of your work, please use \cite{Gourdeau97} or the following {\rmfamily B\kern-.05em%
+    \textsc{i\kern-.025em b}\kern-.08em%
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX} entry:
+\begin{verbatim}
+@ARTICLE{Gourdeau97,
+  author = {Richard Gourdeau},
+  month = sep,
+  year = 1997,
+  title = {Object Oriented Programming for Robotic
+           Manipulators Simulation},
+  journal = {IEEE Robotics and Automation Magazine},
+  volume = 4,
+  number = 3,
+  pages = {21--29}
+}
+\end{verbatim}
+
+\chapter{Credits and acknowledgments}
+
+I would like to thank Robert Davies for making his \textsf{NEWMAT11}
+library available.
+
+The hardware and software used to develop the initial releases of this
+package were funded through NSERC grants OGP0138478 and EQP0172766.
+
+I would like to thank Etienne Lachance for his contributions since the
+1.13 release and Samuel Belanger for the initial version of the
+Stewart class.
+
+\chapter{Future developments}
+
+In future releases, we hope to include the following:
+\begin{itemize}
+\item functions for basic control laws (sliding modes, etc);
+\item make files for other compilers.
+\end{itemize}
+
+
+\bibliographystyle{ieee}
+\bibliography{bibtex/control,bibtex/gourdeau,ooprsim,bibtex/souple}
+
+\appendix
+
+\input{rne}
+
+\input{gnulgpl}
+
+\end{document}
+\subsection*{}
+\subsubsection*{Syntax}
+\begin{verbatim}
+\end{verbatim}
+\subsubsection*{Description}
+
+{\bf Note: } 
+
+\subsubsection*{Return Value}
+
+\newpage
+
+% LocalWords:  ident

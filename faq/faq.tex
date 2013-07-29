@@ -1,0 +1,109 @@
+\documentclass[letterpaper]{article}
+
+\usepackage{html}
+\usepackage[latin1]{inputenc}
+\pagestyle{plain}
+
+\bodytext{bgcolor="#FFFFFF"}
+\begin{document}
+
+\title{FAQ -- Frequently Asked Questions}
+\author{}
+\date{\today}
+\begin{rawhtml}
+    <h1>
+      ROBOOP - A robotics object oriented package in C++
+    </h1>
+    <p>
+      [ <a href="./">Welcome</a> | 
+      <a href="whatsnew.php">What's New</a> | 
+      <a href="faq.html">FAQ</a> | 
+      <a href="bugrep.php">Bugs</a> | 
+      <a href="suggest.php">Suggestions</a> | 
+      <a href="download.php">Download</a> | 
+      <a href="mailinglists.php">Mailing Lists</a> | 
+      <a href="links.php">Links</a> ]
+    </p>
+  <hr>
+\end{rawhtml}
+\maketitle
+
+This page contains answers to common questions, along with some tips
+and tricks that we have found useful and presented here as questions.
+
+\tableofcontents
+
+\subsection{Is the package using \texttt{float} or \texttt{double} ?}
+
+The package can use the \texttt{Real} type that can be either
+\texttt{float} or \texttt{double} for numerical computations. The file
+\texttt{include.h} in the directory \texttt{newmat} contains the
+following lines:
+\begin{verbatim}
+#define USING_DOUBLE // elements of type double
+//#define USING_FLOAT // elements of type float
+\end{verbatim}
+that are used to select the floating point type used.
+
+\subsection{Compiling error under \textsf{Visual C++ 6.0}}
+
+When compiling the files under \textsf{Visual C++ 6.0}, it results in
+the following error:
+\begin{verbatim}
+c:\roboop\newmat\newmat.h(1404) : fatal error C1001: INTERNAL COMPILER ERROR
+        (compiler file 'msc1.cpp', line 1786)
+         Please choose the Technical Support command on the Visual C++ etc ...
+\end{verbatim}
+You have to apply the \htmladdnormallink{latest service
+  pack}{http://msdn2.microsoft.com/en-us/vstudio/aa718364.aspx}
+to \textsf{Visual C++ 6.0}.
+
+\subsection{Error with \texttt{roboop.sln} file under \textsf{Visual C++ .NET}}
+
+If you get an error when opening the \texttt{roboop.sln} file, open
+the \texttt{roboop.dsw} instead.
+
+\subsection{What is the performance of the package with respect to the
+  time required to evaluate the kinematics, dynamics, etc ?}
+
+The program \texttt{bench.cpp} can be used to benchmark some of the
+functionalities of the package for a 6 dof PUMA robot model (see the
+following table).
+\begin{center}
+  \begin{tabular}{|l|r|r|r|r|r|}
+    \hline
+    \multicolumn{6}{|c|}{Computing times (in milliseconds)} \\
+    \hline
+    Computer & \multicolumn{4}{|c|}{Pentium II 600MHz} & Pentium II 400MHz \\
+    \hline
+    Compiler/Function & cygwin gcc 3.3.1 & Borland C++ 5.5.1 &
+    OpenWatcom C++ 1.2 & Visual C++ .NET & Linux gcc 3.3.2 \\
+    \hline
+    Forward Kinematics &  0.39 & 0.08 & 0.07 & 0.04 & 0.08 \\
+    \hline
+    Inverse Kinematics & 10.74 & 2.21 & 1.90 & 1.39 & 2.31 \\
+    \hline
+    Jacobian &            0.67 & 0.12 & 0.10 & 0.08 & 0.13 \\
+    \hline
+    Torque &              3.88 & 0.60 & 0.58 & 0.42 & 0.56 \\
+    \hline
+    Acceleration &       18.16 & 2.85 & 2.68 & 1.96 & 2.76 \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\begin{rawhtml}
+  <hr>
+    <p>
+      [ <a href="./">Welcome</a> | 
+      <a href="whatsnew.php">What's New</a> | 
+      <a href="faq.html">FAQ</a> | 
+      <a href="bugrep.php">Bugs</a> | 
+      <a href="suggest.php">Suggestions</a> | 
+      <a href="download.php">Download</a> | 
+      <a href="mailinglists.php">Mailing Lists</a> | 
+      <a href="links.php">Links</a> ]
+    </p>
+\end{rawhtml}
+
+\end{document}
