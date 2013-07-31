@@ -44,9 +44,6 @@ Revision_history:
   @brief Trajectory member functions.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: trajectory.cpp,v 1.8 2006/05/16 19:24:26 gourdeau Exp $";
-
 #include "trajectory.h"
 
 #ifdef use_namespace

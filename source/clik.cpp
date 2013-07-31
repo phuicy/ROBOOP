@@ -29,9 +29,6 @@ Revision_history:
     -Added support for newmat's use_namespace #define, using ROBOOP namespace.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: clik.cpp,v 1.6 2006/05/16 16:11:15 gourdeau Exp $";
-
 /*!
   @file clik.cpp
   @brief Clik member functions.

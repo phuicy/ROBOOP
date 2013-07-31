@@ -27,9 +27,6 @@ email: samuel.belanger@polymtl.ca or richard.gourdeau@polymtl.ca
   @brief Initialisation of Stewart platform class.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: stewart.cpp,v 1.6 2006/05/16 19:24:26 gourdeau Exp $";
-
 #include "config.h"
 #include "stewart.h"
 

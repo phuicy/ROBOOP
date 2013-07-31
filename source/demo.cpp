@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -58,9 +57,6 @@ Revision_history:
 
   Demos for homogeneous transforms, kinematics, etc.
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: demo.cpp,v 1.34 2006/05/16 16:27:43 gourdeau Exp $";
 
 #include "gnugraph.h"
 #include "quaternion.h"

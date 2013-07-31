@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -116,9 +115,6 @@ Revision_history:
   @file robot.cpp
   @brief Initialisation of differents robot class.
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: robot.cpp,v 1.50 2006/05/16 19:24:26 gourdeau Exp $";
 
 #include <time.h>
 #include "config.h"

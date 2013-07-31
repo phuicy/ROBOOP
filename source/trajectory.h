@@ -56,10 +56,6 @@ Revision_history:
   @brief Header file for trajectory generation class.
 */
 
-//! @brief RCS/CVS version.
-static const char header_trajectory_rcsid[] = "$Id: trajectory.h,v 1.10 2006/05/16 19:24:26 gourdeau Exp $";
-
-
 #ifdef _MSC_VER                         // Microsoft
 //#include <string.h>
 //#include <iostream.h>

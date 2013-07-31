@@ -18,8 +18,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -61,9 +60,6 @@ Revision_history:
   @file invkine.cpp
   @brief Inverse kinematics solutions.
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: invkine.cpp,v 1.8 2006/05/16 16:11:15 gourdeau Exp $";
 
 #include <stdexcept>
 #include "robot.h"

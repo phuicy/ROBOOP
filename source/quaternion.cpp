@@ -63,9 +63,6 @@ Revision_history:
   @brief Quaternion functions.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: quaternion.cpp,v 1.18 2005/11/15 19:25:58 gourdeau Exp $";
-
 #include "quaternion.h"
 
 #ifdef use_namespace

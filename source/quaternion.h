@@ -71,9 +71,6 @@ Revision_history:
   @brief Quaternion class.
 */
 
-//! @brief RCS/CVS version.
-static const char header_quat_rcsid[] = "$Id: quaternion.h,v 1.12 2005/11/15 19:25:58 gourdeau Exp $";
-
 #include "robot.h"
 
 #ifdef use_namespace

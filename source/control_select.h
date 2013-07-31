@@ -42,10 +42,6 @@ Revision_history:
   @brief Header file for Control_Select class definitions.
 */
 
-//! @brief RCS/CVS version.
-static const char header_Control_Select_rcsid[] = "$Id: control_select.h,v 1.4 2006/05/16 16:11:15 gourdeau Exp $";
-
-
 #include <string>
 #include "controller.h"
 

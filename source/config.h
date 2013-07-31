@@ -57,10 +57,6 @@ Revision_history:
   @brief Header file for Config class definitions.
 */
 
-//! @brief RCS/CVS version.
-static const char header_config_rcsid[] = "$Id: config.h,v 1.18 2006/05/16 19:24:26 gourdeau Exp $";
-
-
 #ifdef _MSC_VER                  // Microsoft
 #pragma warning (disable:4786)  // Disable decorated name truncation warnings 
 #pragma warning (disable:4503)  // Disable decorated name truncation warnings 

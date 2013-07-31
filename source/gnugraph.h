@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -50,9 +49,6 @@ Revision_history:
   @file gnugraph.h
   @brief Header file for graphics definitions.
 */
-
-//! @brief RCS/CVS version.
-static const char header_gnugraph_rcsid[] = "$Id: gnugraph.h,v 1.13 2006/05/16 19:24:26 gourdeau Exp $";
 
 #ifdef _MSC_VER                  // Microsoft
 #pragma warning (disable:4786)  // Disable decorated name truncation warnings 

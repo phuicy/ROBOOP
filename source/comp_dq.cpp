@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -50,9 +49,6 @@ Revision_history:
   @file comp_dq.cpp
   @brief Delta torque (linearized dynamics).
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: comp_dq.cpp,v 1.17 2004/07/06 02:16:36 gourdeau Exp $";
 
 #include "robot.h"
 

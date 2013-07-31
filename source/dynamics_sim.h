@@ -37,9 +37,6 @@ Revision_history:
   @brief Header file for Dynamics definitions.
 */
 
-//! @brief RCS/CVS version.
-static const char header_dynamics_sim_rcsid[] = "$Id: dynamics_sim.h,v 1.4 2006/05/16 16:11:15 gourdeau Exp $";
-
 #include "control_select.h"
 #include "quaternion.h"
 #include "trajectory.h"

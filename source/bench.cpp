@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston,  MA 02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -50,9 +49,6 @@ Revision_history:
 
   Prints the time, on the console, to perform certain operations.
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: bench.cpp,v 1.20 2005/07/01 16:16:35 gourdeau Exp $";
 
 #include <time.h>
 

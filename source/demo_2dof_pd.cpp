@@ -37,9 +37,6 @@ Revision_history:
   desired joint trajectory is defined by the file "conf/q_2dof.dat";
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: demo_2dof_pd.cpp,v 1.2 2006/05/16 16:27:43 gourdeau Exp $";
-
 #include "gnugraph.h"
 #include "controller.h"
 #include "control_select.h"

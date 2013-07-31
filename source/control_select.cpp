@@ -45,9 +45,6 @@ Revision_history:
   @brief Controller selection class.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: control_select.cpp,v 1.7 2006/05/16 19:24:26 gourdeau Exp $";
-
 #include "config.h"
 #include "control_select.h"
 #include "trajectory.h"

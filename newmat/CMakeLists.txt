@@ -1,5 +1,5 @@
 # CMake configuration file roboop newmat dir
-# $Id: CMakeLists.txt,v 1.1 2006/11/20 04:52:29 gourdeau Exp $
+# 
 
 PROJECT(newmat)
 ADD_LIBRARY(newmat

@@ -55,10 +55,6 @@ Revision_history:
   @brief Configuration class functions.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: config.cpp,v 1.20 2006/05/16 19:24:26 gourdeau Exp $";
-
-
 #include "config.h"
 
 using namespace std;

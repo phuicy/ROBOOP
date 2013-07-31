@@ -45,10 +45,6 @@ Revision_history:
   @brief Header file for controller class definitions.
 */
 
-//! @brief RCS/CVS version.
-static const char header_controller_rcsid[] = "$Id: controller.h,v 1.5 2006/05/16 16:11:15 gourdeau Exp $";
-
-
 #include "robot.h"
 #include "quaternion.h"
 

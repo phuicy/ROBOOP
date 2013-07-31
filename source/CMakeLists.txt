@@ -1,5 +1,5 @@
 # CMake configuration file roboop source dir
-# $Id: CMakeLists.txt,v 1.1 2006/11/20 04:52:29 gourdeau Exp $
+# 
 
 PROJECT(roboop)
 ADD_LIBRARY(roboop

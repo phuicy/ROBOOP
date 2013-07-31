@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -58,9 +57,6 @@ Revision_history:
   @file utils.cpp
   @brief Utility functions.
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: utils.cpp,v 1.27 2007/02/15 15:30:29 gourdeau Exp $";
 
 #include "utils.h"
 

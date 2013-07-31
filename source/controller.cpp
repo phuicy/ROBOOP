@@ -39,10 +39,6 @@ Revision_history:
   @brief Differents controllers class.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: controller.cpp,v 1.3 2005/11/15 19:06:13 gourdeau Exp $";
-
-
 #include "controller.h"
 
 #ifdef use_namespace

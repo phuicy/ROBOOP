@@ -36,9 +36,6 @@ Revision_history:
   @brief Basic dynamics simulation class.
 */
 
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: dynamics_sim.cpp,v 1.6 2006/05/19 21:05:57 gourdeau Exp $";
-
 #include "dynamics_sim.h"
 #include "robot.h"
 

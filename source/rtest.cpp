@@ -19,8 +19,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -45,9 +44,6 @@ Revision_history:
 
   Compares results with Peter Corke MATLAB toolbox
 */
-
-//! @brief RCS/CVS version.
-static const char rcsid[] = "$Id: rtest.cpp,v 1.15 2005/07/01 17:44:53 gourdeau Exp $";
 
 #include "robot.h"
 #include "quaternion.h"
