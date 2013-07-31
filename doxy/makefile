@@ -5,5 +5,5 @@ all: version.txt
 	make -C latex
 
 version.txt : ../readme.txt
-	echo -n 'PROJECT_NUMBER         = ' > $@
+	printf "PROJECT_NUMBER         = " > $@
 	grep This.is.ver $< |cut -d ' ' -f 4 >> $@
