@@ -1,5 +1,5 @@
 # CMake configuration file roboop root dir
-# $Id: CMakeLists.txt,v 1.3 2006/12/11 14:27:17 gourdeau Exp $
+#
 
 PROJECT(roboop)
 IF(UNIX)

@@ -1,5 +1,5 @@
 # Roboop Makefile for GNU g++
-# $Id: makefile.gcc,v 1.22 2006/08/17 17:36:17 gourdeau Exp $
+#
 
 CC = g++
 

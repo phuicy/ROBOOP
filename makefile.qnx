@@ -1,5 +1,5 @@
 # Roboop Makefile for GNU g++
-# $Id: makefile.qnx,v 1.1 2007/09/26 13:39:25 gourdeau Exp $
+#
 
 CC = QCC -V3.3.5,gcc_ntox86
 

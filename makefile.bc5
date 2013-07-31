@@ -1,7 +1,5 @@
 # Roboop Makefile for Borland C++ 
-# $Id: makefile.bc5,v 1.19 2007/09/25 19:21:33 gourdeau Exp $
-#
-
+# 
 
 #
 # Borland C++ tools
