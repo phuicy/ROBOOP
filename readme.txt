@@ -17,8 +17,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Report problems and direct all questions to:
 
-Richard Gourdeau
-Professeur Agrege
+Richard Gourdeau, Professeur
 Departement de genie electrique
 Ecole Polytechnique de Montreal
 C.P. 6079, Succ. Centre-Ville
@@ -30,7 +29,7 @@ email: richard.gourdeau@polymtl.ca
 DESCRIPTION
 ===========
 
-This package (ROBOOP) is a C++ robotics object oriented programming toolbox 
+This library (ROBOOP) is a C++ robotics object oriented programming toolbox 
 suitable for synthesis, and simulation of robotic manipulator models in an 
 environment that provides "MATLAB like" features for the treatment of 
 matrices. Its is a portable tool that does not require the use of commercial 
@@ -42,27 +41,23 @@ WHERE CAN GET THIS PACKAGE
 ==========================
 
 Program source and documentation are available from the URL: 
-        http://www.cours.polymtl.ca/roboop
+        http://roboop.sourceforge.net/
 
 
 DOCUMENTATION
 =============
 
-The documentation is provided in postscript format:
-        docs/robot.ps
+The documentation is provided in PDF format:
+        docs/robot.pdf
 
 Documentation in html format is available from the URL: 
-        http://www.cours.polymtl.ca/roboop
+        http://roboop.sourceforge.net/
 
 
 
 VERSION
 =======
 
-This is version 1.31 of the package:
-
-Revisions of the source code are detailed in the file:
-
-revision.txt
+This is version 1.32 of the package.
 
 See the documentation for the version history.
