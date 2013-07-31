@@ -18,7 +18,7 @@
         <b>Source code</b> and documentation (<a href=
         "htmldoc/node10.html">including the license agreement</a>
         and <a href="htmldoc/GNUlgpl.txt">GNU LGPL license</a>) ) are
-        available from the <a href="https://sourceforge.net/projects/roboop/files/">download
+        available from the <a href="http://sourceforge.net/projects/roboop/files/">download
         area</a> and from the
         <a href="https://sourceforge.net/p/roboop/code/">GIT repository</a>.
       </li>
@@ -34,29 +34,22 @@
         "demo.php">demo program</a>.
       </li>
     </ul>
-<?php
-    /* <p> */
-    /*   You can also find the package <b>GLroboop</b> : an OpenGL interface using */
-    /*   the package ROBOOP. Resources for GLroboop are available: */
-    /* </p> */
-    /* <ul> */
-    /*   <li> */
-    /*     <b>Source code</b>, <a href="docs/GLroboop/readme.txt">readme.txt</a>, */
-    /*     <a href="docs/GLroboop/install/">install instructions</a> */
-    /*     (<a href="docs/GLroboop/install.pdf">pdf</a>) */
-    /*     <a href="docs/GNUgpl.txt">GNU GLP license</a> are */
-    /*     available from the <a href="download.php">download */
-    /*     area</a>. */
-    /*   </li> */
-    /*   <li> */
-    /*     <a href="docs/GLroboop/html/">Doxygen documentation</a> */
-    /*     (<a href="docs/GLroboop/html/main.html">no frames</a>) */
-    /*   </li> */
-    /*   <li> */
-    /*     <a href="docs/GLroboop.scr.png">Screenshot</a> */
-    /*   </li> */
-    /* </ul> */
-?>
+    <p>
+      You can also find the package <b>GLroboop</b> : an OpenGL interface using
+      the package ROBOOP. Resources for GLroboop are available:
+    </p>
+    <ul>
+      <li>
+        <b>Source code</b>,
+        <a href="GLroboop/readme.txt">readme.txt</a>,
+	<a href="GLroboop/install.pdf">install instructions (pdf)</a>
+        available from the <a href="http://sourceforge.net/projects/roboop/files/">download
+        area</a>.
+      </li>
+      <li>
+        <a href="GLroboop/GLroboop.scr.png">Screenshot</a>
+      </li>
+    </ul>
     <p>
     </p>
     
