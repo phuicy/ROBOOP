@@ -1,5 +1,4 @@
-\documentclass[dvips,11pt,fleqn]{report}
-\usepackage{html}
+\documentclass[11pt,fleqn,letterpaper]{report}
 \usepackage{hyperref}
 \usepackage{verbatim}
 
@@ -11,22 +10,12 @@
 \title{\textsf{ROBOOP} \\ A Robotics Object Oriented Package in C++ \\ version \input{version} \\
 \ \\ Documentation}
 
-\begin{latexonly}
 \author{\htmladdnormallink{Richard Gourdeau}{http://www.professeurs.polymtl.ca/richard.gourdeau/} \\ 
 D\'epartement de g\'enie \'electrique \\
 \'Ecole Polytechnique de Montr\'eal \\ C.P. 6079, Succ. Centre-Ville, \\
 Montr\'eal, Qu\'ebec, Canada, H3C 3A7 \\ 
 email: \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}
 }
-\end{latexonly}
-\begin{htmlonly}
-\author{\htmladdnormallink{Richard Gourdeau}{http://www.professeurs.polymtl.ca/richard.gourdeau/} \and
-D\'epartement de g\'enie \'electrique \and
-\'Ecole Polytechnique de Montr\'eal \and C.P. 6079, Succ. Centre-Ville, \and
-Montr\'eal, Qu\'ebec, Canada, H3C 3A7 \and
-email: \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}
-}
-\end{htmlonly}
 
 \maketitle 
 
@@ -38,7 +27,7 @@ email: \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@p
 
 This package (\textsf{ROBOOP}\footnote{Program source and
   documentation are available from the URL: {\tt
-    \htmladdnormallink{http://www.cours.polymtl.ca/roboop/}{http://www.cours.polymtl.ca/roboop/}}})
+    \htmladdnormallink{http://sourceforge.net/projects/roboop/}{http://sourceforge.net/projects/roboop/}}})
 is a C++ robotics object oriented programming toolbox suitable for
 synthesis, and simulation of robotic manipulator models in an
 environment that provides ``\textsf{MATLAB} like'' features for the
@@ -67,8 +56,8 @@ The library \htmladdnormallink{\textsf{Boost}}{http://www.boost.org/}
 is used by \textsf{ROBOOP}. Under most \textsf{Linux} distributions
 and \textsf{Cygwin}, \textsf{Boost} is a standard package (just
 install it). For Borland C++, \textsf{Visual C++} and \textsf{QNX},
-you can extract the following file
-(\htmladdnormallink{\textsf{boost\_inc.zip}}{http://www.cours.polymtl.ca/roboop/download/boost_inc.zip})
+you can copy the header directory \texttt{boost} from the 
+(\htmladdnormallink{\textsf{Boost} library}{http://www.boost.org/})
 in the \texttt{roboop/source} directory \footnote{simpler but will not
   provide you with all the \textsf{Boost} features}
 % or install \textsf{Boost} using the instructions provided in the
@@ -80,7 +69,7 @@ In order to use the graphic features of this package, the software
   the following location: {\tt
     \htmladdnormallink{http://www.gnuplot.info/}{http://www.gnuplot.info/}}
   } (version 3.5 on later) must be installed in the {\tt PATH} of your
-computer. The binary name is {\tt wgnuplot.exe} under \textsf{Windows
+computer. The binary name is {\tt gnuplot.exe} under \textsf{Windows
   95/98/NT/2000} (Win32) and \texttt{gnuplot} under most of other
 platforms, you should edit the file \texttt{gnugraph.h} if the
 binary name is different.
@@ -213,10 +202,20 @@ You can compile using one of the following ways (in the
 \begin{verbatim}
 make -f makefile.gccOSX
 \end{verbatim}
-\item \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/} and
+\item If you have
+  \htmladdnormallink{\textsf{CMake}}{http://www.cmake.org/} installed
+  then use
+\begin{verbatim}
+cmake .
+make
+\end{verbatim}
+\item If you have
   \htmladdnormallink{\textsf{Bakefile}}{http://bakefile.sourceforge.net/}
-  have not been tested yet but might work with the \textsf{Linux}
-  directives!
+  installed then use
+\begin{verbatim}
+bakefile -f gnu roboop.bkl
+make
+\end{verbatim}
 \end{enumerate}
 
 \subsection{QNX}
@@ -246,18 +245,11 @@ make -f makefile.qnx
 
   Corrected bug in irotk (reported by Chris Lightcap).
   
-  The program files in this version are the following revisions:
-{\small
-\verbatiminput{ident}
-}
-
 \item[version 1.30] (2006/08/17)
   
   Upgraded the matrix library to \textsf{NEWMAT11 (beta) April 2006}
   enabling compilation under \textsf{GNU g++ 4.1.x}.
   
-  The program files in this version are the following revisions:
-
 \item[version 1.29] (2006/05/19)
   
   \textsf{OpenWatcom} support is (temporally) suspended. Fixed gear
@@ -387,7 +379,6 @@ make -f makefile.qnx
   \item Tolerance in \texttt{inv\_kin} based on \texttt{USING\_FLOAT}
     from newmat's \texttt{include.h}
   \end{itemize}
-  The program files in this version are the following revisions:
 
 \item[version 1.20] (2004/07/02) 
 
@@ -1330,7 +1321,7 @@ and the member functions providing the different algorithms implementation
 The \texttt{Link} class (see table~\ref{tab:link}) encapsulates all
 the data and functionality required to characterize a single ``link''
 as it is defined by Denavit and Hartenberg (standard notation
-\cite{denahart}, or modified notation \cite{craig}). It is initialized
+\cite{Denavit55}, or modified notation \cite{craig}). It is initialized
 by providing the joint type ({\tt int joint\_type}: revolute=0,
 prismatic=1) and the parameters $\theta$, $d$, $a$, $\alpha$ ({\tt
   Real theta, d, a, alpha}) and a boolean value \texttt{Bool DH}
@@ -3806,10 +3797,7 @@ Comments regarding the documentation will not be treated as fast as bug reports.
 I will not, however, help users with problems related to assignments and homework.
 You can use your Web browser to send comments or bug report with the URL: 
 
-{\tt \htmladdnormallink{http://www.cours.polymtl.ca/roboop/}{http://www.cours.polymtl.ca/roboop/}}. \\
-If you don't have access to a Web browser, send email to 
-
-{\tt \htmladdnormallink{richard.gourdeau@polymtl.ca}{mailto:richard.gourdeau@polymtl.ca}}.
+{\tt \htmladdnormallink{http://sourceforge.net/projects/roboop/}{http://sourceforge.net/projects/roboop/}}.
 
 \section{Reporting bugs}
 
@@ -3826,7 +3814,7 @@ DESCRIPTION OF THE BUG:
 SAMPLE CODE THAT MAKE THE BUG APPARENT:
 
 \end{verbatim}
-or use the URL: {\tt \htmladdnormallink{http://www.cours.polymtl.ca/roboop/}{http://www.cours.polymtl.ca/roboop/}}.
+or use the URL: {\tt \htmladdnormallink{http://sourceforge.net/projects/roboop/}{http://sourceforge.net/projects/roboop/}}.
 
 
 \section{Making a contribution to the package}
@@ -3878,7 +3866,7 @@ In future releases, we hope to include the following:
 
 
 \bibliographystyle{ieee}
-\bibliography{bibtex/control,bibtex/gourdeau,ooprsim,bibtex/souple}
+\bibliography{ooprsim}
 
 \appendix
 
