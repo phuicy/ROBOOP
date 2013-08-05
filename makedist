@@ -3,10 +3,6 @@
 .PHONY : all clean
 
 all : 
-	./getident > docs/ident.tex
-	echo ROBOOP source code revisions > revisions.txt
-	echo ============================ >> revisions.txt
-	./getident >> revisions.txt
 	make -C docs
 	make -C doxy
 	zip -r roboop * -i *.txt -x CMakeCache.txt
@@ -16,32 +12,33 @@ all :
 	zip -r roboop * -i newmat/*.in
 	zip -r roboop * -i newmat/*.dox
 	zip -r roboop * -i newmat/*.png
-	zip -r roboop * -i *.h -x graphics/*.h
-	zip -r roboop * -i *.cpp -x graphics/*.cpp 
+	zip -r roboop * -i *.h -x "*CMakeFiles*" -x "*boost*"
+	zip -r roboop * -i *.cpp -x "*CMakeFiles*" -x "*boost*"
 	zip -r roboop * -i *.conf
 	zip -r roboop * -i *.dat
-	zip -r roboop * -i *.m*
-	zip -r roboop * -i *.wpj
-	zip -r roboop * -i *.tgt
-#	zip -r roboop * -i *.ps -x website/docs/*.ps
-	zip -r roboop * -i *.pdf -x website/docs/* -x website/docs/GLroboop/* -x /doxy/latex/class*.pdf
+	zip -r roboop * -i *.m* -x "*CMakeFiles*" -x "*boost*"
+# Watcom compiler no longer supported
+#	zip -r roboop * -i *.wpj
+#	zip -r roboop * -i *.tgt
+	zip -r roboop * -i *.pdf -x docs/htdocs/htmldoc/* -x /doxy/latex/class*.pdf -x docs/htdocs/roboop_doxy/*.pdf
 	zip -r roboop * -i *.gcc *.gccOSX *.qnx
 	zip -r roboop * -i *.gw32
 	zip -r roboop * -i *.bc5
 	zip -r roboop * -i *.vcpp
 	zip -r roboop * -i *.bkl
-	unix2dos *.dsw
-	unix2dos *.dsp
-	unix2dos *.sln
-	unix2dos *.vcproj
+# no converting
+#	unix2dos *.dsw
+#	unix2dos *.dsp
+#	unix2dos *.sln
+#	unix2dos *.vcproj
 	zip -r roboop * -i *.dsw
 	zip -r roboop * -i *.dsp
 	zip -r roboop * -i *.sln
 	zip -r roboop * -i *.vcproj
-	dos2unix *.vcproj
-	dos2unix *.sln
-	dos2unix *.dsp
-	dos2unix *.dsw
+#	dos2unix *.vcproj
+#	dos2unix *.sln
+#	dos2unix *.dsp
+#	dos2unix *.dsw
 	zip -r roboop * -i newmat/readme.txt
 	zip -r roboop * -i newmat/*.lfl
 	zip -r roboop * -i newmat/*.css
@@ -61,30 +58,16 @@ all :
 	gzip robdocs.tar
 	rm -R htmldoc/*
 	rmdir htmldoc
-	zip -j robot docs/robot.ps
-	cp docs/robot.ps .
-	gzip robot.ps
-	zip -j distribution roboop.zip roboop.tar.gz robot.zip \
-		docs/robot.ps docs/robot.pdf robot.ps.gz \
-		robdocs.tar.gz docs/robdocs.zip
-	if [ ! -e website/download ]; then mkdir website/download; fi
-	cp roboop.zip roboop.tar.gz robot.zip \
-		robot.ps.gz robdocs.tar.gz docs/robdocs.zip website/download
-	if [ ! -e website/docs ]; then mkdir website/docs; fi
-	cp docs/robot.ps docs/robot.pdf website/docs
-	if [ ! -e website/docs/html ]; then mkdir website/docs/html; fi
-	cp doxy/html/*.html website/docs/html
-	cp doxy/html/*.png website/docs/html
-	cp doxy/html/*.gif website/docs/html
-	cp doxy/html/*.css website/docs/html
-	cp doxy/latex/*.pdf website/docs
-	zip -j website/docs/roboop_doxy.zip website/docs/html/*
-	unzip docs/robdocs -d website/docs
-
-mail : all
-	uuencode distribution.zip distribution.zip | mail richard.gourdeau@polymtl.ca
+	if [ ! -e downloads ]; then mkdir downloads; fi
+	mv roboop.zip roboop.tar.gz robdocs.tar.gz docs/robdocs.zip downloads
+	if [ ! -e docs/htdocs/htmldoc ]; then mkdir docs/htdocs/htmldoc; fi
+	cp docs/robot.pdf docs/htdocs/htmldoc
+	if [ ! -e docs/htdocs/roboop_doxy ]; then mkdir docs/htdocs/roboop_doxy; fi
+	cp doxy/html/*.png docs/htdocs/roboop_doxy
+	cp doxy/html/*.css docs/htdocs/roboop_doxy
+	cp doxy/latex/*.pdf docs/htdocs/roboop_doxy
+	zip -j downloads/roboop_doxy.zip doxy/html/*
+	unzip downloads/robdocs -d docs/htdocs/htmldoc
 
 clean : 
-	rm distribution.zip roboop.zip docs/robdocs.zip roboop.tar.gz \
-		robot.zip robot.ps.gz robdocs.tar.gz makefile.*~ \
-		website/docs/roboop_doxy.zip
+	rm downloads/*.* makefile.*~
