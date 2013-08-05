@@ -43,7 +43,7 @@
         <b>Source code</b>,
         <a href="GLroboop/readme.txt">readme.txt</a>,
 	<a href="GLroboop/install.pdf">install instructions (pdf)</a>
-        available from the <a href="http://sourceforge.net/projects/roboop/files/">download
+        available from the <a href="https://sourceforge.net/projects/glroboop.roboop.p/files/">download
         area</a>.
       </li>
       <li>
