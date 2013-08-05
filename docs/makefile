@@ -2,25 +2,21 @@
 
 .PHONY : all
 
-all : robot.ps robot.pdf robot/robot.html robdocs.zip
+all : robot.pdf htmldoc/robot.html robdocs.zip
 
-robot.ps : robot.dvi
-	dvips -Ppdf -tletter $<
+robot.pdf : robot.tex gnulgpl.tex copyrigh.tex version.tex
+	pdflatex $<
+	bibtex $(<:.tex=.aux)
+	pdflatex $<
+	pdflatex $<
 
-robot.dvi : robot.tex gnulgpl.tex copyrigh.tex version.tex
-	latex $*
-	bibtex $*
-	latex $*
-	latex $*
+htmldoc/robot.html : robot.tex
+	if [ ! -e htmldoc ]; then mkdir htmldoc; fi
+	htlatex robot "html,3" "" -dhtmldoc/
+	cp htmldoc/robot.html htmldoc/index.html
 
-robot.pdf : robot.ps
-	ps2pdf $<
-
-robot/robot.html : robot.tex
-	latex2html -split 5 $<
-
-robdocs.zip : robot/robot.html
-	zip -j robdocs robot/*.html robot/*.gif robot/*.css robot/*.png
+robdocs.zip : htmldoc/robot.html
+	zip -j robdocs htmldoc/*.html htmldoc/*.css htmldoc/*.png
 
 version.tex : ../readme.txt
 	grep This.is.ver $< |cut -d ' ' -f 4 > $@

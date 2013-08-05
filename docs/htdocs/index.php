@@ -16,7 +16,7 @@
     <ul>
       <li>
         <b>Source code</b> and documentation (<a href=
-        "htmldoc/node10.html">including the license agreement</a>
+        "htmldoc/robotse4.html">including the license agreement</a>
         and <a href="htmldoc/GNUlgpl.txt">GNU LGPL license</a>) ) are
         available from the <a href="http://sourceforge.net/projects/roboop/files/">download
         area</a> and from the
