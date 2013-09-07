@@ -1,6 +1,8 @@
 # CMake configuration file roboop root dir
 #
 
+cmake_minimum_required(VERSION 2.6)
+
 PROJECT(roboop)
 IF(UNIX)
   IF(NOT APPLE)
@@ -10,7 +12,9 @@ IF(UNIX)
 ENDIF(UNIX)
 IF(WIN32)
   IF(NOT UNIX)
-    ADD_DEFINITIONS(-D_STANDARD_)
+    IF(NOT MINGW)
+      ADD_DEFINITIONS(-D_STANDARD_)
+    ENDIF(NOT MINGW)
   ENDIF(NOT UNIX)
 ENDIF(WIN32)
 SUBDIRS(source newmat)
