@@ -264,6 +264,27 @@ void trymat9()
       Clean(D,0.00000001); Print(D);
    }
    
+   {
+      Tracer et1("Stage 10");
+      // testing equal again
+      int i;
+      BandMatrix B(10,1,1), C;
+      for (i = 1; i <= 10; ++i) B(i, i) = 2;
+      for (i = 1; i <= 9; ++i) B(i, i+1) = B(i+1, i) = 2;
+      BandLUMatrix A;
+      A = B;
+      Matrix X = A.i() * B - IdentityMatrix(10); Clean(X,0.00000001); Print(X);
+      C = B * 2; B = C;
+      A = B;
+      X = A.i() * B - IdentityMatrix(10); Clean(X,0.00000001); Print(X);
+      B *= 3;
+      A = B;
+      X = A.i() * B - IdentityMatrix(10); Clean(X,0.00000001); Print(X);
+   }      
+   
+   
+   
+   
    
 //   cout << "\nEnd of ninth test\n";
 }

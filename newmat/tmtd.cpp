@@ -16,6 +16,9 @@
 using namespace NEWMAT;
 #endif
 
+void fix_signs(UpperTriangularMatrix& U);
+void fix_signs(LowerTriangularMatrix& L);
+
 ReturnMatrix Inverter1(const CroutMatrix& X)
 {
    Matrix Y = X.i();
@@ -127,6 +130,16 @@ public:
    void ClearRow(int i)       { X1.Row(i) = 0.0; }
    void SetRow(int i, int j)  { X1.Row(i) = X1.Row(j); }
 };
+
+// QRZ transform but check QRZT gives same answer
+void QRZ_checkT(Matrix& X, Matrix& Y, UpperTriangularMatrix& U, Matrix& M)
+{
+      Matrix XT = X.t(), YT = Y.t(), MT, BX;
+      LowerTriangularMatrix L;
+      QRZ(X, Y, U, M); QRZT(XT, YT, L, MT);
+      BX = U - L.t(); Clean(BX, 0.000000001); Print(BX); 
+      BX = M - MT.t(); Clean(BX, 0.000000001); Print(BX); 
+}    
 
 
 
@@ -497,6 +510,187 @@ void trymatd()
       
    }
    
+   {
+      Tracer et1("Stage 11");
+      // combining three decompositions
+      MultWithCarry MWC;
+      Matrix X1(100,20), Y1(100,5);
+      Matrix X2(210,20), Y2(210,5);
+      Matrix X3(60,20), Y3(60,5);
+      FillWithValues(MWC, X1); FillWithValues(MWC, Y1);
+      FillWithValues(MWC, X2); FillWithValues(MWC, Y2);
+      FillWithValues(MWC, X3); FillWithValues(MWC, Y3);
+      Matrix X = X1 & X2 & X3, Y = Y1 & Y2 & Y3;
+      UpperTriangularMatrix U, U1, U2, U3;
+      Matrix M, M1, M2, M3;
+      QRZ_checkT(X1, Y1, U1, M1);
+      QRZ_checkT(X2, Y2, U2, M2);
+      QRZ_checkT(X3, Y3, U3, M3);
+      QRZ(X, U); QRZ(X, Y, M);
+      Matrix B = U.i() * M;
+      UpdateQRZ(U1, U2);
+      UpdateQRZ(U1, M1, M2);
+      UpdateQRZ(U2, U3);
+      UpdateQRZ(U2, M2, M3);
+      Matrix BX = U3.i() * M3 - B;
+      Clean(BX, 0.000000001); Print(BX);
+      fix_signs(U3);
+      BX = U - U3;
+      Clean(BX, 0.000000001); Print(BX);
+      
+      // same again with some columns set to zero
+      FillWithValues(MWC, X1); FillWithValues(MWC, Y1);
+      FillWithValues(MWC, X2); FillWithValues(MWC, Y2);
+      FillWithValues(MWC, X3); FillWithValues(MWC, Y3);
+      X1.columns(1,8) = 0;
+      X2.columns(5,13) = 0;
+      X3.columns(10,20) = 0;      
+      X = X1 & X2 & X3; Y = Y1 & Y2 & Y3;
+      QRZ(X1, Y1, U1, M1);
+      QRZ(X2, Y2, U2, M2);
+      QRZ(X3, Y3, U3, M3);
+      QRZ(X, U); QRZ(X, Y, M);
+      B = U.i() * M;
+      UpdateQRZ(U1, U2);
+      UpdateQRZ(U1, M1, M2);
+      UpdateQRZ(U2, U3);
+      UpdateQRZ(U2, M2, M3);
+      BX = U3.i() * M3 - B;
+      Clean(BX, 0.000000001); Print(BX);
+      fix_signs(U3);
+      BX = U - U3;
+      Clean(BX, 0.000000001); Print(BX);
+      
+      // same again with some duplicate columns
+      FillWithValues(MWC, X1); FillWithValues(MWC, Y1);
+      FillWithValues(MWC, X2); FillWithValues(MWC, Y2);
+      FillWithValues(MWC, X3); FillWithValues(MWC, Y3);
+      X1.columns(4,5) = X1.columns(1,2);
+      X2.columns(7,12) = X2.columns(1,6);
+      X3.columns(11,20) = X3.columns(1,10);      
+      X = X1 & X2 & X3; Y = Y1 & Y2 & Y3;
+      QRZ(X1, Y1, U1, M1);
+      QRZ(X2, Y2, U2, M2);
+      QRZ(X3, Y3, U3, M3);
+      QRZ(X, U); QRZ(X, Y, M);
+      B = U.i() * M;
+      UpdateQRZ(U1, U2);
+      UpdateQRZ(U1, M1, M2);
+      UpdateQRZ(U2, U3);
+      UpdateQRZ(U2, M2, M3);
+      BX = U3.i() * M3 - B;
+      Clean(BX, 0.000000001); Print(BX);
+      fix_signs(U3);
+      BX = U - U3;
+      Clean(BX, 0.000000001); Print(BX);
+      
+      
+      
+      // Try with incremental update
+      FillWithValues(MWC, X1); FillWithValues(MWC, Y1);
+      FillWithValues(MWC, X2); FillWithValues(MWC, Y2);
+      FillWithValues(MWC, X3); FillWithValues(MWC, Y3);
+      X = X1 & X2 & X3, Y = Y1 & Y2 & Y3;
+      QRZ(X1, Y1, U1, M1);
+      UpdateQRZ(X2, U1); UpdateQRZ(X2, Y2, M1);
+      UpdateQRZ(X3, U1); UpdateQRZ(X3, Y3, M1);
+      QRZ(X, Y, U, M);
+      B = U.i() * M;
+      BX = U1.i() * M1 - B;
+      Clean(BX, 0.000000001); Print(BX);
+      fix_signs(U1);
+      BX = U - U1;
+      Clean(BX, 0.000000001); Print(BX);
+
+      // same again with some columns set to zero
+      FillWithValues(MWC, X1); FillWithValues(MWC, Y1);
+      FillWithValues(MWC, X2); FillWithValues(MWC, Y2);
+      FillWithValues(MWC, X3); FillWithValues(MWC, Y3);
+      X1.columns(1,8) = 0;
+      X2.columns(5,13) = 0;
+      X3.columns(10,20) = 0;      
+      X = X1 & X2 & X3, Y = Y1 & Y2 & Y3;
+      QRZ(X1, Y1, U1, M1);
+      UpdateQRZ(X2, U1); UpdateQRZ(X2, Y2, M1);
+      UpdateQRZ(X3, U1); UpdateQRZ(X3, Y3, M1);
+      QRZ(X, Y, U, M);
+      B = U.i() * M;
+      BX = U1.i() * M1 - B;
+      Clean(BX, 0.000000001); Print(BX);
+      fix_signs(U1);
+      BX = U - U1;
+      Clean(BX, 0.000000001); Print(BX);
+      
+      
+      // same again with some duplicate columns
+      FillWithValues(MWC, X1); FillWithValues(MWC, Y1);
+      FillWithValues(MWC, X2); FillWithValues(MWC, Y2);
+      FillWithValues(MWC, X3); FillWithValues(MWC, Y3);
+      X1.columns(4,5) = X1.columns(1,2);
+      X2.columns(7,12) = X2.columns(1,6);
+      X3.columns(11,20) = X3.columns(1,10);      
+      X = X1 & X2 & X3, Y = Y1 & Y2 & Y3;
+      QRZ(X1, Y1, U1, M1);
+      UpdateQRZ(X2, U1); UpdateQRZ(X2, Y2, M1);
+      UpdateQRZ(X3, U1); UpdateQRZ(X3, Y3, M1);
+      QRZ(X, Y, U, M);
+      B = U.i() * M;
+      BX = U1.i() * M1 - B;
+      Clean(BX, 0.000000001); Print(BX);
+      fix_signs(U1);
+      BX = U - U1;
+      Clean(BX, 0.000000001); Print(BX);
+      
+      // Try with incremental update using QRZT
+      LowerTriangularMatrix L, L1;
+      X1.resize(21, 90); X2.resize(21, 250); X3.resize(21, 113);
+      FillWithValues(MWC, X1);
+      FillWithValues(MWC, X2);
+      FillWithValues(MWC, X3);
+      X = X1 | X2 | X3;
+      QRZT(X1, L1);
+      UpdateQRZT(X2, L1);
+      UpdateQRZT(X3, L1);
+      QRZT(X, L);
+      fix_signs(L1);
+      BX = L - L1;
+      Clean(BX, 0.000000001); Print(BX);
+
+      // same again with some columns set to zero
+      FillWithValues(MWC, X1);
+      FillWithValues(MWC, X2);
+      FillWithValues(MWC, X3);
+      X1.rows(1,8) = 0;
+      X2.rows(5,13) = 0;
+      X3.rows(10,21) = 0;      
+      X = X1 | X2 | X3;
+      QRZT(X1, L1);
+      UpdateQRZT(X2, L1);
+      UpdateQRZT(X3, L1);
+      QRZT(X, L);
+      fix_signs(L1);
+      BX = L - L1;
+      Clean(BX, 0.000000001); Print(BX);
+      
+      
+      // same again with some duplicate columns
+      FillWithValues(MWC, X1);
+      FillWithValues(MWC, X2);
+      FillWithValues(MWC, X3);
+      X1.columns(4,5) = X1.columns(1,2);
+      X2.columns(7,12) = X2.columns(1,6);
+      X3.columns(12,21) = X3.columns(1,10);      
+      X = X1 | X2 | X3;
+      QRZT(X1, L1);
+      UpdateQRZT(X2, L1);
+      UpdateQRZT(X3, L1);
+      QRZT(X, L);
+      fix_signs(L1);
+      BX = L - L1;
+      Clean(BX, 0.000000001); Print(BX);
+   }   
+      
+   
 //   cout << "\nEnd of Thirteenth test\n";
 }
 
@@ -535,8 +729,41 @@ void TestUpdateQRZ::DoTest()
    X = XT1 & XT2 & XT3;
    UpdateQRZ(X, UY);
    Diff = SM - UY.t() * UY; Clean(Diff, 0.000000001); Print(Diff);
-   QRZ(XT1, UX); UpdateQRZ(XT2, UX); UpdateQRZ(XT3, UX);
+	 Matrix XT1A = XT1, XT2A = XT2, XT3A = XT3;
+   QRZ(XT1A, UX); UpdateQRZ(XT2A, UX); UpdateQRZ(XT3A, UX);
    Diff = SM - UX.t() * UX; Clean(Diff, 0.000000001); Print(Diff);
-}   
+	 UpperTriangularMatrix UT1, UT2, UT3;
+   QRZ(XT1, UT1); QRZ(XT2, UT2); QRZ(XT3, UT3);
+	 UpdateQRZ(UT1, UT2); UpdateQRZ(UT2, UT3);
+	 Diff = SM - UT3.t() * UT3; Clean(Diff, 0.000000001); Print(Diff);
+}
+
+// if the diagonal element is negative, change the sign of that row
+void fix_signs(UpperTriangularMatrix& U)
+{
+   Tracer et("fix_signs(U)");
+   int n = U.nrows();
+   Real* u = U.data();
+   int j = n;
+   while (j)
+   {
+      if (*u < 0) { int k = j; while (k--) { *u = - *u; ++u; } }
+      else u += j;
+      --j;
+   }
+}
+
+// if the diagonal element is negative, change the sign of that column
+void fix_signs(LowerTriangularMatrix& L)
+{
+   Tracer et("fix_signs(L)");
+   int n = L.nrows();
+   for (int i = 1; i <= n; ++i)
+   {
+      if (L(i,i) < 0)
+      L.column(i) = -L.column(i);
+   }
+}
+   
 
 ///@}

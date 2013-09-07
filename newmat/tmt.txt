@@ -2052,6 +2052,18 @@ Matrix type: Rect  (1, 4)
 
 All elements are zero
 
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
   * Tenth test of Matrix package
   * Matrix test program
 
@@ -2537,6 +2549,198 @@ Matrix type: Rect  (1, 0)
 
 All elements are zero
 
+Matrix type: Rect  (37, 23)
+
+All elements are zero
+
+Matrix type: Rect  (33, 33)
+
+All elements are zero
+
+Matrix type: Rect  (37, 23)
+
+All elements are zero
+
+Matrix type: Rect  (30, 30)
+
+All elements are zero
+
+Matrix type: Rect  (50, 50)
+
+All elements are zero
+
+Matrix type: Rect  (50, 50)
+
+All elements are zero
+
+Matrix type: Rect  (50, 50)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (10, 13)
+
+All elements are zero
+
+Matrix type: Rect  (17, 17)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: UT    (19, 19)
+
+All elements are zero
+
+Matrix type: UT    (19, 19)
+
+All elements are zero
+
+Matrix type: Rect  (19, 19)
+
+All elements are zero
+
+Matrix type: Sym   (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
+Matrix type: Rect  (13, 13)
+
+All elements are zero
+
   * Thirteenth test of Matrix package
   * Matrix test program
 
@@ -2892,6 +3096,46 @@ Matrix type: Rect  (10, 10)
 
 All elements are zero
 
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (15, 15)
+
+All elements are zero
+
+Matrix type: Rect  (15, 15)
+
+All elements are zero
+
+Matrix type: Rect  (15, 15)
+
+All elements are zero
+
+Matrix type: Rect  (15, 15)
+
+All elements are zero
+
+Matrix type: Rect  (15, 15)
+
+All elements are zero
+
 Matrix type: Rect  (15, 15)
 
 All elements are zero
@@ -3033,6 +3277,94 @@ Matrix type: Rect  (5, 5)
 All elements are zero
 
 Matrix type: Rect  (5, 5)
+
+All elements are zero
+
+Matrix type: Rect  (5, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (20, 5)
+
+All elements are zero
+
+Matrix type: Rect  (20, 20)
+
+All elements are zero
+
+Matrix type: Rect  (21, 21)
+
+All elements are zero
+
+Matrix type: Rect  (21, 21)
+
+All elements are zero
+
+Matrix type: Rect  (21, 21)
 
 All elements are zero
 
@@ -3444,6 +3776,22 @@ Matrix type: Diag  (10, 10)
 All elements are zero
 
 Matrix type: Rect  (10, 10)
+
+All elements are zero
+
+Matrix type: Rect  (2, 2)
+
+All elements are zero
+
+Matrix type: Rect  (2, 2)
+
+All elements are zero
+
+Matrix type: Rect  (2, 2)
+
+All elements are zero
+
+Matrix type: Rect  (2, 2)
 
 All elements are zero
 
@@ -6234,12 +6582,13 @@ End of tests
 (The following memory checks are probably not valid with all
 compilers - see documentation)
 
-Checking for lost memory (large block): 9977784 9977784  - ok
+Checking for lost memory (large block): 10501164 10501164  - ok
 
 
-Checking for lost memory (small block): 9977784 9977784  - ok
+Checking for lost memory (small block): 10501164 10501164  - ok
 
-Elapsed (processor) time = 0.44 seconds
-
-Number of matrices tested                 = 1517
+Number of matrices tested                 = 1604
 Number of non-zero matrices (should be 1) = 1
+
+Elapsed (processor) time = 0.36 seconds
+

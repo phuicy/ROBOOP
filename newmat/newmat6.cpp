@@ -494,12 +494,25 @@ void GeneralMatrix::operator+=(const BaseMatrix& X)
    REPORT
    Tracer tr("GeneralMatrix::operator+=");
    // MatrixConversionCheck mcc;
-   Protect();                                   // so it cannot get deleted
-						// during Evaluate
+   Protect();  // so it cannot get deleted during Evaluate
    GeneralMatrix* gm = ((BaseMatrix&)X).Evaluate();
    AddedMatrix am(this,gm);
    if (gm==this) Release(2); else Release();
    Eq2(am,type());
+}
+
+// GeneralMatrix operators
+
+void GeneralMatrix::SP_eq(const BaseMatrix& X)
+{
+   REPORT
+   Tracer tr("GeneralMatrix::SP_eq");
+   // MatrixConversionCheck mcc;
+   Protect();  // so it cannot get deleted during Evaluate
+   GeneralMatrix* gm = ((BaseMatrix&)X).Evaluate();
+   SPMatrix spm(this,gm);
+   if (gm==this) Release(2); else Release();
+   Eq2(spm,type());
 }
 
 void GeneralMatrix::operator-=(const BaseMatrix& X)
@@ -585,6 +598,21 @@ void GenericMatrix::operator+=(const BaseMatrix& X)
    AddedMatrix am(gm,gmx);
    if (gmx==gm) gm->Release(2); else gm->Release();
    GeneralMatrix* gmy = am.Evaluate();
+   if (gmy != gm) { REPORT delete gm; gm = gmy->Image(); }
+   else { REPORT }
+   gm->Protect();
+}
+
+void GenericMatrix::SP_eq(const BaseMatrix& X)
+{
+   REPORT
+   Tracer tr("GenericMatrix::SP_eq");
+   if (!gm) Throw(ProgramException("GenericMatrix is null"));
+   gm->Protect();            // so it cannot get deleted during Evaluate
+   GeneralMatrix* gmx = ((BaseMatrix&)X).Evaluate();
+   SPMatrix spm(gm,gmx);
+   if (gmx==gm) gm->Release(2); else gm->Release();
+   GeneralMatrix* gmy = spm.Evaluate();
    if (gmy != gm) { REPORT delete gm; gm = gmy->Image(); }
    else { REPORT }
    gm->Protect();

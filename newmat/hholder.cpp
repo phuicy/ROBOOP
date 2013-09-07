@@ -334,6 +334,150 @@ void updateQRZ(Matrix& X, UpperTriangularMatrix& U)
    }
 }
 
+// Following previous transformation,
+// now apply the same orthogonal transformation to (MX & MU)
+// Need the X Matrix but not the U.
+// Not optimised for accessing consecutive memory
+
+void updateQRZ(const Matrix& X, Matrix& MX, Matrix& MU)
+{
+   REPORT
+   Tracer et("updateQRZ(2)");
+   int s = X.Ncols(); int n = X.Nrows();
+   if (n != MX.Nrows())
+      Throw(ProgramException("Incompatible dimensions",X,MX));
+   if (s != MU.Nrows())
+      Throw(ProgramException("Incompatible dimensions",X,MU));
+   int t = MX.Ncols();
+   if (t != MU.Ncols())
+      Throw(ProgramException("Incompatible dimensions",MX,MU));
+   
+   if (s == 0) return;
+    
+   const Real* xi0 = X.data(); Real* mx = MX.data(); Real* muj = MU.data();
+   for (int i=1; i<=s; ++i)
+   {
+		  Real sum = 0.0;
+			{
+         const Real* xi=xi0; int k=n;
+			   while(k--) { sum += square(*xi); xi+= s;}
+			}
+      Real a0 = sqrt(2.0 - sum); Real* mxj0 = mx;
+      for (int j=1; j<=t; ++j)
+      {
+         Real sum = 0.0;
+         const Real* xi=xi0; Real* mxj=mxj0; int k=n; 
+         while(--k) { sum += *xi * *mxj; xi += s; mxj += t; }
+         sum += *xi * *mxj;    // last line of loop
+         sum += a0 * *muj;
+         xi=xi0; mxj=mxj0; k=n;
+         while(--k) { *mxj -= sum * *xi; xi += s; mxj += t; }
+         *mxj -= sum * *xi;    // last line of loop
+         *muj -= sum * a0; ++mxj0; ++muj;
+      }
+			++xi0;
+   }
+}
+
+
+
+// same thing as updateQRZ(Matrix& X, UpperTriangularMatrix& U)
+// except that X is upper triangular
+// contents of X are destroyed - results are in U
+// assume we can access efficiently by columns
+// e.g. X and U will fit in cache memory
+
+void updateQRZ(UpperTriangularMatrix& X, UpperTriangularMatrix& U)
+{
+   REPORT
+   Tracer et("updateQRZ(3)");
+   int s = X.Ncols();
+   if (s != U.Ncols())
+      Throw(ProgramException("Incompatible dimensions",X,U));
+   if (s == 0) return; 
+   Real* xi0 = X.data(); Real* u = U.data();
+   for (int i=1; i<=s; ++i)
+   {
+		  Real r = *u; Real sum = 0.0;
+			{
+         Real* xi=xi0; int k=i; int l=s;
+			   while(k--) { sum += square(*xi); xi+= --l;}
+			}
+      sum = sqrt(sum + square(r));
+      if (sum == 0.0) { REPORT X.column(i) = 0.0; *u = 0.0; }
+      else
+      {
+         Real frs = fabs(r) + sum;
+         Real a0 = sqrt(frs / sum); Real alpha = a0 / frs;
+         if (r <= 0) { REPORT *u = sum; alpha = -alpha; }
+         else { REPORT *u = -sum; }
+         {
+            Real* xj0=xi0; int k=i; int l=s;
+            while(k--) { *xj0 *= alpha; --l; xj0 += l;}
+         }
+         Real* xj0=xi0; Real* uj=u;
+         for (int j=i+1; j<=s; ++j)
+         {
+            Real sum = 0.0; ++xj0; ++uj;
+            Real* xi=xi0; Real* xj=xj0; int k=i; int l=s; 
+            while(k--) { sum += *xi * *xj; --l; xi += l; xj += l; }
+            sum += a0 * *uj;
+            xi=xi0; xj=xj0; k=i; l=s;
+            while(k--) { *xj -= sum * *xi; --l; xi += l; xj += l; }
+            *uj -= sum * a0;
+         }
+      }
+			++xi0; u += s-i+1;
+   }
+}
+
+// Following previous transformation,
+// now apply the same orthogonal transformation to (MX & MU)
+// Need the X UpperTriangularMatrix but not the U.
+
+void updateQRZ(const UpperTriangularMatrix& X, Matrix& MX, Matrix& MU)
+{
+   REPORT
+   Tracer et("updateQRZ(4)");
+   int s = X.Ncols();
+   if (s != MX.Nrows())
+      Throw(ProgramException("Incompatible dimensions",X,MX));
+   if (s != MU.Nrows())
+      Throw(ProgramException("Incompatible dimensions",X,MU));
+   int t = MX.Ncols();
+   if (t != MU.Ncols())
+      Throw(ProgramException("Incompatible dimensions",MX,MU));
+   if (s == 0) return;
+    
+   const Real* xi0 = X.data(); Real* mx = MX.data(); Real* muj = MU.data();
+   for (int i=1; i<=s; ++i)
+   {
+		  Real sum = 0.0;
+			{
+         const Real* xi=xi0; int k=i; int l=s;
+			   while(k--) { sum += square(*xi); xi+= --l;}
+			}
+      Real a0 = sqrt(2.0 - sum); Real* mxj0 = mx;
+      for (int j=1; j<=t; ++j)
+      {
+         Real sum = 0.0;
+         const Real* xi=xi0; Real* mxj=mxj0; int k=i; int l=s; 
+         while(--k) { sum += *xi * *mxj; --l; xi += l; mxj += t; }
+         sum += *xi * *mxj;    // last line of loop
+         sum += a0 * *muj;
+         xi=xi0; mxj=mxj0; k=i; l=s;
+         while(--k) { *mxj -= sum * *xi; --l; xi += l; mxj += t; }
+         *mxj -= sum * *xi;    // last line of loop
+         *muj -= sum * a0; ++mxj0; ++muj;
+      }
+			++xi0;
+   }
+}
+
+
+
+
+
 // Matrix A's first n columns are orthonormal
 // so A.Columns(1,n).t() * A.Columns(1,n) is the identity matrix.
 // Fill out the remaining columns of A to make them orthonormal

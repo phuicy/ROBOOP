@@ -485,6 +485,26 @@ void trymate()
       Clean(A, 0.000000001); Print(A);
    }
 
+   {
+      Tracer et1("Stage 10");
+      // 2x2 evalue test
+      SymmetricMatrix A(2); DiagonalMatrix D; Matrix V;
+      Real a[] = {0.616556, 0.61544, 0.716556};
+      A << a;
+      EigenValues(A,D,V);
+      Matrix X = V * D * V.t() - A;
+      Clean(X, 0.000000001); Print(X);
+      Matrix Y = V * V.t() - IdentityMatrix(2);
+      Clean(Y, 0.000000001); Print(Y);
+      D.cleanup(); V.cleanup();
+      Jacobi(A,D,V);
+      X = V * D * V.t() - A;
+      Clean(X, 0.000000001); Print(X);
+      Y = V * V.t() - IdentityMatrix(2);
+      Clean(Y, 0.000000001); Print(Y);
+            
+   }
+
 
 
 }

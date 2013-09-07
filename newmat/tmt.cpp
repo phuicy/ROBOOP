@@ -27,15 +27,15 @@ class PrintCounter
    int count;
    const char* s;
 public:
-   ~PrintCounter();
    PrintCounter(const char * sx) : count(0), s(sx) {}
    void operator++() { count++; }
+   void report();
 };
 
 PrintCounter PCZ("Number of non-zero matrices (should be 1) = ");
 PrintCounter PCN("Number of matrices tested                 = ");
 
-PrintCounter::~PrintCounter()
+void PrintCounter::report()
 { cout << s << count << "\n"; }
 
 
@@ -180,7 +180,7 @@ void MultWithCarry::NextValue()
    unsigned long axc = x_lo * m_hi + x_hi * m_lo + c_hi + (x >> 16);
    crry = x_hi * m_hi + (axc >> 16);
 
-   x = (x & 0xFFFF) + (axc << 16);
+   x = (x & 0xFFFF) + ((axc << 16) & 0xFFFFFFFF);
 
 }
 
@@ -194,6 +194,35 @@ void FillWithValues(MultWithCarry&MWC, Matrix& M)
    for (int i = 1; i <= nr; ++i) for (int j = 1; j <= nc; ++ j)
    M(i, j) = MWC.Next();
 }
+   
+void FillWithValues(MultWithCarry&MWC, UpperTriangularMatrix& M)
+{
+   int nr = M.nrows();
+   for (int i = 1; i <= nr; ++i) for (int j = i; j <= nr; ++ j)
+   M(i, j) = MWC.Next();
+}
+   
+void FillWithValues(MultWithCarry&MWC, LowerTriangularMatrix& M)
+{
+   int nr = M.nrows();
+   for (int i = 1; i <= nr; ++i) for (int j = 1; j <= i; ++ j)
+   M(i, j) = MWC.Next();
+}
+   
+void FillWithValues(MultWithCarry&MWC, DiagonalMatrix& M)
+{
+   int nr = M.nrows();
+   for (int i = 1; i <= nr; ++i)
+   M(i) = MWC.Next();
+}
+
+void FillWithValues(MultWithCarry&MWC, SymmetricMatrix& M)
+{
+   int nr = M.nrows();
+   for (int i = 1; i <= nr; ++i) for (int j = 1; j <= i; ++ j)
+   M(i, j) = MWC.Next();
+}
+   
    
 
 #ifdef use_namespace
@@ -222,6 +251,7 @@ int main()
 #ifndef DisableExceptions
    Try { Throw(BaseException("Just a dummy\n")); }
    CatchAll {}
+   BaseException::clear();
 #else
    cout << "Not doing exceptions\n";
 #endif
@@ -241,7 +271,7 @@ int main()
 
       TestTypeAdd(); TestTypeMult(); TestTypeConcat();
       TestTypeSP(); TestTypeKP(); TestTypeOrder();
-
+      
       Try { 
          trymat1();
          trymat2();
@@ -295,6 +325,12 @@ int main()
 #ifdef DO_FREE_CHECK
    FreeCheck::Status();
 #endif
+
+   // print matrix print count
+   PCN.report();
+   PCZ.report();
+   cout << endl;
+
    return 0;
 }
 

@@ -1,66 +1,65 @@
-.cpp.obj:
-		wcl386 -c -xs  $*.cpp
 
+conlibs = 
 
 DIFF = sdiff
 PRE =
 
+.SUFFIXES: .cpp
 
-
+.cpp.obj:
+		icl -c -GX -GR -Ge -GS -Qprec -Qprec_div -nologo -Qlong_double $*.cpp
 
 everything:    	tmt.exe example.exe nm_ex1.exe nm_ex2.exe nm_ex3.exe test_exc.exe nl_ex.exe sl_ex.exe garch.exe 
 
 newmat_lobj = newmat1.obj newmat2.obj newmat3.obj newmat4.obj newmat5.obj newmat6.obj newmat7.obj newmat8.obj newmatex.obj bandmat.obj submat.obj myexcept.obj cholesky.obj evalue.obj fft.obj hholder.obj jacobi.obj newfft.obj sort.obj svd.obj nm_misc.obj newmatrm.obj newmat9.obj
 
-newmat_pobj = +newmat1.obj +newmat2.obj +newmat3.obj +newmat4.obj +newmat5.obj +newmat6.obj +newmat7.obj +newmat8.obj +newmatex.obj +bandmat.obj +submat.obj +myexcept.obj +cholesky.obj +evalue.obj +fft.obj +hholder.obj +jacobi.obj +newfft.obj +sort.obj +svd.obj +nm_misc.obj +newmatrm.obj +newmat9.obj
-
 newmat.lib:    	$(newmat_lobj)
-		wlib -n $@ $(newmat_pobj)
+		lib -Out:$@ $(newmat_lobj)
 
 tmt_obj = tmt.obj tmt1.obj tmt2.obj tmt3.obj tmt4.obj tmt5.obj tmt6.obj tmt7.obj tmt8.obj tmt9.obj tmta.obj tmtb.obj tmtc.obj tmtd.obj tmte.obj tmtf.obj tmtg.obj tmth.obj tmti.obj tmtj.obj tmtk.obj tmtl.obj tmtm.obj
 
 tmt.exe:       	$(tmt_obj) newmat.lib
-		wcl386 -fe=$@ $(tmt_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(tmt_obj) newmat.lib
 
 example_obj = example.obj
 
 example.exe:   	$(example_obj) newmat.lib
-		wcl386 -fe=$@ $(example_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(example_obj) newmat.lib
 
 nm_ex1_obj = nm_ex1.obj
 
 nm_ex1.exe:    	$(nm_ex1_obj) newmat.lib
-		wcl386 -fe=$@ $(nm_ex1_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(nm_ex1_obj) newmat.lib
 
 nm_ex2_obj = nm_ex2.obj
 
 nm_ex2.exe:    	$(nm_ex2_obj) newmat.lib
-		wcl386 -fe=$@ $(nm_ex2_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(nm_ex2_obj) newmat.lib
 
 nm_ex3_obj = nm_ex3.obj
 
 nm_ex3.exe:    	$(nm_ex3_obj) newmat.lib
-		wcl386 -fe=$@ $(nm_ex3_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(nm_ex3_obj) newmat.lib
 
 test_exc_obj = test_exc.obj
 
 test_exc.exe:  	$(test_exc_obj) newmat.lib
-		wcl386 -fe=$@ $(test_exc_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(test_exc_obj) newmat.lib
 
 nl_ex_obj = nl_ex.obj newmatnl.obj
 
 nl_ex.exe:     	$(nl_ex_obj) newmat.lib
-		wcl386 -fe=$@ $(nl_ex_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(nl_ex_obj) newmat.lib
 
 sl_ex_obj = sl_ex.obj solution.obj myexcept.obj
 
 sl_ex.exe:     	$(sl_ex_obj)
-		wcl386 -fe=$@ $(sl_ex_obj)
+		link -Out:$@ $(conlibs) $(sl_ex_obj)
 
 garch_obj = garch.obj newmatnl.obj
 
 garch.exe:     	$(garch_obj) newmat.lib
-		wcl386 -fe=$@ $(garch_obj) newmat.lib
+		link -Out:$@ $(conlibs) $(garch_obj) newmat.lib
 
 newmat1.obj:   	newmat1.cpp newmat.h include.h myexcept.h
 

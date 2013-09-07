@@ -43,7 +43,8 @@ ostream& operator<<(ostream& s, const GeneralMatrix& X)
 {
    MatrixRow mr((GeneralMatrix*)&X, LoadOnEntry);
    int w = s.width();  int nr = X.Nrows();  ios_format_flags f = s.flags();
-   s.setf(ios::fixed, ios::floatfield);
+   if (f & ios::scientific) s.setf(ios::scientific, ios::floatfield);
+   else s.setf(ios::fixed, ios::floatfield);
    for (int i=1; i<=nr; i++)
    {
       int skip = mr.skip;  int storage = mr.storage;

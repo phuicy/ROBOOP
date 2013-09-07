@@ -34,6 +34,7 @@ int main()
    // Throw exception to set up exception buffer
    Try { Throw(BaseException("Just a dummy\n")); }
    CatchAll {};
+   BaseException::clear();
    { Matrix A1(40,200); s1 = A1.data(); }
    { Matrix A1(1,1); s3 = A1.data(); }
    {

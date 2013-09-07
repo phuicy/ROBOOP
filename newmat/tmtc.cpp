@@ -17,7 +17,14 @@
 using namespace NEWMAT;
 #endif
 
-
+// test SP_eq with Generic Matrices
+void test_SP_eq(const GenericMatrix& GX, const GenericMatrix& GY)
+{
+   GenericMatrix GZ = SP(GX, GY); GenericMatrix GX1 = GX;
+   GX1.SP_eq(GY); Matrix Z = GX1 - GZ; Print(Z);
+   GX1 = GX; GX1.SP_eq(2 * GY); Z = GX1 - 2 * GZ; Print(Z);
+   GX1 = GX; GX1.SP_eq(GX1); Z = GX1 - SP(GX,GX); Print(Z);
+}
 
 
 void trymatc()
@@ -226,45 +233,45 @@ void trymatc()
       A.ReSize(17,17); FillWithValues(mwc, A);
       UpperTriangularMatrix UT; UT << A;
       Matrix A1 = UT;
-      X = UT.sum_square_rows() - A1.sum_square_rows(); Print(X);
-      X = UT.sum_square_columns() - A1.sum_square_columns(); Print(X);
+      X = UT.sum_square_rows() - A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X = UT.sum_square_columns() - A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       // LowerTriangularMatrix
       LowerTriangularMatrix LT; LT << A;
       A1 = LT;
-      X = LT.sum_square_rows() - A1.sum_square_rows(); Print(X);
-      X = LT.sum_square_columns() - A1.sum_square_columns(); Print(X);
+      X = LT.sum_square_rows() - A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X = LT.sum_square_columns() - A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       // SymmetricMatrix
       SymmetricMatrix SM; SM << A;
       A1 = SM;
-      X = SM.sum_square_rows() - A1.sum_square_rows(); Print(X);
-      X = SM.sum_square_columns() - A1.sum_square_columns(); Print(X);
+      X = SM.sum_square_rows() - A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X = SM.sum_square_columns() - A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       // DiagonalMatrix
       DM << A;
       A1 = DM;
-      X = DM.sum_square_rows() - A1.sum_square_rows(); Print(X);
-      X = DM.sum_square_columns() - A1.sum_square_columns(); Print(X);
+      X = DM.sum_square_rows() - A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X = DM.sum_square_columns() - A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       // BandMatrix
       BandMatrix BM(17, 3, 5); BM.Inject(A);
       A1 = BM;
-      X = BM.sum_square_rows() - A1.sum_square_rows(); Print(X);
-      X = BM.sum_square_columns() - A1.sum_square_columns(); Print(X);
+      X = BM.sum_square_rows() - A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X = BM.sum_square_columns() - A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       // SymmetricBandMatrix
       SymmetricBandMatrix SBM(17, 4); SBM.Inject(A);
       A1 = SBM;
-      X = SBM.sum_square_rows() - A1.sum_square_rows(); Print(X);
-      X = SBM.sum_square_columns() - A1.sum_square_columns(); Print(X);
+      X = SBM.sum_square_rows() - A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X = SBM.sum_square_columns() - A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       // IdentityMatrix
       IdentityMatrix IM(29);
-      X = IM.sum_square_rows() - 1; Print(X);
-      X = IM.sum_square_columns() - 1; Print(X);
+      X = IM.sum_square_rows() - 1; Clean(X, 0.00000000000001); Print(X);
+      X = IM.sum_square_columns() - 1; Clean(X, 0.00000000000001); Print(X);
       // Matrix with zero rows
       A1.ReSize(0,10);
-      X.ReSize(1,10); X = 0; X -= A1.sum_square_columns(); Print(X);
-      X.ReSize(0,1); X -= A1.sum_square_rows(); Print(X);
+      X.ReSize(1,10); X = 0; X -= A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
+      X.ReSize(0,1); X -= A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
       // Matrix with zero columns
       A1.ReSize(10,0);
-      X.ReSize(10,1); X = 0; X -= A1.sum_square_rows(); Print(X);
-      X.ReSize(1,0); X -= A1.sum_square_columns(); Print(X);
+      X.ReSize(10,1); X = 0; X -= A1.sum_square_rows(); Clean(X, 0.00000000000001); Print(X);
+      X.ReSize(1,0); X -= A1.sum_square_columns(); Clean(X, 0.00000000000001); Print(X);
       
    }
    
@@ -389,6 +396,153 @@ void trymatc()
       A1.ReSize(10,0);
       X.ReSize(10,1); X = 0; X -= A1.sum_rows(); Print(X);
       X.ReSize(1,0); X -= A1.sum_columns(); Print(X);
+      
+   }
+   
+   {
+      Tracer et("Stage 17");
+      // SP_eq on submatrices
+      MultWithCarry mwc;
+      Matrix A(37, 23); Matrix B(17,11);
+      FillWithValues(mwc, A); FillWithValues(mwc, B);
+      Matrix X = A; X.submatrix(5,21,3,13).SP_eq(B);
+      Matrix Y = A; Y.submatrix(5,21,3,13) = SP(Y.submatrix(5,21,3,13),B);
+      Y -= X; Print(Y);
+      
+      UpperTriangularMatrix UT(33);
+      FillWithValues(mwc, UT);
+      UpperTriangularMatrix UTX = UT;
+      UTX.submatrix(5,21,3,13).SP_eq(B);
+      Y = UT; Y.submatrix(5,21,3,13) = SP(Y.submatrix(5,21,3,13),B);
+      Y -= UTX; Print(Y);
+      
+      UT.resize(10);
+      FillWithValues(mwc, UT);
+      X = A; X.submatrix(5,14,3,12).SP_eq(UT);
+      Y = A; Y.submatrix(5,14,3,12) = SP(Y.submatrix(5,14,3,12),UT);
+      Y -= X; Print(Y);
+      
+      SymmetricMatrix SM(30), SM1(10);
+      FillWithValues(mwc, SM); FillWithValues(mwc, SM1);
+      SymmetricMatrix SMX = SM;
+      // This doesn't work - gets caught as illegal conversion
+      //SMX.sym_submatrix(5,14) += SM1;
+      //Y = SM; Y.submatrix(5,14,5,14) = Y.submatrix(5,14,5,14) + SM1;
+      //Y -= SMX; Print(Y);
+      
+      SMX = SM;
+      SMX.submatrix(5,14,5,14).SP_eq(SM1);
+      Y = SM; Y.submatrix(5,14,5,14) = SP(Y.submatrix(5,14,5,14),SM1);
+      Y -= SMX; Print(Y);
+      
+      BandMatrix BM(50, 10, 12);
+      X.resize(50,50); FillWithValues(mwc, X);
+      BM.inject(X); X = BM;
+      B.resize(7, 10); FillWithValues(mwc, B);
+      BM.submatrix(2,8,4,13) += B;
+      X.submatrix(2,8,4,13) = X.submatrix(2,8,4,13) + B;
+      X -= BM; Print(X);
+
+      X.resize(50,50); FillWithValues(mwc, X);
+      BM.inject(X); X = BM;
+      B.resize(7, 10); FillWithValues(mwc, B);
+      BM.submatrix(2,8,4,13).SP_eq(B);
+      X.submatrix(2,8,4,13) = SP(X.submatrix(2,8,4,13), B);
+      X -= BM; Print(X);
+      
+      X.resize(50,50); FillWithValues(mwc, X);
+      BM.inject(X); X = BM;
+      B.resize(21, 23); FillWithValues(mwc, B);
+      BM.submatrix(2,22,4,26).SP_eq(B);
+      X.submatrix(2,22,4,26) = SP(X.submatrix(2,22,4,26), B);
+      X -= BM; Print(X);
+      
+   }
+   
+   {   
+      Tracer et("Stage 18");
+      // += real on submatrices of symmetric matrices
+      // these don't work either
+      //MultWithCarry mwc;
+      //SymmetricMatrix SM(30);
+      //FillWithValues(mwc, SM);
+      //SymmetricMatrix SMX = SM;
+      //SMX.sym_submatrix(7,11) += 5;
+      //Matrix X = SM; X.sym_submatrix(7,11) += 5;
+      //X -= SMX; Print(X);
+      
+   }
+   
+   {
+      Tracer et("Stage 19");
+      // SQ_eq on matrices
+      MultWithCarry mwc;
+      
+      Matrix X(10,13), Y(10,13);
+      FillWithValues(mwc, X); FillWithValues(mwc, Y);
+      Matrix Z = X; Z.SP_eq(Y);
+      Z -= SP(X, Y); Print(Z);
+      
+      Z = X; Z.SP_eq(2 * Y);
+      Z -= 2 * SP(X, Y); Print(Z);
+      
+      Z = X; Z.SP_eq(Z);
+      Z -= SP(X, X); Print(Z);
+      
+      GenericMatrix GX = X, GY = Y; test_SP_eq(GX, GY); test_SP_eq(GX, GX);
+      
+      X.resize(17,17); Y.resize(17,17);
+      FillWithValues(mwc, X); FillWithValues(mwc, Y);
+      UpperTriangularMatrix UT; UT << Y;
+      LowerTriangularMatrix LT; LT << Y;
+      DiagonalMatrix D; D << Y;
+      Matrix ZUT = X; ZUT.SP_eq(UT);
+      Matrix ZLT = X; ZLT.SP_eq(LT);
+      Matrix ZD = X; ZD.SP_eq(D);
+      Z = ZUT + ZLT - ZD - SP(X, Y);
+      Clean(Z, 0.000000001); Print(Z);
+
+      UpperTriangularMatrix UX(19), UY(19);
+      FillWithValues(mwc, UX); FillWithValues(mwc, UY);
+      
+      GX = UX; GY = UY; test_SP_eq(GX, GY); test_SP_eq(GX, GY.t());
+
+      UpperTriangularMatrix UZ = UX; UZ.SP_eq(UY);
+      UZ -= SP(UX, UY); Print(UZ);
+      
+      UZ = UX; UZ.SP_eq(2 * UY);
+      UZ -= 2 * SP(UX, UY); Print(UZ);
+      
+      UT << UY; LT << UY; D << UY;
+      UpperTriangularMatrix UZUT = UX; UZUT.SP_eq(UT);
+      UpperTriangularMatrix UZLT = UX; UZLT.SP_eq(LT);
+      UpperTriangularMatrix UZD = UX; UZD.SP_eq(D);
+      Z = UZUT + UZLT - UZD - SP(UX, UY);
+      Clean(Z, 0.000000001); Print(Z);
+      
+      SymmetricMatrix SM(13), SM1(13), SMX, SM2;
+      FillWithValues(mwc, SM); FillWithValues(mwc, SM1);
+      SMX = SP(SM, SM1); SM2 = SM;
+      SM2.SP_eq(SM1); SM2 -= SMX; Print(SM2);
+      GX = SM; GY = SM1; test_SP_eq(GX, GY);
+      
+      X.resize(13,13); FillWithValues(mwc, X);
+      Z = SP(X,SM); SM2 = SM;
+      X.SP_eq(SM); X -= Z; Print(X);
+
+      FillWithValues(mwc, X);
+      GX = X; GY = SM; test_SP_eq(GX, GY);
+      GX = SM; GY = X; test_SP_eq(GX, GY);
+      
+      BandMatrix BMX(13, 5,9); BMX.inject(X);
+      SymmetricBandMatrix SBM(13,6); SBM.inject(SM);
+      GX = BMX; GY = SBM; test_SP_eq(GX, GY);
+      GX = SBM; GY = BMX; test_SP_eq(GX, GY);
+      BandMatrix BMX1 = BMX; BMX1.SP_eq(SBM); Z = BMX1 - SP(BMX,SBM); Print(Z);
+      BandMatrix BMX2 = SBM;
+      GX = BMX; GY = BMX2; test_SP_eq(GX, GY);
+      BMX1 = BMX; BMX1.SP_eq(BMX2); Z = BMX1 - SP(BMX,BMX2); Print(Z);
+      
       
    }
    

@@ -25,7 +25,13 @@ void QRZT(const Matrix&, Matrix&, Matrix&);
 
 void QRZ(Matrix&, UpperTriangularMatrix&);
 
-void QRZ(const Matrix&, Matrix&, Matrix&);
+void QRZ(const Matrix&, Matrix&, Matrix&); 
+
+inline void QRZT(Matrix& X, Matrix& Y, LowerTriangularMatrix& L, Matrix& M)
+   { QRZT(X, L); QRZT(X, Y, M); } 
+
+inline void QRZ(Matrix& X, Matrix& Y, UpperTriangularMatrix& U, Matrix& M)
+   { QRZ(X, U); QRZ(X, Y, M); } 
 
 inline void HHDecompose(Matrix& X, LowerTriangularMatrix& L)
 { QRZT(X,L); }
@@ -37,11 +43,27 @@ void updateQRZT(Matrix& X, LowerTriangularMatrix& L);
 
 void updateQRZ(Matrix& X, UpperTriangularMatrix& U);
 
+void updateQRZ(const Matrix& X, Matrix& MX, Matrix& MU);
+
+void updateQRZ(UpperTriangularMatrix& X, UpperTriangularMatrix& U);
+
+void updateQRZ(const UpperTriangularMatrix& X, Matrix& MX, Matrix& MU);
+
 inline void UpdateQRZT(Matrix& X, LowerTriangularMatrix& L)
    { updateQRZT(X, L); }
 
 inline void UpdateQRZ(Matrix& X, UpperTriangularMatrix& U)
    { updateQRZ(X, U); }
+
+inline void UpdateQRZ(UpperTriangularMatrix& X, UpperTriangularMatrix& U)
+   { updateQRZ(X, U); }
+
+inline void UpdateQRZ(const UpperTriangularMatrix& X, Matrix& MX, Matrix& MU)
+   { updateQRZ(X, MX, MU); }
+   
+inline void UpdateQRZ(const Matrix& X, Matrix& MX, Matrix& MU)
+   { updateQRZ(X, MX, MU); }
+
 
 // Matrix A's first n columns are orthonormal
 // so A.Columns(1,n).t() * A.Columns(1,n) is the identity matrix.
@@ -55,14 +77,14 @@ ReturnMatrix Cholesky(const SymmetricMatrix&);
 ReturnMatrix Cholesky(const SymmetricBandMatrix&);
 
 
-// produces the Cholesky decomposition of A + x.t() * x where A = chol.t() * chol
-// and x is a RowVector
+// produces the Cholesky decomposition of A + x.t() * x
+// where A = chol.t() * chol and x is a RowVector
 void update_Cholesky(UpperTriangularMatrix& chol, RowVector x);
 inline void UpdateCholesky(UpperTriangularMatrix& chol, const RowVector& x)
    { update_Cholesky(chol, x); }
 
-// produces the Cholesky decomposition of A - x.t() * x where A = chol.t() * chol
-// and x is a RowVector
+// produces the Cholesky decomposition of A - x.t() * x
+// where A = chol.t() * chol and x is a RowVector
 void downdate_Cholesky(UpperTriangularMatrix &chol, RowVector x);
 inline void DowndateCholesky(UpperTriangularMatrix &chol, const RowVector& x)
    { downdate_Cholesky(chol, x); }

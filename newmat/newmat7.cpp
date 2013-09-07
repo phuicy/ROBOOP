@@ -213,13 +213,21 @@ static void SP(GeneralMatrix* gm, GeneralMatrix* gm1, GeneralMatrix* gm2)
    i=gm->Storage() & 3; while (i--) *s++ = *s1++ * *s2++;
 }
 
-static void SP(GeneralMatrix* gm, GeneralMatrix* gm2)
+static void SP(GeneralMatrix* gm, const GeneralMatrix* gm2)
 {
    REPORT
-   Real* s2=gm2->Store(); Real* s=gm->Store(); int i=gm->Storage() >> 2;
+   const Real* s2=gm2->Store(); Real* s=gm->Store(); int i=gm->Storage() >> 2;
    while (i--)
    { *s++ *= *s2++; *s++ *= *s2++; *s++ *= *s2++; *s++ *= *s2++; }
    i=gm->Storage() & 3; while (i--) *s++ *= *s2++;
+}
+
+void GeneralMatrix::SP_Equal(const GeneralMatrix& gm)
+{
+   REPORT
+   if (nrows_val != gm.nrows_val || ncols_val != gm.ncols_val)
+      Throw(IncompatibleDimensionsException(*this, gm));
+   SP(this, &gm);
 }
 
 // routines for adding or subtracting matrices of different storage structure

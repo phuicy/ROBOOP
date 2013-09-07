@@ -9,7 +9,7 @@ MINOR = 0
 %.o:           	%.cpp
 		$(CXX) $(CXXFLAGS) -c $*.cpp
 
-everything:    	tmt example nm_ex1 nm_ex2 test_exc nl_ex sl_ex garch 
+everything:    	tmt example nm_ex1 nm_ex2 nm_ex3 test_exc nl_ex sl_ex garch 
 
 newmat_lobj = newmat1.o newmat2.o newmat3.o newmat4.o newmat5.o newmat6.o newmat7.o newmat8.o newmatex.o bandmat.o submat.o myexcept.o cholesky.o evalue.o fft.o hholder.o jacobi.o newfft.o sort.o svd.o nm_misc.o newmatrm.o newmat9.o
 
@@ -36,6 +36,11 @@ nm_ex2_obj = nm_ex2.o
 
 nm_ex2:        	$(nm_ex2_obj) libnewmat.a
 		$(CXX) -o $@ $(nm_ex2_obj) -L. -lnewmat -lm
+
+nm_ex3_obj = nm_ex3.o
+
+nm_ex3:        	$(nm_ex3_obj) libnewmat.a
+		$(CXX) -o $@ $(nm_ex3_obj) -L. -lnewmat -lm
 
 test_exc_obj = test_exc.o
 
@@ -155,6 +160,8 @@ nm_ex1.o:      	nm_ex1.cpp newmatap.h newmatio.h newmat.h include.h myexcept.h
 
 nm_ex2.o:      	nm_ex2.cpp newmatap.h newmatio.h newmat.h include.h myexcept.h
 
+nm_ex3.o:      	nm_ex3.cpp newmatio.h precisio.h newmat.h include.h myexcept.h
+
 test_exc.o:    	test_exc.cpp newmatap.h newmatio.h newmat.h include.h myexcept.h
 
 nl_ex.o:       	nl_ex.cpp newmatnl.h newmatio.h newmat.h include.h myexcept.h
@@ -182,6 +189,10 @@ nm_ex1.txx:    	nm_ex1
 nm_ex2.txx:    	nm_ex2
 		$(PRE)nm_ex2 > nm_ex2.txx
 		$(DIFF) nm_ex2.txt nm_ex2.txx
+
+nm_ex3.txx:    	nm_ex3
+		$(PRE)nm_ex3 > nm_ex3.txx
+		$(DIFF) nm_ex3.txt nm_ex3.txx
 
 test_exc.txx:  	test_exc
 		$(PRE)test_exc > test_exc.txx

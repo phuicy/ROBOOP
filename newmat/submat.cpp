@@ -256,6 +256,9 @@ void GetSubMatrix::operator+=(const BaseMatrix& bmx)
       SetUpLHS(); gmx = ((BaseMatrix&)bmx).Evaluate();
       if (row_number != gmx->Nrows() || col_number != gmx->Ncols())
          Throw(IncompatibleDimensionsException());
+      if (gm->type().is_symmetric() && 
+         ( ! gmx->type().is_symmetric() || row_skip != col_skip) )
+         Throw(ProgramException("Illegal operation on symmetric"));
       MatrixRow mrx(gmx, LoadOnEntry);
       MatrixRow mr(gm, LoadOnEntry+StoreOnExit+DirectPart, row_skip);
                                      // do need LoadOnEntry
@@ -265,6 +268,38 @@ void GetSubMatrix::operator+=(const BaseMatrix& bmx)
          mr.SubRowCol(sub, col_skip, col_number);   // put values in sub
          sub.Check(mrx);                            // check for loss of info
          sub.Add(mrx); mr.Next(); mrx.Next();
+      }
+      gmx->tDelete();
+   }
+
+   CatchAll
+   {
+      if (gmx) gmx->tDelete();
+      ReThrow;
+   }
+}
+
+void GetSubMatrix::SP_eq(const BaseMatrix& bmx)
+{
+   REPORT
+   Tracer tr("SubMatrix(SP_eq)"); GeneralMatrix* gmx = 0;
+   // MatrixConversionCheck mcc;         // Check for loss of info
+   Try
+   {
+      SetUpLHS(); gmx = ((BaseMatrix&)bmx).Evaluate();
+      if (row_number != gmx->Nrows() || col_number != gmx->Ncols())
+         Throw(IncompatibleDimensionsException());
+      if (gm->type().is_symmetric() && 
+         ( ! gmx->type().is_symmetric() || row_skip != col_skip) )
+         Throw(ProgramException("Illegal operation on symmetric"));
+      MatrixRow mrx(gmx, LoadOnEntry);
+      MatrixRow mr(gm, LoadOnEntry+StoreOnExit+DirectPart, row_skip);
+                                     // do need LoadOnEntry
+      MatrixRowCol sub; int i = row_number;
+      while (i--)
+      {
+         mr.SubRowCol(sub, col_skip, col_number);   // put values in sub
+         sub.Multiply(mrx); mr.Next(); mrx.Next();
       }
       gmx->tDelete();
    }
@@ -286,6 +321,9 @@ void GetSubMatrix::operator-=(const BaseMatrix& bmx)
       SetUpLHS(); gmx = ((BaseMatrix&)bmx).Evaluate();
       if (row_number != gmx->Nrows() || col_number != gmx->Ncols())
          Throw(IncompatibleDimensionsException());
+      if (gm->type().is_symmetric() && 
+         ( ! gmx->type().is_symmetric() || row_skip != col_skip) )
+         Throw(ProgramException("Illegal operation on symmetric"));
       MatrixRow mrx(gmx, LoadOnEntry);
       MatrixRow mr(gm, LoadOnEntry+StoreOnExit+DirectPart, row_skip);
                                      // do need LoadOnEntry

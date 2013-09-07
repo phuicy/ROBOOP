@@ -14,7 +14,7 @@ CC = bcc32 -W- -v- -H- -3 -N -Og -Oi -Ov -f -I$(INCLUDEPATH)
 .cpp.obj:
    $(CC) -c {$< }
 
-everything:    	tmt.exe example.exe nm_ex1.exe nm_ex2.exe test_exc.exe nl_ex.exe sl_ex.exe garch.exe 
+everything:    	tmt.exe example.exe nm_ex1.exe nm_ex2.exe nm_ex3.exe test_exc.exe nl_ex.exe sl_ex.exe garch.exe 
 
 newmat_lobj = newmat1.obj newmat2.obj newmat3.obj newmat4.obj newmat5.obj newmat6.obj newmat7.obj newmat8.obj newmatex.obj bandmat.obj submat.obj myexcept.obj cholesky.obj evalue.obj fft.obj hholder.obj jacobi.obj newfft.obj sort.obj svd.obj nm_misc.obj newmatrm.obj newmat9.obj
 
@@ -47,6 +47,13 @@ nm_ex2_obj = nm_ex2.obj
 nm_ex2.exe:    	$(nm_ex2_obj) newmat.lib
    $(TLINK) /x/L$(LIBPATH)/Gn -Tpe -ap -c @&&|
 c0x32.obj $(nm_ex2_obj),$@,, newmat.lib import32.lib cw32.lib
+|
+
+nm_ex3_obj = nm_ex3.obj
+
+nm_ex3.exe:    	$(nm_ex3_obj) newmat.lib
+   $(TLINK) /x/L$(LIBPATH)/Gn -Tpe -ap -c @&&|
+c0x32.obj $(nm_ex3_obj),$@,, newmat.lib import32.lib cw32.lib
 |
 
 test_exc_obj = test_exc.obj
@@ -175,6 +182,8 @@ nm_ex1.obj:    	nm_ex1.cpp newmatap.h newmatio.h newmat.h include.h myexcept.h
 
 nm_ex2.obj:    	nm_ex2.cpp newmatap.h newmatio.h newmat.h include.h myexcept.h
 
+nm_ex3.obj:    	nm_ex3.cpp newmatio.h precisio.h newmat.h include.h myexcept.h
+
 test_exc.obj:  	test_exc.cpp newmatap.h newmatio.h newmat.h include.h myexcept.h
 
 nl_ex.obj:     	nl_ex.cpp newmatnl.h newmatio.h newmat.h include.h myexcept.h
@@ -202,6 +211,10 @@ nm_ex1.txx:    	nm_ex1.exe
 nm_ex2.txx:    	nm_ex2.exe
 		$(PRE)nm_ex2 > nm_ex2.txx
 		$(DIFF) nm_ex2.txt nm_ex2.txx
+
+nm_ex3.txx:    	nm_ex3.exe
+		$(PRE)nm_ex3 > nm_ex3.txx
+		$(DIFF) nm_ex3.txt nm_ex3.txx
 
 test_exc.txx:  	test_exc.exe
 		$(PRE)test_exc > test_exc.txx

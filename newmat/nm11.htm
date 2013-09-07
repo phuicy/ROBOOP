@@ -17,8 +17,8 @@
 <P CLASS="small"><A HREF="#intro">next</A> - <A HREF="#top">skip</A> -
 <A HREF="ol_doc.htm">up</A> - <A HREF="#top">start</A><BR>
 <A HREF="ol_doc.htm">return to online documentation page</A></P>
-<P><B>Copyright (C)  2005: R B Davies</B></P>
-<P><i>22 April, 2006</i>.</P>
+<P><B>Copyright (C)  2008: R B Davies</B></P>
+<P><i>20 November, 2008</i>.</P>
 <TABLE WIDTH=100%>
 <TR>
 <TD VALIGN="TOP" ALIGN="LEFT" WIDTH="50%"> <A HREF="#intro">1.
@@ -295,7 +295,8 @@ should store the resulting object files as a library. The tmt*.cpp files are
 used for <A HREF="#testing">testing</A>, example.cpp is an <A
 HREF="#example">example</A> and sl_ex.cpp, nl_ex.cpp and garch.cpp are examples
 of the <A HREF="#nonlin">non-linear</A> solve and optimisation routines. A
-demonstration and test of the exception mechanism is in test_exc.cpp. </P>
+demonstration and test of the exception mechanism is in test_exc.cpp. The files 
+nm_ex1.cpp, nm_ex2.cpp and nm_ex3.cpp contain more simple examples. </P>
 <P>I include a number of <I>make</I> files for compiling the example and the
 test package. See the section on <A HREF="#make">make files</A> for details.
 Alternatively, with the PC compilers, its pretty quick just to load all the files in the
@@ -323,7 +324,7 @@ triangularisation etc (includes newmat.h)</TD>
 <TD VALIGN="TOP">newmatio.h</TD>
 <TD>to access the <A HREF="#output">output</A> routines (includes newmat.h) You
 can use this only with compilers that support the standard input/output
-routines including manipulators</TD>
+routines including manipulators (all recent compilers)</TD>
 </TR>
 <TR>
 <TD VALIGN="TOP">newmatnl.h</TD>
@@ -337,14 +338,15 @@ are using.</P>
 <H2><A NAME="make"></A>2.2 Make files</H2>
 <P CLASS="small"><A HREF="#custom">next</A> - <A HREF="#custom">skip</A> -
 <A HREF="#starting">up</A> - <A HREF="#top">start</A></P>
-<P>I have included <I>make</I> files for compiling my test and example programs for CC, Borland 5.5, 5.6, Microsoft VC++6, 
-7, Open Watcom, Intel and Gnu compilers. You 
+<P>I have included <I>make</I> files for compiling my test and example programs for 
+various versions of CC, Borland, Microsoft, Open Watcom, Intel and Gnu compilers. You 
 can generate make files for a number of other compilers with my
 <a href="genmake.htm">genmake</a> utility. <i>Make</i> files provide
 a way of compiling your programs  without using the IDE that comes with
 PC compilers. See the <A HREF="#files">files section</A> for details.</P>
 <H3>PC</H3>
-<P>I include  make files for Borland 5.5, 5.6 and Microsoft VC++6 or 7. With the 
+<P>I include  make files for various versions of Borland, Microsoft and Intel 
+compilers. With the 
 Borland compiler you will need to edit it to show where 
 you have stored your Borland compiler. For make files for other compilers use my
 <a href="genmake.htm">genmake</a> utility. To compile my test and example 
@@ -364,8 +366,8 @@ file and, if necessary, rename the .cpp files to something your compiler
 recognises. </P>
 <P>My <I>make</I> file for Gnu GCC on Unix systems is for use with
 <TT>gmake</TT> rather than <TT>make</TT>. I assume your compiler recognises the
-.cpp extension. Ordinary <TT>make</TT> works with it on the Sun did not the
-Silicon Graphics or HP machines when I had access to them. On Linux use <TT>make</TT>. </P>
+.cpp extension. Ordinary <TT>make</TT> works with it on the Sun but did not the
+Silicon Graphics or HP machines when I had access to them, many years ago. On Linux use <TT>make</TT>. </P>
 <P>My make file for the CC compilers works with the ordinary make. </P>
 <P>To compile everything with the CC compiler use </P>
 <PRE>   make -f nm_cc.mak
@@ -374,8 +376,6 @@ Silicon Graphics or HP machines when I had access to them. On Linux use <TT>make
 <P>or for the gnu compiler use </P>
 <PRE>   make -f nm_gnu.mak
 </PRE>
-
-<P>On some computers you will need to use <tt>gmake</tt> rather than <tt>make</tt>.</P>
 
 <P>There is a line in the make file for CC <TT>rm -f $*.cxx</TT>. Some systems
 won't accept this line and you will need to delete it. In this case, if you
@@ -390,10 +390,10 @@ compiler dependent options. You may need to edit include.h to get the options
 you require. If you are using a compiler different from one I have worked with
 you may have to set up a new section in include.h appropriate for your
 compiler. </P>
-<P>Borland, Turbo, Gnu, Microsoft and Watcom are recognised automatically. If
+<P>Borland, Gnu, Microsoft and Watcom are recognised automatically. If
 none of these are recognised a default set of options is used. These are fine
 for AT&amp;T, HPUX and Sun C++. If you using a compiler I don't know about you
-may have to write a new set of options. </P>
+may have to write a new set of options.</P>
 <P>There is an option in include.h for selecting whether you use compiler
 supported exceptions, simulated exceptions, or disable exceptions. I now set
 <I> compiler supported exceptions</I> as the default. Use the option for
@@ -417,13 +417,18 @@ again if the compiler reports inaccessible variables or the linker reports
 missing links. </P>
 <P>Activate <TT>#define _STANDARD_</TT> to use the standard names for the
 included files and to find the floating point precision data using the floating
-point standard. This will work only with the most recent compilers. </P>
+point standard. This will work with most recent compilers and is done 
+automatically for Borland, Gnu, Intel and Microsoft compilers. </P>
 <P>If you haven't defined <TT>_STANDARD_</TT> and are using a compiler that
 <I>include.h</I> does not recognise and you want to pick up the floating point
 precision data from <I>float.h</I> then activate <TT>#define use_float_h</TT>.
 Otherwise the floating point precision data will be accessed from
 <I>values.h</I>. You may need to do this with computers from Digital, in
-particular. </P>
+particular.</P>
+<P>There is a line</P>
+<pre>   //#define set_unix_options</pre>
+<p>You can activate this if you are using a Linux or Unix system. It is not used 
+by <i>Newmat</i> but is used by some of my other programs.</p>
 <H2><A NAME="compiler"></A>2.4 Compilers</H2>
 <P CLASS="small"><A HREF="#atandt">next</A> - <A HREF="#update">skip</A> -
 <A HREF="#starting">up</A> - <A HREF="#top">start</A></P>
@@ -446,7 +451,7 @@ success and any special considerations. In most cases I have chosen code that
 works under all the compilers I have access to, but I have had to include some
 specific work-arounds for some compilers. For the newest PC versions,  I use a Pentium 
 4 computer running windows XP or Linux
-(Red Hat workstation version). The older compilers are tested on older computers. The Unix versions are on a Sun Sparc
+(Red Hat workstation version). The Unix versions are on a Sun Sparc
 station. Thanks to Victoria University for access to the Sparc. </P>
 <P>I have set up a block of code for each of the compilers in include.h. Turbo,
 Borland, Gnu, Microsoft and Watcom are recognised automatically. There is a
@@ -468,6 +473,10 @@ Triangular Matrices. You need to evaluate the expression separately. </P>
 <P CLASS="small"><A HREF="#gcc">next</A> - <A HREF="#gcc">skip</A> -
 <A HREF="#compiler">up</A> - <A HREF="#top">start</A></P>
 <H3>Newer compilers</H3>
+<P><b>Borland Builder version 8.</b> My tests here have been compiling from a 
+make file using <i>nm_b58.mak </i> and making a console program. This works fine 
+except that my values of <i>LnMinimum</i> and <i>LnMaximum</i> in <i>precisio.h</i> 
+are not correct.</P>
 <P><b>Borland Builder version 6:</b> My tests have been on the <i>personal</i> 
 version. See the notes for version 5. If you are 
 compiling with a make file you can use <i>nm_b56.mak</i> as a model. You can set 
@@ -497,7 +506,9 @@ the compiler supported exceptions and turn on <I>standard</I> in include.h. You
 can use the make file <i>nm_b55.mak</i> after editing to correct the file locations for
 your system.</P>
 <H3>Older compilers</H3>
-<P><B>Borland C++  5.02</B>: Use the large or 32 bit flat model. If you are not debugging, turn off the 
+<P><B>Borland C++  5.02</B>:</P>
+<P>I am not longer checking compatibility with this compiler.</P>
+<P>Use the large or 32 bit flat model. If you are not debugging, turn off the 
 options that collect debugging information. Use my simulated exceptions.</P>
 <P>When running my test program under ms-dos you may run out of memory. Either
 compile the test routine to run under <I>easywin</I> or use simulated exceptions 
@@ -513,14 +524,15 @@ to fit into your computer and run without stack overflow. </P>
 <P>You can generate make files for versions 5  with my <a href="genmake.htm">
 genmake</a> utility.</P>
 <P><b>Borland C++ 3 and 4</b>.</P>
-<P>The program will compile in version 3.1 if you enable the <i>simulated booleans</i> 
+<P>The program used to compile in version 3.1 if you enable the <i>simulated booleans</i> 
 - comment <i>out</i> the line <tt>#define bool_LIB 0</tt> in <i>include.h</i> 
-and use the <i>simulated exceptions</i>. The main test program is too large to run 
+and use the <i>simulated exceptions</i>. I haven't checked the latest versions 
+of Newmat. The main test program is too large to run 
 unless you break it up into several parts. I haven't tried it under version 4.</P>
 <H2><A NAME="gcc"></A>2.4.3 Gnu G++</H2>
 <P CLASS="small"><A HREF="#hpux">next</A> - <A HREF="#hpux">skip</A> -
 <A HREF="#compiler">up</A> - <A HREF="#top">start</A></P>
-<P><B>Gnu G++  3.4 (Linux), 3.3 (Sun):</B> These work OK. If you are using a much earlier version
+<P><B>Gnu G++ 3, 4 (Linux), 3 (Sun):</B> These work OK. If you are using a much earlier version
 see if you can upgrade. It&nbsp; used to work with 2.95 and 2.96 but I don't 
 have access to these now. You can't use <i>standard</i> with the 2.9X 
 versions. The namespace option worked with 2.96 on Linux but not with 2.95 on 
@@ -540,10 +552,10 @@ present, I think these can be ignored. </P>
 <P CLASS="small"><A HREF="#microso">next</A> - <A HREF="#microso">skip</A> -
 <A HREF="#compiler">up</A> - <A HREF="#top">start</A></P>
 
-<P>Newmat works correctly with the Intel versions 5 and 8 C++ compiler for Windows and for 
-version 8 for Linux. (Not tested for the other versions). Standard is 
-automatically turned on for the Linux versions and with the Windows versions&nbsp; 
-if it is emulating Visual C++ 7 or above. Note that the Intel compiler for 
+<P>Newmat works correctly with the Intel 10 C++ compiler for Windows and Linux. (Not tested for the other versions). Standard is 
+automatically turned on for both the Linux versions and Windows versions. If 
+this causes a problem for the version you are using you can find the lines in <i>
+include.h</i> that control this and comment them out. Note that the Intel compiler for 
 Linux is <i>free</i> for non-commercial use. (One of the versions of 8.1 gave a 
 warning message every time I had something like
 <tt>Real x; ... if (x==0.0) ...</tt>, which was often. This is now seems to be fixed.)</P>
@@ -554,7 +566,7 @@ warning message every time I had something like
 <H3>Newer versions</H3>
 <P>See my <A HREF="#where">web site</A> for instructions how to work
 Microsoft's IDE.<B></B></P>
-<P><b>Microsoft Visual C++ 7, 7.1, 8:</b> These works OK. All my tests have 
+<P><b>Microsoft Visual C++ 7, 7.1, 8:</b> These work OK. All my tests have 
 been in console mode. You can turn on my namespace option. Standard is turned on 
 by default for these versions. </P>
 <P><B>Microsoft Visual C++ 6</B>: <b>Get the latest service pack</b>. I have tried this 
@@ -575,7 +587,7 @@ beginning of each .cpp file (or turn off precompiled headers).</P>
 <H2><A NAME="sun"></A>2.4.7 Sun</H2>
 <P CLASS="small"><A HREF="#watcom">next</A> - <A HREF="#watcom">skip</A> -
 <A HREF="#compiler">up</A> - <A HREF="#top">start</A></P>
-<P><B>Sun C++ (version 7):</B> This seems to work fine with 
+<P><B>Sun C++ (version = ?):</B> This seems to work fine with 
 compiler supported exceptions. <B>Sun C++ (version
 5):</B> There was a problem with exceptions. If you use my simulated
 exceptions the non-linear optimisation programs hang. If you use the compiler
@@ -584,8 +596,9 @@ supported exceptions my tmt and test_exc programs crash. You should
 <H2><A NAME="watcom"></A>2.4.8 Watcom</H2>
 <P CLASS="small"><A HREF="#update">next</A> - <A HREF="#update">skip</A> -
 <A HREF="#compiler">up</A> - <A HREF="#top">start</A></P>
-<P><b>Open Watcom (version 1.3):</b> this works. Do <i>not</i> set the standard 
-option in <tt>include.h</tt>.</P>
+<P><b>Open Watcom (version 1.7a):</b> this works. You can set the standard 
+option in <tt>include.h</tt>. The <i>scientific</i> and <i>fixed</i> 
+manipulators don't work.</P>
 <P><B>Watcom C++ (version 10a):</B> this used to work, I don't know if it works 
 now. </P>
 <H2><A NAME="update"></A>2.5 Updating from previous
@@ -612,6 +625,11 @@ following:</P>
 	<li><i>nm_i5.mak</i>, <i>nm_il5.mak</i> replaced by <i>nm_i8.mak</i>, <i>
 	nm_il8.mak</i></li>
 	<li>extra file <i>nm_misc.cpp</i> to be included in compilation</li>
+	<li><i>scientific</i> and <i>fixed</i> manipulators now recognised in output 
+	statements. If you want <i>fixed</i> output and have been using <i>
+	scientific</i> in a previous output statement, you may need to include the
+	<i>fixed</i> manipulator. (Doesn't work in Visual C++, version 6 and open 
+	Watcom).</li>
 </ul>
 <P><B>Newmat10</B> includes new <A HREF="#scalar2">maxima, minima</A>,
 <A HREF="#scalar3">determinant, dot product and Frobenius norm</A> functions, a
@@ -757,6 +775,7 @@ and check the result. The output is in <tt>nm_ex1.txt</tt>.</P>
 <P><b>Eigenvalues and eigenvectors of Hilbert matrix:</b> <tt>nm_ex2.cpp</tt>. Calculate the 
 eigenvalues and eigenvectors of a 7x7 Hilbert matrix. The output is in 
 <tt>nm_ex2.txt</tt>.</P>
+<P>Values in <tt>precisio.h</tt>: <tt>nm_ex3.cpp</tt>.</P>
 <P><b>Linear regression example</b>: <TT>example.cpp</TT>. This gives a  linear
 regression example using five different algorithms. The correct output is given
 in <TT>example.txt</TT>. The program carries out a rough check that no memory
@@ -1108,6 +1127,16 @@ likely to be much slower than <tt>A * (B * X)</tt>.</p>
 </tr>
 <TR>
 <TD width="25%">&nbsp;</TD>
+<TD width="25%">nm_ex3.cpp</TD>
+<TD width="50%">scientific format and constants from precisio.h</TD>
+</TR>
+<TR>
+<TD width="25%">&nbsp;</TD>
+<TD width="25%">nm_ex3.txt</TD>
+<TD width="50%">output from nm_ex3.cpp</TD>
+</TR>
+<TR>
+<TD width="25%">&nbsp;</TD>
 <TD width="25%">example.cpp</TD>
 <TD width="50%">example of use of package</TD>
 </TR>
@@ -1199,18 +1228,33 @@ HREF="#testing">testing</A>)</TD>
 </TR>
 <TR>
 <TD width="25%">&nbsp;</TD>
+<TD width="25%">nm_b58.mak</TD>
+<TD width="50%">make file for Borland Builder C++ 8</TD>
+</TR>
+<TR>
+<TD width="25%">&nbsp;</TD>
 <TD width="25%">nm_m6.mak</TD>
 <TD width="50%">make file for VC++ 6&amp;7</TD>
+</TR>
+<TR>
+<TD width="25%">&nbsp;</TD>
+<TD width="25%">nm_m8.mak</TD>
+<TD width="50%">make file for VC++ 8</TD>
 </TR>
 <tr>
 <TD width="25%">&nbsp;</TD>
 <TD width="25%">nm_i8.mak</TD>
-<TD width="50%">make file for Intel C++ 8 under Windows</TD>
+<TD width="50%">make file for Intel C++ 8,9 under Windows</TD>
+</tr>
+<tr>
+<TD width="25%">&nbsp;</TD>
+<TD width="25%">nm_i10.mak</TD>
+<TD width="50%">make file for Intel C++ 10 under Windows</TD>
 </tr>
 <tr>
 <TD width="25%">&nbsp;</TD>
 <TD width="25%">nm_il8.mak</TD>
-<TD width="50%">make file for Intel C++ 8 under Linux</TD>
+<TD width="50%">make file for Intel C++ 8,9,10 under Linux</TD>
 </tr>
 <TR>
 <TD width="25%">&nbsp;</TD>
@@ -1550,7 +1594,11 @@ This means, in particular, that pointers to matrix elements - e.g.
     A &lt;&lt; a;</pre>
 <p>This construction does <I>not</I> check that the numbers of elements match
 correctly. This version of <TT>&lt;&lt;</TT> can be used with submatrices on
-the left hand side. It is not defined for band matrices. </p>
+the left hand side. It is not defined for band matrices.</p>
+<p>Note that you enter only the values stored in a matrix. For example</p>
+<pre>    SymmetricMatrix A(2);
+    Real a[] = { 11,12,22 };
+    A &lt;&lt; a;</pre>
 <P>Alternatively you can enter short lists using a sequence of numbers
 separated by <TT>&lt;&lt;</TT> . </P>
 <PRE>    Matrix A(3,2);
@@ -1627,6 +1675,7 @@ depreciated function name.</p>
     A *= B;          // A = A * B;
     A |= B;          // A = A | B;
     A &amp;= B;          // A = A &amp; B;
+    A.SP_eq(B);      // A = SP(A, B);
     &lt;, &gt;, &lt;=, &gt;=     // included for compatibility with STL - see notes
 </PRE>
 
@@ -1841,7 +1890,7 @@ first column, last column of the submatrix with the numbering beginning at 1.
 <P>I allow <TT>lr = fr-1</TT> or <TT>lc = fc-1</TT> or to indicate that a
 matrix of zero rows or columns is to be returned. </P>
 <P>A submatrix command may be used in any matrix expression or on the left hand
-side of <TT>=</TT>, <TT>&lt;&lt;</TT> or <i>inject</i>. <i>Inject</i> does <I>not</I> check
+side of <TT>=</TT>, <TT>&lt;&lt;</TT> or <i>inject</i>. <i>inject</i> does <I>not</I> check
 no information loss. You can also use the construction </P>
 <PRE>    Real c; .... A.submatrix(fr,lr,fc,lc) = c;
 </PRE>
@@ -1884,13 +1933,14 @@ program will check for no loss of data.</P>
 with a matrix expression on the right-hand side. It can also appear on the
 left-hand side of <TT>+=</TT>, <TT>-=</TT>, <TT>*=</TT> or <TT>/=</TT> with a
 Real on the right-hand side. In each case there must be no loss of information.
+The <a href="#binary">SP_eq function</a> is also defined for a submatrix.
 </P>
 <P>The <TT>row</TT> version can appear on the left hand side of
 <TT>&lt;&lt;</TT> for <A HREF="#entering">loading literal data</A> into a row.
 Load only the number of elements that are actually going to be stored in
 memory. </P>
-<P>Do not use the <TT>+=</TT> and <TT>-=</TT> operations with a submatrix of a
-SymmetricMatrix or BandSymmetricMatrix on the LHS and a Real on the RHS.</P>
+<P><b>Do not use the <TT>+=</TT> and <TT>-=</TT> operations with a submatrix of a
+SymmetricMatrix or BandSymmetricMatrix on the LHS.</b></P>
 <P>You can't pass a submatrix (or any of its variants) as a reference 
 non-constant matrix in a function argument. For example, the following will not 
 work:</P>
@@ -2090,13 +2140,17 @@ ones. </P>
 <P CLASS="small"><A HREF="#unspec">next</A> - <A HREF="#unspec">skip</A> -
 <A HREF="#refer">up</A> - <A HREF="#top">start</A></P>
 <P>To print a matrix use an expression like </P>
-<PRE>   Matrix A;
+<PRE>   Matrix A, B C;
    ......
-   cout &lt;&lt; setw(10) &lt;&lt; setprecision(5) &lt;&lt; A;
+   cout &lt;&lt; setw(10) &lt;&lt; setprecision(5) &lt;&lt; A &lt;&lt; endl;
+   cout &lt;&lt; setw(10) &lt;&lt; setprecision(5) &lt;&lt; scientific &lt;&lt; B &lt;&lt; endl;
+   cout &lt;&lt; setw(10) &lt;&lt; setprecision(5) &lt;&lt; fixed &lt;&lt; C &lt;&lt; endl;
 </PRE>
 
 <P>This will work only with systems that support the standard input/output
-routines including manipulators. You need to #include the files iostream.h,
+routines including manipulators. The scientific and fixed manipulators won't 
+work with Visual C++, version 6.</P>
+<P>You need to #include the files iostream.h,
 iomanip.h, newmatio.h in your C++ source files that use this facility. The
 files iostream.h, iomanip.h will be included automatically if you include the
 statement <TT>#define WANT_STREAM</TT> at the beginning of your source file. So
@@ -2106,8 +2160,8 @@ you can begin your file with either </P>
 </PRE>
 
 <P>or </P>
-<PRE>   #include &lt;iostream.h&gt;
-   #include &lt;iomanip.h&gt;
+<PRE>   #include &lt;iostream&gt;
+   #include &lt;iomanip&gt;
    #include &quot;newmatio.h&quot;
 </PRE>
 
@@ -2117,7 +2171,7 @@ to fit within a page or screen width. </P>
 HREF="#binary">concatenation operator</A>: </P>
 <PRE>   ColumnVector A, B;
    .....
-   cout &lt;&lt; setw(10) &lt;&lt; setprecision(5) &lt;&lt; (A | B);
+   cout &lt;&lt; setw(10) &lt;&lt; setprecision(5) &lt;&lt; (A | B) &lt;&lt; endl;
 </PRE>
 
 <H2><A NAME="unspec"></A>3.18 Unspecified type</H2>
@@ -2237,11 +2291,13 @@ be essentially a modified Gram-Schmidt decomposition. </P>
 </PRE>
 
 <P>uses <TT>X</TT> from the first routine, replaces <TT>Y</TT> by <TT>Z</TT>
-and forms <TT>M</TT>.</P>
-
+and forms <TT>M</TT>. There is also a routine</P>
+<pre>    QRZ(X, Y, U, M);</pre>
+<p>which does both of these.</p>
 <P>To extend <TT>U</TT> to a square orthogonal matrix see the function for
 <a href="#extend">extending an orthonormal set of columns</a>. </P>
-<P>The are also two routines <TT>QRZT(X, L)</TT> and <TT>QRZT(X, Y, M)</TT>
+<P>The are also routines <TT>QRZT(X, L)</TT>, <TT>QRZT(X, Y, M)</TT>
+and <TT>QRZT(X, Y, L, M)</TT>
 which do the same decomposition on the transposes of all these matrices. <tt>QRZT</tt>
 replaces the routines <tt>HHDecompose</tt> in earlier versions of <i>newmat</i>. 
 <tt>HHDecompose</tt> is
@@ -2255,6 +2311,26 @@ for updating <tt>U</tt>.</P>
 </pre>
 <p>or</p>
 <pre>    updateQRZT(X, L);</pre>
+<p>You can update the M matrix with</p>
+<pre>    updateQRZ(X, Y, M);</pre>
+<p>At present, there is no corresponding function for <tt>updateQRZT</tt>. Also 
+note, at present, <tt>updateQRZ(X, Y, M)</tt> is not optimised for accessing
+<a href="#mem_man2">contiguous locations</a>.</p>
+<p>If you have carried out QRZ transforms on two blocks of data, <tt>X1</tt>, <tt>X2</tt>, 
+(same number of columns in each) with the data to be fitted in <tt>Y1</tt>, <tt>
+Y2</tt>, you can combine them as follows</p>
+<pre>    // QRZ transforms of two blocks of data
+    UpperTriangularMatrix U1, U2; Matrix M1, M2;
+    QRZ(X1, U1); QRZ(X2, U2); QRZ(X1, Y1, M1); QRZ(X2, Y2, M2);
+
+    // Now combine the results
+    updateQRZ(U1, U2); updateQRZ(U1, M1, M2);</pre>
+<p>Results are in <tt>U2</tt> and <tt>M2</tt>. The values in <tt>U1</tt> and <tt>
+M1</tt> are modified so use copies if you still need the original values.</p>
+<p>The functions <tt>updateQRZ(U1, U2)</tt> and <tt>updateQRZ(U1, M1, M2)</tt> 
+are not optimised for accessing <a href="#mem_man2">contiguous locations</a>. 
+This is probably not an issue, since usually all the data will fit into cache 
+memory.&nbsp; </p>
 <p><b>Notes on updateQRZ and updateQRZT:</b></p>
 <ul>
   <li>Use these routines if your data is arriving in blocks or there is too much to 
@@ -2264,18 +2340,14 @@ fit into memory.</li>
 <TT>updateQRZT</TT> if <TT>U</TT> or <TT>L</TT> is correctly dimensioned and set to zero.</li>
   <li>The block of data, <tt>X</tt>, will be modified by these routines but the 
 modified data is probably not useful for further analysis.</li>
-  <li>The signs of <TT>U</TT> or <TT>L</TT> maybe the reverse of what you would 
-expect (i.e. you get the negative of what you get from the Cholesky 
-decomposition calculation). Usually this will not be a problem, but if it is, 
-replace <tt>U</tt> by <tt>-U</tt> if <tt>U(1,1)&lt;0</tt> or <tt>L</tt> by <tt>-L</tt> if 
-<tt>L(1,1)&lt;0</tt>.</li>
-  <li>To solve a least squares problem (assuming a row of <tt>X</tt> contains the <tt>m</tt> values of 
-the independent variables for an individual and <tt>Y</tt> is a column vector containing 
-the dependent values. Form <tt>XY</tt> = <tt>X|Y</tt> and calculate <tt>U</tt> using <tt>
-  updateQRZ</tt> on blocks of <tt>XY</tt>. 
-Then the least squares estimate is <tt>U.sym_submatrix(1,m).i() * 
-U.submatrix(1,m,m+1,m+1)</tt>. Square <tt>U(m+1,m+1)</tt> to get the residual 
-  sum of squares.</li>
+  <li>The signs of some of the rows of <TT>U</TT> or columns of <TT>L</TT> maybe the reverse of what you would 
+expect (i.e. you get the negative of what you get from QRZ or QRZT applied to 
+	the whole dataset). Usually this will not be a problem.</li>
+	<li>The second version of updateQRZ is sometimes a more useful way of 
+	combining blocks, especially if you want to use the <i>reduce</i> function 
+	in <i>Intel's Threaded Building Blocks</i> to parallelise QRZ. (Contact me 
+	for what you need to do to make Newmat compatible with <i>Threaded Building 
+	Blocks</i>).</li>
   <li>See the <a href="#function">function summary list</a> for the older 
 depreciated function names.</li>
 </ul>
@@ -2838,7 +2910,7 @@ have left <i>Real</i> being <i>typedef</i>ed as a <i>double</i>). If you have a
 
 <p>You can't do this with two dimensional arrays where you have a <tt>double**</tt> 
 argument. <i>Newmat</i> includes  classes <i>RealStarStar</i> and <i>ConstRealStarStar</i> for this situation. 
-To access a <tt>Matrix A</tt> with from a function <tt>c_function(double** a)</tt> 
+To access a <tt>Matrix A</tt> from a function <tt>c_function(double** a)</tt> 
 use either</p>
 
 
@@ -2958,7 +3030,7 @@ columns.</p>
 <h2><a name="misc_fn"></a>3.36 Miscellaneous functions</h2>
 <p class="small"><A HREF="#error">next</A> - <A HREF="#error">skip</A> -
 <A HREF="#refer">up</A> - <A HREF="#top">start</A></p>
-<p>The section includes some miscellaneous functions have needed for my work. So 
+<p>The section includes some miscellaneous functions I have needed for my work. So 
 far there are only the Helmert transforms.</p>
 <h4>Helmert transforms</h4>
 <p>This section refers to the Helmert transform used in some statistical 
@@ -3167,7 +3239,7 @@ safety is reduced but you can get better efficiency. </P>
 <H3>Some performance data</H3>
 <P>This section looks at the performance on <I>newmat</I> for simple sums,
 comparing it with C code and with a simple array program. 
-</P>
+(This is now very old data).</P>
 <P>The following table lists the time (in seconds) for carrying out the
 operations <TT>X=A+B;</TT>, <TT>X=A+B+C;</TT>, <TT>X=A+B+C+D;</TT>, <TT>X=A+B+C+D+E;</TT> where
 <TT>X,A,B,C,D,E</TT> are of type ColumnVector, with a variety of programs. I am
@@ -3661,6 +3733,11 @@ following table shows the current status of this process.</P>
 <TR>
 <TD>QRZ, QRZT</TD>
 <TD>Yes</TD>
+<TD>&nbsp;</TD>
+</TR>
+<TR>
+<TD>updateQRZ, updateQRZT</TD>
+<TD>Partially</TD>
 <TD>&nbsp;</TD>
 </TR>
 <TR>
@@ -4571,13 +4648,17 @@ unless explicitly noted.</P>
     <td width="34%" height="19"><b>description</b></td>
   </tr>
   <tr>
-    <td width="33%" rowspan="6" height="195"><a href="#qr">QR transform</a></td>
+    <td width="33%" rowspan="11" height="195"><a href="#qr">QR transform</a></td>
     <td width="33%" height="38"><b>QRZT</b>(Matrix&amp;, LowerTriangularMatrix&amp;)</td>
     <td width="34%" height="38">transposed version of QRZ transform</td>
   </tr>
   <tr>
     <td width="33%" height="38"><b>QRZT</b>(const Matrix&amp;, Matrix&amp;, Matrix&amp;)</td>
     <td width="34%" height="38">transposed version of QRZ transform - solve part</td>
+  </tr>
+  <tr>
+    <td width="33%" height="19"><b>QRZT</b>(Matrix&amp;, Matrix&amp;, LowerTriangularMatrix&amp;, Matrix&amp;)</td>
+    <td width="34%" height="19">both of previous two lines</td>
   </tr>
   <tr>
     <td width="33%" height="19"><b>QRZ</b>(Matrix&amp;, UpperTriangularMatrix&amp;)</td>
@@ -4588,15 +4669,37 @@ unless explicitly noted.</P>
     <td width="34%" height="19">QRZ transform - solve part</td>
   </tr>
   <tr>
+    <td width="33%" height="38"><b>QRZ</b>(Matrix&amp;, Matrix&amp;, UpperTriangularMatrix&amp;, Matrix&amp;)</td>
+    <td width="34%" height="38">both of previous two lines</td>
+  </tr>
+  <tr>
     <td width="33%" height="38"><b>updateQRZT</b>(Matrix&amp;, LowerTriangularMatrix&amp;)<br>
     UpdateQRZT(Matrix&amp;, LowerTriangularMatrix&amp;)</td>
-    <td width="34%" height="38">add extra rows to transposed version of QRZ 
+    <td width="34%" height="38">add extra columns to transposed version of QRZ 
     transform</td>
   </tr>
   <tr>
     <td width="33%" height="38"><b>updateQRZ</b>(Matrix&amp;, UpperTriangularMatrix&amp;)<br>
     UpdateQRZ(Matrix&amp;, UpperTriangularMatrix&amp;)</td>
-    <td width="34%" height="38">add extra columns to QRZ transform</td>
+    <td width="34%" height="38">add extra rows to QRZ transform</td>
+  </tr>
+  <tr>
+    <td width="33%" height="38"><b>updateQRZ</b>(const Matrix&amp;, Matrix&amp;, Matrix&amp;)<br>
+	UpdateQRZ(const Matrix&amp;, Matrix&amp;, Matrix&amp;)</td>
+    <td width="34%" height="38">combine the results of the solve parts of QRZ 
+	transforms on two blocks of data</td>
+  </tr>
+  <tr>
+    <td width="33%" height="38"><b>updateQRZ</b>(UpperTriangularMatrix&amp;, UpperTriangularMatrix&amp;)<br>
+	UpdateQRZ(UpperTriangularMatrix&amp;, UpperTriangularMatrix&amp;)</td>
+    <td width="34%" height="38">combine the results of QRZ transforms on two 
+	blocks of data</td>
+  </tr>
+  <tr>
+    <td width="33%" height="38"><b>updateQRZ</b>(const UpperTriangularMatrix&amp;, Matrix&amp;, Matrix&amp;)<br>
+	UpdateQRZ(const UpperTriangularMatrix&amp;, Matrix&amp;, Matrix&amp;)</td>
+    <td width="34%" height="38">combine the results of the solve parts of QRZ 
+	transforms on two blocks of data</td>
   </tr>
   <tr>
     <td width="33%" height="38"><a href="#extend">Extend orthonormal set</a></td>
@@ -4926,7 +5029,7 @@ unless explicitly noted.</P>
 <h1><A NAME="changes"></A>7. Change history</h1>
 <P CLASS="small"><a href="#problem">next</a> - <a href="#problem">skip</a> -
 <a href="#top">up</a> - <a href="#top">start</a></P>
-<P><b>Newmat11 - April, 2006:</b></P>
+<P><b>Newmat11 - November, 2008:</b></P>
 <P CLASS="small">Remove work-arounds for older compilers, Borland Builder 6 and 
 Open Watcom compatibility, SquareMatrix, 
 load from array of ints, crossproducts, Cholesky and QRZ update functions, swap 
@@ -4936,7 +5039,7 @@ sum_squares_columns() functions, extend_orthogonal function, resize_keep
 function, speed-ups and 
 bug-fixes,  change to lower case for functions, can copy CroutMatrix, 
 BandLUMatrix, Helmert transform, compatibility fix for G++ 4.1, start inserting 
-comments for Doxygen.</P>
+comments for Doxygen, SP_eq, scientific format for output, fix for 64 bits.</P>
 <P><b>Newmat10A - October, 2002, Newmat10B - January 2005:</b></P>
 <P CLASS="small">Fix error in Kronecker product; fixes for Intel and GCC3 
 compilers.</P>
@@ -5009,7 +5112,7 @@ additional functions. </P>
 <P>But first look in my web page <a href="http://www.robertnz.net">
 http://www.robertnz.net</a> to see if the bug has
 already been reported. </P>
-<PRE> Version: ............... newmat11 (22 April 2006)
+<PRE> Version: ............... newmat11 (20 November 2008)
  Your email address: ....
  Today's date: ..........
  Your machine: ..........
