@@ -47,8 +47,7 @@ developed by Robert Davies. Hence, the requirement for the
 \textsf{ROBOOP} are the same as for the \textsf{NEWMAT11}. Although
 make files are only provided for the\textsf{ Borland C++} 4.5 and 5.x,
 \textsf{Visual C++} 6.0, \textsf{Visual C++} 7.0 (.NET),
-and \textsf{GNU G++} compilers (\textsf{OpenWatcom C++} support has been
-suspended until the compiler provides ``full'' STL implementation), other
+and \textsf{GNU G++} compilers, other
 compilers supporting the \textsf{STL} could be used.  See the file
 {\tt nm11.htm} in the {\tt newmat} directory for more details.
 
@@ -231,6 +230,16 @@ make -f makefile.qnx
 \section{Version history}
 
 \begin{description}
+
+\item[version 1.32] (2013/XX/XX)
+
+  \textsf{OpenWatcom} support is dropped.
+
+  Code clean up dealing with some warnings.
+
+  Call to \textsf{Gnuplot} under \textsf{Windows} is now using pipes.
+
+  Removed \textsf{CVS} keywords tags.
 
 \item[version 1.31] (2006/12/14)
   
@@ -604,13 +613,6 @@ Changes to the documentation.
 {\tt newmat} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
 {\tt roboop} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
 {\tt rtest} & {\tt vcproj} & project file used by \texttt{roboop.sln} \\
-{\tt roboop} & {\tt wpj} & project file for OpenWatcom C++ 1.2 IDE (Win32) \\
-{\tt bench} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
-{\tt demo} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
-{\tt demo\_2dof\_pd} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
-{\tt newmat} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
-{\tt roboop} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
-{\tt rtest} & {\tt tgt} & target file used by \texttt{roboop.wpj} \\
 {\tt demo} & {\tt txt} & output of the demo program \\ \\
 {\bf newmat} & & directory of the matrix library \textsf{NEWMAT11} \\
 & & see the file {\tt nm11.htm} \\ \\
