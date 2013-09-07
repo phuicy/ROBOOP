@@ -167,12 +167,14 @@ ReturnMatrix Robot_basic::inv_kin(const Matrix & Tobj, const int mj, const int e
    if(converge)
    {
       // Make sure that: -pi < qout <= pi for revolute joints
+	  int iNotImm = 0;
       for(int i = 1; i <= dof; i++)
       {
          if(links[i].immobile)
             continue;
          if(links[i].get_joint_type() == 0) {
-	     qout(i) = fmod(qout(i), 2*M_PI);
+            iNotImm++; // Added by Matteo Malosio to manage correctly immobile
+            qout(iNotImm) = fmod(qout(iNotImm), 2*M_PI);
          }
       }
       set_q(qPrev);
