@@ -88,7 +88,7 @@ short Config::read_conf(ifstream & inconffile)
    if(inconffile)
    {
       string temp;
-      unsigned int tmpPos;
+      int tmpPos;
       Data data;
       getline(inconffile, temp);
 
