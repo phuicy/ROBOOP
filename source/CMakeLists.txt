@@ -1,8 +1,8 @@
 # CMake configuration file roboop source dir
 # 
 
-PROJECT(roboop)
-ADD_LIBRARY(roboop
+project(roboop)
+add_library(roboop
   gnugraph.cpp
   comp_dq.cpp
   comp_dqp.cpp
@@ -22,9 +22,9 @@ ADD_LIBRARY(roboop
   control_select.cpp
   dynamics_sim.cpp
   stewart.cpp)
-SET(DEMO_PROGS rtest demo bench demo_2dof_pd)
-FOREACH(demo_prog ${DEMO_PROGS})
-  ADD_EXECUTABLE(${demo_prog} ${demo_prog}.cpp)
-  TARGET_LINK_LIBRARIES(${demo_prog} roboop newmat)
-ENDFOREACH(demo_prog)
+set(DEMO_PROGS rtest demo bench demo_2dof_pd)
+foreach(demo_prog ${DEMO_PROGS})
+  add_executable(${demo_prog} ${demo_prog}.cpp)
+  target_link_libraries(${demo_prog} roboop newmat)
+endforeach(demo_prog)
 

@@ -1,8 +1,8 @@
 # CMake configuration file roboop newmat dir
 # 
 
-PROJECT(newmat)
-ADD_LIBRARY(newmat
+project(newmat)
+add_library(newmat
   bandmat.cpp
   cholesky.cpp
   evalue.cpp
