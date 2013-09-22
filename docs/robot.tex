@@ -58,7 +58,9 @@ install it). For Borland C++, \textsf{Visual C++} and \textsf{QNX},
 you can copy the header directory \texttt{boost} from the 
 (\htmladdnormallink{\textsf{Boost} library}{http://www.boost.org/})
 in the \texttt{roboop/source} directory \footnote{simpler but will not
-  provide you with all the \textsf{Boost} features}
+  provide you with all the \textsf{Boost} features}. Under Mac OSX, if
+you are using \htmladdnormallink{\textsf{Homebrew}}{http://brew.sh/},
+just use the command \texttt{brew install boost}. 
 % or install \textsf{Boost} using the instructions provided in the
 % \textsf{Boost} web site (the preferred approach if you intend to use
 % it in other projects)}.
@@ -128,7 +130,7 @@ bakefile -f borland roboop.bkl
 make
 \end{verbatim}
   \end{enumerate}
-\item[Cygwin]: you can compile using one of the three following
+\item[Cygwin and MinGW]: you can compile using one of the three following
 ways (in the \texttt{roboop} directory):
 \begin{enumerate}
 \item Using the command 
