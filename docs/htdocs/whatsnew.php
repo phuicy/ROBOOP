@@ -16,6 +16,31 @@
     </p>
     <blockquote>
       <p>
+        <strong>Thursday, December 12, 2013</strong>
+      </p>
+      <ul>
+        <li>ROBOOP release 1.32.
+        <p>
+          <i>OpenWatcom</i> support is dropped.
+        </p>
+        <p>
+          Upgraded the matrix library to <i>NEWMAT11 (beta) November 2008</i>.
+        </p>
+        <p>
+          Code clean up dealing with some warnings.        </p>
+        <p>
+          Call to <i>Gnuplot</i> under <i>Windows</i> is now using pipes.
+        </p>
+        <p>
+          Removed <i>CVS</i> keywords tags.
+        </p>
+        <p>
+          <tt>inv_kin</tt> immobile joint index bug corrected
+          (thanks to Matteo Malosio).
+        </p>
+        </li>
+      </ul>
+      <p>
         <strong>Friday, February 9, 2007</strong>
       </p>
       <ul>
