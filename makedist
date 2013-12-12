@@ -63,6 +63,8 @@ all :
 	if [ ! -e docs/htdocs/htmldoc ]; then mkdir docs/htdocs/htmldoc; fi
 	cp docs/robot.pdf docs/htdocs/htmldoc
 	if [ ! -e docs/htdocs/roboop_doxy ]; then mkdir docs/htdocs/roboop_doxy; fi
+	cp doxy/html/*.js docs/htdocs/roboop_doxy
+	cp doxy/html/*.html docs/htdocs/roboop_doxy
 	cp doxy/html/*.png docs/htdocs/roboop_doxy
 	cp doxy/html/*.css docs/htdocs/roboop_doxy
 	cp doxy/latex/*.pdf docs/htdocs/roboop_doxy
