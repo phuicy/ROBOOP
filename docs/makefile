@@ -19,4 +19,6 @@ robdocs.zip : htmldoc/robot.html
 	zip -j robdocs htmldoc/*.html htmldoc/*.css htmldoc/*.png
 
 version.tex : ../readme.txt
-	grep This.is.ver $< |cut -d ' ' -f 4 > $@
+	printf "\\\newcommand{\\\roboopversion}{" > $@
+	grep This.is.ver $< |cut -d ' ' -f 4 >> $@
+	printf "}" >> $@
