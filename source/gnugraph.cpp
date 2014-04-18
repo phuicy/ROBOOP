@@ -145,6 +145,7 @@ void Plot2d::gnuplot(void)
 #else
    mkstemp(filename);
 #endif
+   filename[0] = 'T'; // removing leading slash since root dir not always writable
    /* replacing \ by / */
    while((wibsl = strchr(filename,bsl)) != 0) {
       wibsl[0] = '/';
@@ -308,6 +309,7 @@ void Plot3d::gnuplot(const Matrix & xyz)
 #else
    mkstemp(filename);
 #endif
+   filename[0] = 'T'; // removing leading slash since root dir not always writable
 
    while((wibsl = strchr(filename,bsl)) != 0) {
       wibsl[0] = '/';
@@ -345,53 +347,12 @@ void Plot3d::gnuplot(const Matrix & xyz)
        fileout << " " << endl;
    }
 
-#if defined(__WIN32__) || defined(_WIN32) || defined(__NT__) || defined(__CYGWIN__) || defined(__MINGW32__)
-   /* Windows 95/98/NT/2000 etc */
-   char c[L_tmpnam+15];
-   char *d;
-   HWND hwndm, hwnd;
-   if (WinExec(GNUPLOT, SW_SHOWNORMAL) <= 32) { /* start gnuplot */
-      /* failed */
-      cout << "Cannot find the gnuplot application\n";
-      cout << "Press Enter to continue" << endl;
-      getchar();
-      remove(filename); /* clean up the files and return */
-      remove(filedata);
-      delete filedata;
-      return;
-   } else { /* succeed */
-      /* get gnuplot main window handle */
-      hwndm = FindWindow((LPSTR) 0, (LPSTR) "gnuplot");
-   }
-   hwnd= GetWindow(hwndm, GW_CHILD); /* get gnuplot command area handle */
-   if(hwnd == 0) cout << "OUPS!!!\n"; /* something wrong happened */
-   sprintf(c,"load \"%s\" \n",filename); /* load command for the plot */
-
-#ifdef __GNUG__        /* Cygnus Gnu C++ for win32*/
-   char ccygnus[] = "cd \"c:\"\n"; /* this string should reflect
-                                      the drive used to mount / 
-                                      where /tmp is located */
-   d = ccygnus;
-   while(*d != '\0') { /* sending the command through windows messages */
-      SendMessage(hwnd,WM_CHAR,*d,1L);
-      d++;
-   }
-#endif
-   d = c;
-   while(*d != '\0') { /* sending the command through windows messages */
-      SendMessage(hwnd,WM_CHAR,*d,1L);
-      d++;
-   }
-   cout << "Press Enter to continue..." << endl;
-   getchar();
-#else      /*  using a pipe under Unix */
    FILE *command;
    command = popen(GNUPLOT,"w");
    fprintf(command,"load \"%s\"\n",filename); fflush(command);
    fprintf(stderr,"Press Enter to continue...\n"); fflush(stderr);
    getchar();
    pclose(command);
-#endif
 
    remove(filename);
    sprintf(&filedata[strl],"%d",0);
