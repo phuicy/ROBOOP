@@ -145,7 +145,9 @@ void Plot2d::gnuplot(void)
 #else
    mkstemp(filename);
 #endif
+#if defined(__MINGW32__)
    filename[0] = 'T'; // removing leading slash since root dir not always writable
+#endif
    /* replacing \ by / */
    while((wibsl = strchr(filename,bsl)) != 0) {
       wibsl[0] = '/';
@@ -309,7 +311,9 @@ void Plot3d::gnuplot(const Matrix & xyz)
 #else
    mkstemp(filename);
 #endif
+#if defined(__MINGW32__)
    filename[0] = 'T'; // removing leading slash since root dir not always writable
+#endif
 
    while((wibsl = strchr(filename,bsl)) != 0) {
       wibsl[0] = '/';
